@@ -13,9 +13,79 @@
           "id": "smartphones",
           "name": {
             "pt": "Smartphones",
-            "en": "Smartphones", 
+            "en": "Smartphones",
             "es": "Smartphones"
-          }
+          },
+          "subcategories": [
+            {
+              "id": "iphone",
+              "name": {
+                "pt": "iPhone",
+                "en": "iPhone",
+                "es": "iPhone"
+              },
+              "subcategories": [
+                {
+                  "id": "iphone_15",
+                  "name": {
+                    "pt": "iPhone 15 Series",
+                    "en": "iPhone 15 Series",
+                    "es": "iPhone 15 Series"
+                  }
+                },
+                {
+                  "id": "iphone_14",
+                  "name": {
+                    "pt": "iPhone 14 Series",
+                    "en": "iPhone 14 Series",
+                    "es": "iPhone 14 Series"
+                  }
+                },
+                {
+                  "id": "iphone_13",
+                  "name": {
+                    "pt": "iPhone 13 Series",
+                    "en": "iPhone 13 Series",
+                    "es": "iPhone 13 Series"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "android",
+              "name": {
+                "pt": "Android",
+                "en": "Android",
+                "es": "Android"
+              },
+              "subcategories": [
+                {
+                  "id": "samsung",
+                  "name": {
+                    "pt": "Samsung Galaxy",
+                    "en": "Samsung Galaxy",
+                    "es": "Samsung Galaxy"
+                  }
+                },
+                {
+                  "id": "xiaomi",
+                  "name": {
+                    "pt": "Xiaomi",
+                    "en": "Xiaomi",
+                    "es": "Xiaomi"
+                  }
+                },
+                {
+                  "id": "google_pixel",
+                  "name": {
+                    "pt": "Google Pixel",
+                    "en": "Google Pixel",
+                    "es": "Google Pixel"
+                  }
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "computers",
@@ -23,32 +93,104 @@
             "pt": "Computadores",
             "en": "Computers",
             "es": "Computadoras"
-          }
+          },
+          "subcategories": [
+            {
+              "id": "laptops",
+              "name": {
+                "pt": "Notebooks",
+                "en": "Laptops",
+                "es": "Portátiles"
+              },
+              "subcategories": [
+                {
+                  "id": "gaming_laptops",
+                  "name": {
+                    "pt": "Gaming",
+                    "en": "Gaming",
+                    "es": "Gaming"
+                  }
+                },
+                {
+                  "id": "business_laptops",
+                  "name": {
+                    "pt": "Corporativo",
+                    "en": "Business",
+                    "es": "Empresarial"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "desktops",
+              "name": {
+                "pt": "Desktops",
+                "en": "Desktops",
+                "es": "Escritorio"
+              },
+              "subcategories": [
+                {
+                  "id": "gaming_desktops",
+                  "name": {
+                    "pt": "Gaming",
+                    "en": "Gaming",
+                    "es": "Gaming"
+                  }
+                },
+                {
+                  "id": "workstation",
+                  "name": {
+                    "pt": "Workstation",
+                    "en": "Workstation",
+                    "es": "Estación de trabajo"
+                  }
+                }
+              ]
+            }
+          ]
         },
         {
-          "id": "gaming",
+          "id": "accessories",
           "name": {
-            "pt": "Games",
-            "en": "Gaming",
-            "es": "Gaming"
-          }
-        },
-        {
-          "id": "audio",
-          "name": {
-            "pt": "Áudio",
-            "en": "Audio",
-            "es": "Audio"
-          }
+            "pt": "Acessórios",
+            "en": "Accessories",
+            "es": "Accesorios"
+          },
+          "subcategories": [
+            {
+              "id": "headphones",
+              "name": {
+                "pt": "Fones de Ouvido",
+                "en": "Headphones",
+                "es": "Auriculares"
+              }
+            },
+            {
+              "id": "cables",
+              "name": {
+                "pt": "Cabos e Carregadores",
+                "en": "Cables & Chargers",
+                "es": "Cables y Cargadores"
+              }
+            },
+            {
+              "id": "cases",
+              "name": {
+                "pt": "Cases e Capas",
+                "en": "Cases & Covers",
+                "es": "Fundas y Estuches"
+              }
+            }
+          ]
         }
       ]
     },
     {
       "id": "fashion",
       "name": {
-        "pt": "Moda",
-        "en": "Fashion",
-        "es": "Moda"
+        "pt": "Moda e Beleza",
+        "en": "Fashion & Beauty",
+        "es": "Moda y Belleza"
       },
       "icon": "Shirt",
       "subcategories": [
@@ -58,7 +200,61 @@
             "pt": "Roupas",
             "en": "Clothing",
             "es": "Ropa"
-          }
+          },
+          "subcategories": [
+            {
+              "id": "mens_clothing",
+              "name": {
+                "pt": "Masculino",
+                "en": "Men's",
+                "es": "Masculino"
+              },
+              "subcategories": [
+                {
+                  "id": "mens_shirts",
+                  "name": {
+                    "pt": "Camisas",
+                    "en": "Shirts",
+                    "es": "Camisas"
+                  }
+                },
+                {
+                  "id": "mens_pants",
+                  "name": {
+                    "pt": "Calças",
+                    "en": "Pants",
+                    "es": "Pantalones"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "womens_clothing",
+              "name": {
+                "pt": "Feminino",
+                "en": "Women's",
+                "es": "Femenino"
+              },
+              "subcategories": [
+                {
+                  "id": "womens_dresses",
+                  "name": {
+                    "pt": "Vestidos",
+                    "en": "Dresses",
+                    "es": "Vestidos"
+                  }
+                },
+                {
+                  "id": "womens_tops",
+                  "name": {
+                    "pt": "Blusas",
+                    "en": "Tops",
+                    "es": "Blusas"
+                  }
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "shoes",
@@ -66,24 +262,86 @@
             "pt": "Calçados",
             "en": "Shoes",
             "es": "Calzado"
-          }
+          },
+          "subcategories": [
+            {
+              "id": "sneakers",
+              "name": {
+                "pt": "Tênis",
+                "en": "Sneakers",
+                "es": "Zapatillas"
+              },
+              "subcategories": [
+                {
+                  "id": "running_shoes",
+                  "name": {
+                    "pt": "Corrida",
+                    "en": "Running",
+                    "es": "Running"
+                  }
+                },
+                {
+                  "id": "casual_sneakers",
+                  "name": {
+                    "pt": "Casual",
+                    "en": "Casual",
+                    "es": "Casual"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "formal_shoes",
+              "name": {
+                "pt": "Sapatos Sociais",
+                "en": "Formal Shoes",
+                "es": "Zapatos Formales"
+              }
+            }
+          ]
         },
         {
-          "id": "accessories",
+          "id": "accessories_fashion",
           "name": {
             "pt": "Acessórios",
             "en": "Accessories",
             "es": "Accesorios"
-          }
+          },
+          "subcategories": [
+            {
+              "id": "bags",
+              "name": {
+                "pt": "Bolsas",
+                "en": "Bags",
+                "es": "Bolsos"
+              }
+            },
+            {
+              "id": "watches",
+              "name": {
+                "pt": "Relógios",
+                "en": "Watches",
+                "es": "Relojes"
+              }
+            },
+            {
+              "id": "jewelry",
+              "name": {
+                "pt": "Joias",
+                "en": "Jewelry",
+                "es": "Joyas"
+              }
+            }
+          ]
         }
       ]
     },
     {
       "id": "home",
       "name": {
-        "pt": "Casa e Jardim",
-        "en": "Home & Garden",
-        "es": "Casa y Jardín"
+        "pt": "Casa e Decoração",
+        "en": "Home & Decor",
+        "es": "Hogar y Decoración"
       },
       "icon": "Home",
       "subcategories": [
@@ -93,13 +351,93 @@
             "pt": "Móveis",
             "en": "Furniture",
             "es": "Muebles"
-          }
+          },
+          "subcategories": [
+            {
+              "id": "living_room",
+              "name": {
+                "pt": "Sala de Estar",
+                "en": "Living Room",
+                "es": "Sala de Estar"
+              },
+              "subcategories": [
+                {
+                  "id": "sofas",
+                  "name": {
+                    "pt": "Sofás",
+                    "en": "Sofas",
+                    "es": "Sofás"
+                  }
+                },
+                {
+                  "id": "coffee_tables",
+                  "name": {
+                    "pt": "Mesas de Centro",
+                    "en": "Coffee Tables",
+                    "es": "Mesas de Centro"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "bedroom",
+              "name": {
+                "pt": "Quarto",
+                "en": "Bedroom",
+                "es": "Dormitorio"
+              },
+              "subcategories": [
+                {
+                  "id": "beds",
+                  "name": {
+                    "pt": "Camas",
+                    "en": "Beds",
+                    "es": "Camas"
+                  }
+                },
+                {
+                  "id": "wardrobes",
+                  "name": {
+                    "pt": "Guarda-roupas",
+                    "en": "Wardrobes",
+                    "es": "Armarios"
+                  }
+                }
+              ]
+            }
+          ]
         },
         {
-          "id": "decor",
+          "id": "appliances",
+          "name": {
+            "pt": "Eletrodomésticos",
+            "en": "Appliances",
+            "es": "Electrodomésticos"
+          },
+          "subcategories": [
+            {
+              "id": "kitchen",
+              "name": {
+                "pt": "Cozinha",
+                "en": "Kitchen",
+                "es": "Cocina"
+              }
+            },
+            {
+              "id": "laundry",
+              "name": {
+                "pt": "Lavanderia",
+                "en": "Laundry",
+                "es": "Lavandería"
+              }
+            }
+          ]
+        },
+        {
+          "id": "decoration",
           "name": {
             "pt": "Decoração",
-            "en": "Decor",
+            "en": "Decoration",
             "es": "Decoración"
           }
         },
@@ -128,7 +466,33 @@
             "pt": "Carros",
             "en": "Cars",
             "es": "Autos"
-          }
+          },
+          "subcategories": [
+            {
+              "id": "sedan",
+              "name": {
+                "pt": "Sedan",
+                "en": "Sedan",
+                "es": "Sedán"
+              }
+            },
+            {
+              "id": "suv",
+              "name": {
+                "pt": "SUV",
+                "en": "SUV",
+                "es": "SUV"
+              }
+            },
+            {
+              "id": "hatchback",
+              "name": {
+                "pt": "Hatchback",
+                "en": "Hatchback",
+                "es": "Hatchback"
+              }
+            }
+          ]
         },
         {
           "id": "motorcycles",
@@ -136,7 +500,25 @@
             "pt": "Motos",
             "en": "Motorcycles",
             "es": "Motocicletas"
-          }
+          },
+          "subcategories": [
+            {
+              "id": "sport_bikes",
+              "name": {
+                "pt": "Esportivas",
+                "en": "Sport Bikes",
+                "es": "Deportivas"
+              }
+            },
+            {
+              "id": "cruiser",
+              "name": {
+                "pt": "Cruiser",
+                "en": "Cruiser",
+                "es": "Cruiser"
+              }
+            }
+          ]
         },
         {
           "id": "parts",
@@ -165,7 +547,87 @@
             "en": "Online Courses",
             "es": "Cursos Online"
           },
-          "digital_type": "course"
+          "digital_type": "course",
+          "subcategories": [
+            {
+              "id": "programming",
+              "name": {
+                "pt": "Programação",
+                "en": "Programming",
+                "es": "Programación"
+              },
+              "subcategories": [
+                {
+                  "id": "web_development",
+                  "name": {
+                    "pt": "Desenvolvimento Web",
+                    "en": "Web Development",
+                    "es": "Desarrollo Web"
+                  }
+                },
+                {
+                  "id": "mobile_development",
+                  "name": {
+                    "pt": "Desenvolvimento Mobile",
+                    "en": "Mobile Development",
+                    "es": "Desarrollo Móvil"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "design",
+              "name": {
+                "pt": "Design",
+                "en": "Design",
+                "es": "Diseño"
+              },
+              "subcategories": [
+                {
+                  "id": "ui_ux",
+                  "name": {
+                    "pt": "UI/UX",
+                    "en": "UI/UX",
+                    "es": "UI/UX"
+                  }
+                },
+                {
+                  "id": "graphic_design",
+                  "name": {
+                    "pt": "Design Gráfico",
+                    "en": "Graphic Design",
+                    "es": "Diseño Gráfico"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "business",
+              "name": {
+                "pt": "Negócios",
+                "en": "Business",
+                "es": "Negocios"
+              },
+              "subcategories": [
+                {
+                  "id": "marketing",
+                  "name": {
+                    "pt": "Marketing",
+                    "en": "Marketing",
+                    "es": "Marketing"
+                  }
+                },
+                {
+                  "id": "finance",
+                  "name": {
+                    "pt": "Finanças",
+                    "en": "Finance",
+                    "es": "Finanzas"
+                  }
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "ebooks",
@@ -174,7 +636,33 @@
             "en": "E-books",
             "es": "E-books"
           },
-          "digital_type": "ebook"
+          "digital_type": "ebook",
+          "subcategories": [
+            {
+              "id": "fiction",
+              "name": {
+                "pt": "Ficção",
+                "en": "Fiction",
+                "es": "Ficción"
+              }
+            },
+            {
+              "id": "non_fiction",
+              "name": {
+                "pt": "Não-ficção",
+                "en": "Non-fiction",
+                "es": "No ficción"
+              }
+            },
+            {
+              "id": "technical",
+              "name": {
+                "pt": "Técnicos",
+                "en": "Technical",
+                "es": "Técnicos"
+              }
+            }
+          ]
         },
         {
           "id": "software",
@@ -183,7 +671,33 @@
             "en": "Software",
             "es": "Software"
           },
-          "digital_type": "software"
+          "digital_type": "software",
+          "subcategories": [
+            {
+              "id": "productivity",
+              "name": {
+                "pt": "Produtividade",
+                "en": "Productivity",
+                "es": "Productividad"
+              }
+            },
+            {
+              "id": "creative",
+              "name": {
+                "pt": "Criativo",
+                "en": "Creative",
+                "es": "Creativo"
+              }
+            },
+            {
+              "id": "utilities",
+              "name": {
+                "pt": "Utilitários",
+                "en": "Utilities",
+                "es": "Utilidades"
+              }
+            }
+          ]
         },
         {
           "id": "media",
@@ -192,7 +706,33 @@
             "en": "Digital Media",
             "es": "Medios Digitales"
           },
-          "digital_type": "media"
+          "digital_type": "media",
+          "subcategories": [
+            {
+              "id": "music",
+              "name": {
+                "pt": "Música",
+                "en": "Music",
+                "es": "Música"
+              }
+            },
+            {
+              "id": "videos",
+              "name": {
+                "pt": "Vídeos",
+                "en": "Videos",
+                "es": "Videos"
+              }
+            },
+            {
+              "id": "photos",
+              "name": {
+                "pt": "Fotos",
+                "en": "Photos",
+                "es": "Fotos"
+              }
+            }
+          ]
         },
         {
           "id": "templates",
@@ -201,7 +741,33 @@
             "en": "Templates",
             "es": "Plantillas"
           },
-          "digital_type": "template"
+          "digital_type": "template",
+          "subcategories": [
+            {
+              "id": "website_templates",
+              "name": {
+                "pt": "Sites",
+                "en": "Websites",
+                "es": "Sitios Web"
+              }
+            },
+            {
+              "id": "presentation_templates",
+              "name": {
+                "pt": "Apresentações",
+                "en": "Presentations",
+                "es": "Presentaciones"
+              }
+            },
+            {
+              "id": "document_templates",
+              "name": {
+                "pt": "Documentos",
+                "en": "Documents",
+                "es": "Documentos"
+              }
+            }
+          ]
         },
         {
           "id": "digital_other",
@@ -229,15 +795,51 @@
             "pt": "Consultoria",
             "en": "Consulting",
             "es": "Consultoría"
-          }
+          },
+          "subcategories": [
+            {
+              "id": "business_consulting",
+              "name": {
+                "pt": "Consultoria Empresarial",
+                "en": "Business Consulting",
+                "es": "Consultoría Empresarial"
+              }
+            },
+            {
+              "id": "tech_consulting",
+              "name": {
+                "pt": "Consultoria Técnica",
+                "en": "Technical Consulting",
+                "es": "Consultoría Técnica"
+              }
+            }
+          ]
         },
         {
-          "id": "design",
+          "id": "design_services",
           "name": {
             "pt": "Design",
             "en": "Design",
             "es": "Diseño"
-          }
+          },
+          "subcategories": [
+            {
+              "id": "logo_design",
+              "name": {
+                "pt": "Design de Logo",
+                "en": "Logo Design",
+                "es": "Diseño de Logo"
+              }
+            },
+            {
+              "id": "web_design",
+              "name": {
+                "pt": "Design Web",
+                "en": "Web Design",
+                "es": "Diseño Web"
+              }
+            }
+          ]
         },
         {
           "id": "development",
@@ -245,15 +847,51 @@
             "pt": "Desenvolvimento",
             "en": "Development",
             "es": "Desarrollo"
-          }
+          },
+          "subcategories": [
+            {
+              "id": "web_development_service",
+              "name": {
+                "pt": "Desenvolvimento Web",
+                "en": "Web Development",
+                "es": "Desarrollo Web"
+              }
+            },
+            {
+              "id": "app_development",
+              "name": {
+                "pt": "Desenvolvimento de Apps",
+                "en": "App Development",
+                "es": "Desarrollo de Apps"
+              }
+            }
+          ]
         },
         {
-          "id": "marketing",
+          "id": "marketing_services",
           "name": {
             "pt": "Marketing",
             "en": "Marketing",
             "es": "Marketing"
-          }
+          },
+          "subcategories": [
+            {
+              "id": "social_media",
+              "name": {
+                "pt": "Redes Sociais",
+                "en": "Social Media",
+                "es": "Redes Sociales"
+              }
+            },
+            {
+              "id": "seo",
+              "name": {
+                "pt": "SEO",
+                "en": "SEO",
+                "es": "SEO"
+              }
+            }
+          ]
         }
       ]
     },
@@ -272,7 +910,25 @@
             "pt": "Fitness",
             "en": "Fitness",
             "es": "Fitness"
-          }
+          },
+          "subcategories": [
+            {
+              "id": "gym_equipment",
+              "name": {
+                "pt": "Equipamentos de Academia",
+                "en": "Gym Equipment",
+                "es": "Equipos de Gimnasio"
+              }
+            },
+            {
+              "id": "supplements",
+              "name": {
+                "pt": "Suplementos",
+                "en": "Supplements",
+                "es": "Suplementos"
+              }
+            }
+          ]
         },
         {
           "id": "outdoor",
@@ -280,120 +936,114 @@
             "pt": "Outdoor",
             "en": "Outdoor",
             "es": "Outdoor"
-          }
+          },
+          "subcategories": [
+            {
+              "id": "camping",
+              "name": {
+                "pt": "Camping",
+                "en": "Camping",
+                "es": "Camping"
+              }
+            },
+            {
+              "id": "hiking",
+              "name": {
+                "pt": "Trilha",
+                "en": "Hiking",
+                "es": "Senderismo"
+              }
+            }
+          ]
         },
         {
           "id": "sports_equipment",
           "name": {
-            "pt": "Equipamentos",
-            "en": "Equipment",
-            "es": "Equipos"
-          }
+            "pt": "Equipamentos Esportivos",
+            "en": "Sports Equipment",
+            "es": "Equipos Deportivos"
+          },
+          "subcategories": [
+            {
+              "id": "soccer",
+              "name": {
+                "pt": "Futebol",
+                "en": "Soccer",
+                "es": "Fútbol"
+              }
+            },
+            {
+              "id": "basketball",
+              "name": {
+                "pt": "Basquete",
+                "en": "Basketball",
+                "es": "Baloncesto"
+              }
+            }
+          ]
         }
       ]
     },
     {
       "id": "books",
       "name": {
-        "pt": "Livros e Mídia",
-        "en": "Books & Media",
-        "es": "Libros y Medios"
+        "pt": "Livros e Educação",
+        "en": "Books & Education",
+        "es": "Libros y Educación"
       },
       "icon": "Book",
       "subcategories": [
         {
-          "id": "books_physical",
+          "id": "physical_books",
           "name": {
             "pt": "Livros Físicos",
             "en": "Physical Books",
             "es": "Libros Físicos"
-          }
+          },
+          "subcategories": [
+            {
+              "id": "literature",
+              "name": {
+                "pt": "Literatura",
+                "en": "Literature",
+                "es": "Literatura"
+              }
+            },
+            {
+              "id": "textbooks",
+              "name": {
+                "pt": "Livros Didáticos",
+                "en": "Textbooks",
+                "es": "Libros de Texto"
+              }
+            }
+          ]
         },
         {
-          "id": "magazines",
+          "id": "educational_materials",
           "name": {
-            "pt": "Revistas",
-            "en": "Magazines",
-            "es": "Revistas"
-          }
-        },
-        {
-          "id": "music",
-          "name": {
-            "pt": "Música",
-            "en": "Music",
-            "es": "Música"
-          }
-        },
-        {
-          "id": "movies",
-          "name": {
-            "pt": "Filmes",
-            "en": "Movies",
-            "es": "Películas"
-          }
-        }
-      ]
-    },
-    {
-      "id": "collectibles",
-      "name": {
-        "pt": "Colecionáveis",
-        "en": "Collectibles",
-        "es": "Coleccionables"
-      },
-      "icon": "Star",
-      "subcategories": [
-        {
-          "id": "art",
-          "name": {
-            "pt": "Arte",
-            "en": "Art",
-            "es": "Arte"
-          }
-        },
-        {
-          "id": "antiques",
-          "name": {
-            "pt": "Antiguidades",
-            "en": "Antiques",
-            "es": "Antigüedades"
-          }
-        },
-        {
-          "id": "cards",
-          "name": {
-            "pt": "Cartas",
-            "en": "Cards",
-            "es": "Cartas"
-          }
-        },
-        {
-          "id": "coins",
-          "name": {
-            "pt": "Moedas",
-            "en": "Coins",
-            "es": "Monedas"
-          }
-        }
-      ]
-    },
-    {
-      "id": "other",
-      "name": {
-        "pt": "Outros",
-        "en": "Other",
-        "es": "Otros"
-      },
-      "icon": "Package",
-      "subcategories": [
-        {
-          "id": "miscellaneous",
-          "name": {
-            "pt": "Diversos",
-            "en": "Miscellaneous",
-            "es": "Varios"
-          }
+            "pt": "Materiais Educativos",
+            "en": "Educational Materials",
+            "es": "Materiales Educativos"
+          },
+          "subcategories": [
+            {
+              "id": "school_supplies",
+              "name": {
+                "pt": "Material Escolar",
+                "en": "School Supplies",
+                "es": "Material Escolar"
+              }
+            },
+            {
+              "id": "office_supplies",
+              "name": {
+                "pt": "Material de Escritório",
+                "en": "Office Supplies",
+                "es": "Material de Oficina"
+              }
+            }
+          ]
         }
       ]
     }
