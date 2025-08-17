@@ -1,0 +1,401 @@
+{
+  "categories": [
+    {
+      "id": "electronics",
+      "name": {
+        "pt": "Eletrônicos",
+        "en": "Electronics",
+        "es": "Electrónicos"
+      },
+      "icon": "Smartphone",
+      "subcategories": [
+        {
+          "id": "smartphones",
+          "name": {
+            "pt": "Smartphones",
+            "en": "Smartphones", 
+            "es": "Smartphones"
+          }
+        },
+        {
+          "id": "computers",
+          "name": {
+            "pt": "Computadores",
+            "en": "Computers",
+            "es": "Computadoras"
+          }
+        },
+        {
+          "id": "gaming",
+          "name": {
+            "pt": "Games",
+            "en": "Gaming",
+            "es": "Gaming"
+          }
+        },
+        {
+          "id": "audio",
+          "name": {
+            "pt": "Áudio",
+            "en": "Audio",
+            "es": "Audio"
+          }
+        }
+      ]
+    },
+    {
+      "id": "fashion",
+      "name": {
+        "pt": "Moda",
+        "en": "Fashion",
+        "es": "Moda"
+      },
+      "icon": "Shirt",
+      "subcategories": [
+        {
+          "id": "clothing",
+          "name": {
+            "pt": "Roupas",
+            "en": "Clothing",
+            "es": "Ropa"
+          }
+        },
+        {
+          "id": "shoes",
+          "name": {
+            "pt": "Calçados",
+            "en": "Shoes",
+            "es": "Calzado"
+          }
+        },
+        {
+          "id": "accessories",
+          "name": {
+            "pt": "Acessórios",
+            "en": "Accessories",
+            "es": "Accesorios"
+          }
+        }
+      ]
+    },
+    {
+      "id": "home",
+      "name": {
+        "pt": "Casa e Jardim",
+        "en": "Home & Garden",
+        "es": "Casa y Jardín"
+      },
+      "icon": "Home",
+      "subcategories": [
+        {
+          "id": "furniture",
+          "name": {
+            "pt": "Móveis",
+            "en": "Furniture",
+            "es": "Muebles"
+          }
+        },
+        {
+          "id": "decor",
+          "name": {
+            "pt": "Decoração",
+            "en": "Decor",
+            "es": "Decoración"
+          }
+        },
+        {
+          "id": "garden",
+          "name": {
+            "pt": "Jardim",
+            "en": "Garden",
+            "es": "Jardín"
+          }
+        }
+      ]
+    },
+    {
+      "id": "vehicles",
+      "name": {
+        "pt": "Veículos",
+        "en": "Vehicles",
+        "es": "Vehículos"
+      },
+      "icon": "Car",
+      "subcategories": [
+        {
+          "id": "cars",
+          "name": {
+            "pt": "Carros",
+            "en": "Cars",
+            "es": "Autos"
+          }
+        },
+        {
+          "id": "motorcycles",
+          "name": {
+            "pt": "Motos",
+            "en": "Motorcycles",
+            "es": "Motocicletas"
+          }
+        },
+        {
+          "id": "parts",
+          "name": {
+            "pt": "Peças e Acessórios",
+            "en": "Parts & Accessories",
+            "es": "Repuestos y Accesorios"
+          }
+        }
+      ]
+    },
+    {
+      "id": "digital",
+      "name": {
+        "pt": "Produtos Digitais",
+        "en": "Digital Products",
+        "es": "Productos Digitales"
+      },
+      "icon": "Download",
+      "digital": true,
+      "subcategories": [
+        {
+          "id": "courses",
+          "name": {
+            "pt": "Cursos Online",
+            "en": "Online Courses",
+            "es": "Cursos Online"
+          },
+          "digital_type": "course"
+        },
+        {
+          "id": "ebooks",
+          "name": {
+            "pt": "E-books",
+            "en": "E-books",
+            "es": "E-books"
+          },
+          "digital_type": "ebook"
+        },
+        {
+          "id": "software",
+          "name": {
+            "pt": "Software",
+            "en": "Software",
+            "es": "Software"
+          },
+          "digital_type": "software"
+        },
+        {
+          "id": "media",
+          "name": {
+            "pt": "Mídia Digital",
+            "en": "Digital Media",
+            "es": "Medios Digitales"
+          },
+          "digital_type": "media"
+        },
+        {
+          "id": "templates",
+          "name": {
+            "pt": "Templates",
+            "en": "Templates",
+            "es": "Plantillas"
+          },
+          "digital_type": "template"
+        },
+        {
+          "id": "digital_other",
+          "name": {
+            "pt": "Outros Digitais",
+            "en": "Other Digital",
+            "es": "Otros Digitales"
+          },
+          "digital_type": "other"
+        }
+      ]
+    },
+    {
+      "id": "services",
+      "name": {
+        "pt": "Serviços",
+        "en": "Services",
+        "es": "Servicios"
+      },
+      "icon": "Wrench",
+      "subcategories": [
+        {
+          "id": "consulting",
+          "name": {
+            "pt": "Consultoria",
+            "en": "Consulting",
+            "es": "Consultoría"
+          }
+        },
+        {
+          "id": "design",
+          "name": {
+            "pt": "Design",
+            "en": "Design",
+            "es": "Diseño"
+          }
+        },
+        {
+          "id": "development",
+          "name": {
+            "pt": "Desenvolvimento",
+            "en": "Development",
+            "es": "Desarrollo"
+          }
+        },
+        {
+          "id": "marketing",
+          "name": {
+            "pt": "Marketing",
+            "en": "Marketing",
+            "es": "Marketing"
+          }
+        }
+      ]
+    },
+    {
+      "id": "sports",
+      "name": {
+        "pt": "Esportes e Lazer",
+        "en": "Sports & Recreation",
+        "es": "Deportes y Recreación"
+      },
+      "icon": "Zap",
+      "subcategories": [
+        {
+          "id": "fitness",
+          "name": {
+            "pt": "Fitness",
+            "en": "Fitness",
+            "es": "Fitness"
+          }
+        },
+        {
+          "id": "outdoor",
+          "name": {
+            "pt": "Outdoor",
+            "en": "Outdoor",
+            "es": "Outdoor"
+          }
+        },
+        {
+          "id": "sports_equipment",
+          "name": {
+            "pt": "Equipamentos",
+            "en": "Equipment",
+            "es": "Equipos"
+          }
+        }
+      ]
+    },
+    {
+      "id": "books",
+      "name": {
+        "pt": "Livros e Mídia",
+        "en": "Books & Media",
+        "es": "Libros y Medios"
+      },
+      "icon": "Book",
+      "subcategories": [
+        {
+          "id": "books_physical",
+          "name": {
+            "pt": "Livros Físicos",
+            "en": "Physical Books",
+            "es": "Libros Físicos"
+          }
+        },
+        {
+          "id": "magazines",
+          "name": {
+            "pt": "Revistas",
+            "en": "Magazines",
+            "es": "Revistas"
+          }
+        },
+        {
+          "id": "music",
+          "name": {
+            "pt": "Música",
+            "en": "Music",
+            "es": "Música"
+          }
+        },
+        {
+          "id": "movies",
+          "name": {
+            "pt": "Filmes",
+            "en": "Movies",
+            "es": "Películas"
+          }
+        }
+      ]
+    },
+    {
+      "id": "collectibles",
+      "name": {
+        "pt": "Colecionáveis",
+        "en": "Collectibles",
+        "es": "Coleccionables"
+      },
+      "icon": "Star",
+      "subcategories": [
+        {
+          "id": "art",
+          "name": {
+            "pt": "Arte",
+            "en": "Art",
+            "es": "Arte"
+          }
+        },
+        {
+          "id": "antiques",
+          "name": {
+            "pt": "Antiguidades",
+            "en": "Antiques",
+            "es": "Antigüedades"
+          }
+        },
+        {
+          "id": "cards",
+          "name": {
+            "pt": "Cartas",
+            "en": "Cards",
+            "es": "Cartas"
+          }
+        },
+        {
+          "id": "coins",
+          "name": {
+            "pt": "Moedas",
+            "en": "Coins",
+            "es": "Monedas"
+          }
+        }
+      ]
+    },
+    {
+      "id": "other",
+      "name": {
+        "pt": "Outros",
+        "en": "Other",
+        "es": "Otros"
+      },
+      "icon": "Package",
+      "subcategories": [
+        {
+          "id": "miscellaneous",
+          "name": {
+            "pt": "Diversos",
+            "en": "Miscellaneous",
+            "es": "Varios"
+          }
+        }
+      ]
+    }
+  ]
+}

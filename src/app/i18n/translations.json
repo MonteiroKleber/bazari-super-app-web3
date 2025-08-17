@@ -1,0 +1,613 @@
+{
+  "app": {
+    "name": {
+      "pt": "Bazari",
+      "en": "Bazari",
+      "es": "Bazari"
+    },
+    "tagline": {
+      "pt": "Web3 Super App",
+      "en": "Web3 Super App",
+      "es": "Web3 Super App"
+    },
+    "loading": {
+      "pt": "Carregando...",
+      "en": "Loading...",
+      "es": "Cargando..."
+    },
+    "actions": {
+      "save": {
+        "pt": "Salvar",
+        "en": "Save",
+        "es": "Guardar"
+      },
+      "cancel": {
+        "pt": "Cancelar",
+        "en": "Cancel",
+        "es": "Cancelar"
+      },
+      "back": {
+        "pt": "Voltar",
+        "en": "Back",
+        "es": "Volver"
+      },
+      "next": {
+        "pt": "Próximo",
+        "en": "Next",
+        "es": "Siguiente"
+      },
+      "continue": {
+        "pt": "Continuar",
+        "en": "Continue",
+        "es": "Continuar"
+      },
+      "confirm": {
+        "pt": "Confirmar",
+        "en": "Confirm",
+        "es": "Confirmar"
+      },
+      "create": {
+        "pt": "Criar",
+        "en": "Create",
+        "es": "Crear"
+      },
+      "edit": {
+        "pt": "Editar",
+        "en": "Edit",
+        "es": "Editar"
+      },
+      "delete": {
+        "pt": "Excluir",
+        "en": "Delete",
+        "es": "Eliminar"
+      },
+      "search": {
+        "pt": "Buscar",
+        "en": "Search",
+        "es": "Buscar"
+      }
+    }
+  },
+  "header": {
+    "menu": {
+      "pt": "Menu",
+      "en": "Menu",
+      "es": "Menú"
+    },
+    "notifications": {
+      "pt": "Notificações",
+      "en": "Notifications",
+      "es": "Notificaciones"
+    },
+    "profile": {
+      "pt": "Perfil",
+      "en": "Profile",
+      "es": "Perfil"
+    },
+    "wallet": {
+      "pt": "Carteira",
+      "en": "Wallet",
+      "es": "Cartera"
+    },
+    "logout": {
+      "pt": "Sair",
+      "en": "Logout",
+      "es": "Cerrar sesión"
+    }
+  },
+  "footer": {
+    "about": {
+      "pt": "Sobre",
+      "en": "About",
+      "es": "Acerca de"
+    },
+    "help": {
+      "pt": "Ajuda",
+      "en": "Help",
+      "es": "Ayuda"
+    },
+    "terms": {
+      "pt": "Termos",
+      "en": "Terms",
+      "es": "Términos"
+    },
+    "privacy": {
+      "pt": "Privacidade",
+      "en": "Privacy",
+      "es": "Privacidad"
+    },
+    "contact": {
+      "pt": "Contato",
+      "en": "Contact",
+      "es": "Contacto"
+    },
+    "version": {
+      "pt": "Versão",
+      "en": "Version",
+      "es": "Versión"
+    }
+  },
+  "landing": {
+    "hero": {
+      "title": {
+        "pt": "O Futuro do Comércio Digital",
+        "en": "The Future of Digital Commerce",
+        "es": "El Futuro del Comercio Digital"
+      },
+      "subtitle": {
+        "pt": "Marketplace descentralizado, P2P, Wallet e ecossistema Web3 completo",
+        "en": "Decentralized marketplace, P2P, Wallet and complete Web3 ecosystem",
+        "es": "Marketplace descentralizado, P2P, Wallet y ecosistema Web3 completo"
+      },
+      "cta_primary": {
+        "pt": "Começar Agora",
+        "en": "Get Started",
+        "es": "Comenzar Ahora"
+      },
+      "cta_secondary": {
+        "pt": "Explorar Marketplace",
+        "en": "Explore Marketplace",
+        "es": "Explorar Marketplace"
+      }
+    },
+    "features": {
+      "title": {
+        "pt": "Por que escolher o Bazari?",
+        "en": "Why choose Bazari?",
+        "es": "¿Por qué elegir Bazari?"
+      },
+      "decentralized": {
+        "title": {
+          "pt": "Descentralizado",
+          "en": "Decentralized",
+          "es": "Descentralizado"
+        },
+        "description": {
+          "pt": "Sem intermediários. Você tem controle total.",
+          "en": "No intermediaries. You have full control.",
+          "es": "Sin intermediarios. Tienes control total."
+        }
+      },
+      "p2p": {
+        "title": {
+          "pt": "P2P Trading",
+          "en": "P2P Trading",
+          "es": "Trading P2P"
+        },
+        "description": {
+          "pt": "Troque diretamente com outros usuários.",
+          "en": "Trade directly with other users.",
+          "es": "Intercambia directamente con otros usuarios."
+        }
+      },
+      "digital": {
+        "title": {
+          "pt": "Marketplace Digital",
+          "en": "Digital Marketplace",
+          "es": "Marketplace Digital"
+        },
+        "description": {
+          "pt": "Venda e compre produtos digitais com segurança.",
+          "en": "Sell and buy digital products safely.",
+          "es": "Vende y compra productos digitales de forma segura."
+        }
+      }
+    },
+    "how_it_works": {
+      "title": {
+        "pt": "Como funciona",
+        "en": "How it works",
+        "es": "Cómo funciona"
+      },
+      "step1": {
+        "title": {
+          "pt": "1. Crie sua conta",
+          "en": "1. Create your account",
+          "es": "1. Crea tu cuenta"
+        },
+        "description": {
+          "pt": "Registre-se com seed phrase segura",
+          "en": "Register with secure seed phrase",
+          "es": "Regístrate con frase semilla segura"
+        }
+      },
+      "step2": {
+        "title": {
+          "pt": "2. Configure seu perfil",
+          "en": "2. Set up your profile",
+          "es": "2. Configura tu perfil"
+        },
+        "description": {
+          "pt": "Construa sua reputação na rede",
+          "en": "Build your reputation on the network",
+          "es": "Construye tu reputación en la red"
+        }
+      },
+      "step3": {
+        "title": {
+          "pt": "3. Comece a negociar",
+          "en": "3. Start trading",
+          "es": "3. Comienza a comerciar"
+        },
+        "description": {
+          "pt": "Compre, venda e troque com segurança",
+          "en": "Buy, sell and trade safely",
+          "es": "Compra, vende e intercambia de forma segura"
+        }
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": {
+        "pt": "Entrar no Bazari",
+        "en": "Login to Bazari",
+        "es": "Iniciar sesión en Bazari"
+      },
+      "subtitle": {
+        "pt": "Acesse sua conta ou crie uma nova",
+        "en": "Access your account or create a new one",
+        "es": "Accede a tu cuenta o crea una nueva"
+      },
+      "existing_account": {
+        "pt": "Já tenho uma conta",
+        "en": "I already have an account",
+        "es": "Ya tengo una cuenta"
+      },
+      "new_account": {
+        "pt": "Criar nova conta",
+        "en": "Create new account",
+        "es": "Crear nueva cuenta"
+      },
+      "import_account": {
+        "pt": "Importar conta existente",
+        "en": "Import existing account",
+        "es": "Importar cuenta existente"
+      },
+      "guest_mode": {
+        "pt": "Continuar como visitante",
+        "en": "Continue as guest",
+        "es": "Continuar como invitado"
+      }
+    },
+    "seed": {
+      "title": {
+        "pt": "Sua Frase de Recuperação",
+        "en": "Your Recovery Phrase",
+        "es": "Tu Frase de Recuperación"
+      },
+      "warning": {
+        "pt": "⚠️ Guarde esta frase em local seguro. É a única forma de recuperar sua conta.",
+        "en": "⚠️ Store this phrase in a safe place. It's the only way to recover your account.",
+        "es": "⚠️ Guarda esta frase en un lugar seguro. Es la única forma de recuperar tu cuenta."
+      },
+      "reveal": {
+        "pt": "Clique para revelar",
+        "en": "Click to reveal",
+        "es": "Haz clic para revelar"
+      },
+      "copy": {
+        "pt": "Copiar",
+        "en": "Copy",
+        "es": "Copiar"
+      },
+      "copied": {
+        "pt": "Copiado!",
+        "en": "Copied!",
+        "es": "¡Copiado!"
+      },
+      "confirm_title": {
+        "pt": "Confirme sua frase de recuperação",
+        "en": "Confirm your recovery phrase",
+        "es": "Confirma tu frase de recuperación"
+      },
+      "confirm_instruction": {
+        "pt": "Selecione as palavras na ordem correta",
+        "en": "Select the words in the correct order",
+        "es": "Selecciona las palabras en el orden correcto"
+      }
+    },
+    "import": {
+      "seed_title": {
+        "pt": "Importar com Frase de Recuperação",
+        "en": "Import with Recovery Phrase",
+        "es": "Importar con Frase de Recuperación"
+      },
+      "json_title": {
+        "pt": "Importar Arquivo JSON",
+        "en": "Import JSON File",
+        "es": "Importar Archivo JSON"
+      },
+      "seed_placeholder": {
+        "pt": "Digite suas 12 ou 24 palavras...",
+        "en": "Enter your 12 or 24 words...",
+        "es": "Ingresa tus 12 o 24 palabras..."
+      },
+      "password": {
+        "pt": "Senha do arquivo",
+        "en": "File password",
+        "es": "Contraseña del archivo"
+      }
+    },
+    "terms": {
+      "title": {
+        "pt": "Termos de Uso",
+        "en": "Terms of Service",
+        "es": "Términos de Servicio"
+      },
+      "accept": {
+        "pt": "Aceito os termos de uso e política de privacidade",
+        "en": "I accept the terms of service and privacy policy",
+        "es": "Acepto los términos de servicio y la política de privacidad"
+      }
+    }
+  },
+  "dashboard": {
+    "welcome": {
+      "pt": "Bem-vindo ao Bazari",
+      "en": "Welcome to Bazari",
+      "es": "Bienvenido a Bazari"
+    },
+    "my_wallet": {
+      "title": {
+        "pt": "Minha Carteira",
+        "en": "My Wallet",
+        "es": "Mi Cartera"
+      },
+      "balance": {
+        "pt": "Saldo",
+        "en": "Balance",
+        "es": "Saldo"
+      },
+      "send": {
+        "pt": "Enviar",
+        "en": "Send",
+        "es": "Enviar"
+      },
+      "receive": {
+        "pt": "Receber",
+        "en": "Receive",
+        "es": "Recibir"
+      },
+      "history": {
+        "pt": "Histórico",
+        "en": "History",
+        "es": "Historial"
+      }
+    },
+    "p2p_trades": {
+      "title": {
+        "pt": "P2P em Andamento",
+        "en": "P2P in Progress",
+        "es": "P2P en Progreso"
+      },
+      "no_trades": {
+        "pt": "Nenhuma negociação ativa",
+        "en": "No active trades",
+        "es": "No hay intercambios activos"
+      }
+    },
+    "my_listings": {
+      "title": {
+        "pt": "Meus Anúncios",
+        "en": "My Listings",
+        "es": "Mis Anuncios"
+      },
+      "active": {
+        "pt": "Ativos",
+        "en": "Active",
+        "es": "Activos"
+      }
+    },
+    "notifications": {
+      "title": {
+        "pt": "Notificações Recentes",
+        "en": "Recent Notifications",
+        "es": "Notificaciones Recientes"
+      },
+      "view_all": {
+        "pt": "Ver todas",
+        "en": "View all",
+        "es": "Ver todas"
+      }
+    },
+    "reputation": {
+      "title": {
+        "pt": "Minha Reputação",
+        "en": "My Reputation",
+        "es": "Mi Reputación"
+      },
+      "rating": {
+        "pt": "Avaliação",
+        "en": "Rating",
+        "es": "Calificación"
+      },
+      "reviews": {
+        "pt": "avaliações",
+        "en": "reviews",
+        "es": "reseñas"
+      }
+    },
+    "quick_actions": {
+      "title": {
+        "pt": "Ações Rápidas",
+        "en": "Quick Actions",
+        "es": "Acciones Rápidas"
+      },
+      "create_p2p": {
+        "pt": "Criar P2P",
+        "en": "Create P2P",
+        "es": "Crear P2P"
+      },
+      "create_listing": {
+        "pt": "Criar Anúncio",
+        "en": "Create Listing",
+        "es": "Crear Anuncio"
+      },
+      "browse_p2p": {
+        "pt": "Explorar P2P",
+        "en": "Browse P2P",
+        "es": "Explorar P2P"
+      },
+      "browse_marketplace": {
+        "pt": "Explorar Marketplace",
+        "en": "Browse Marketplace",
+        "es": "Explorar Marketplace"
+      }
+    }
+  },
+  "wallet": {
+    "title": {
+      "pt": "Carteira",
+      "en": "Wallet",
+      "es": "Cartera"
+    },
+    "balance": {
+      "pt": "Saldo Disponível",
+      "en": "Available Balance",
+      "es": "Saldo Disponible"
+    },
+    "send_money": {
+      "pt": "Enviar Dinheiro",
+      "en": "Send Money",
+      "es": "Enviar Dinero"
+    },
+    "receive_money": {
+      "pt": "Receber Dinheiro",
+      "en": "Receive Money",
+      "es": "Recibir Dinero"
+    },
+    "transaction_history": {
+      "pt": "Histórico de Transações",
+      "en": "Transaction History",
+      "es": "Historial de Transacciones"
+    }
+  },
+  "marketplace": {
+    "title": {
+      "pt": "Marketplace",
+      "en": "Marketplace",
+      "es": "Marketplace"
+    },
+    "categories": {
+      "pt": "Categorias",
+      "en": "Categories",
+      "es": "Categorías"
+    },
+    "search_placeholder": {
+      "pt": "Buscar produtos...",
+      "en": "Search products...",
+      "es": "Buscar productos..."
+    },
+    "filters": {
+      "pt": "Filtros",
+      "en": "Filters",
+      "es": "Filtros"
+    },
+    "price_range": {
+      "pt": "Faixa de Preço",
+      "en": "Price Range",
+      "es": "Rango de Precio"
+    },
+    "digital_products": {
+      "pt": "Produtos Digitais",
+      "en": "Digital Products",
+      "es": "Productos Digitales"
+    },
+    "p2p_trading": {
+      "pt": "Trading P2P",
+      "en": "P2P Trading",
+      "es": "Trading P2P"
+    }
+  },
+  "profile": {
+    "title": {
+      "pt": "Perfil",
+      "en": "Profile",
+      "es": "Perfil"
+    },
+    "reputation": {
+      "pt": "Reputação",
+      "en": "Reputation",
+      "es": "Reputación"
+    },
+    "reviews": {
+      "pt": "Avaliações",
+      "en": "Reviews",
+      "es": "Reseñas"
+    },
+    "chat": {
+      "pt": "Conversar",
+      "en": "Chat",
+      "es": "Chatear"
+    }
+  },
+  "notifications": {
+    "title": {
+      "pt": "Notificações",
+      "en": "Notifications",
+      "es": "Notificaciones"
+    },
+    "mark_all_read": {
+      "pt": "Marcar todas como lidas",
+      "en": "Mark all as read",
+      "es": "Marcar todas como leídas"
+    },
+    "no_notifications": {
+      "pt": "Nenhuma notificação",
+      "en": "No notifications",
+      "es": "Sin notificaciones"
+    }
+  },
+  "dao": {
+    "title": {
+      "pt": "DAO",
+      "en": "DAO",
+      "es": "DAO"
+    },
+    "proposals": {
+      "pt": "Propostas",
+      "en": "Proposals",
+      "es": "Propuestas"
+    },
+    "voting": {
+      "pt": "Votação",
+      "en": "Voting",
+      "es": "Votación"
+    }
+  },
+  "social": {
+    "title": {
+      "pt": "Social",
+      "en": "Social",
+      "es": "Social"
+    },
+    "feed": {
+      "pt": "Feed",
+      "en": "Feed",
+      "es": "Feed"
+    },
+    "post": {
+      "pt": "Publicar",
+      "en": "Post",
+      "es": "Publicar"
+    }
+  },
+  "work": {
+    "title": {
+      "pt": "Trabalho",
+      "en": "Work",
+      "es": "Trabajo"
+    },
+    "jobs": {
+      "pt": "Trabalhos",
+      "en": "Jobs",
+      "es": "Trabajos"
+    },
+    "freelance": {
+      "pt": "Freelance",
+      "en": "Freelance",
+      "es": "Freelance"
+    }
+  }
+}
