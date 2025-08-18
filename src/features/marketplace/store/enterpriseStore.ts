@@ -3,6 +3,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { Enterprise, EnterpriseFilters, EnterpriseMetrics } from '../types/enterprise.types'
+import { mockEnterprises } from '@app/data/mockMarketplaceData'
 
 interface EnterpriseState {
   enterprises: Enterprise[]
@@ -101,76 +102,32 @@ export const useEnterpriseStore = create<EnterpriseState>()(
       fetchEnterprises: async (filters?: EnterpriseFilters) => {
         set({ isLoading: true })
         try {
-          // Mock API call - replace with actual API
-          await new Promise(resolve => setTimeout(resolve, 1000))
+          // Simula delay de API
+          await new Promise(resolve => setTimeout(resolve, 300))
           
-          // Mock data for demonstration
-          const mockEnterprises: Enterprise[] = [
-            {
-              id: 'ent_1',
-              ownerId: 'user_1',
-              ownerName: 'João Silva',
-              name: 'Tech Solutions Pro',
-              description: 'Especializada em soluções tecnológicas inovadoras para empresas.',
-              categories: ['digital', 'services'],
-              subcategories: ['software', 'consulting'],
-              tokenizable: true,
-              tokenization: {
-                enabled: true,
-                totalSupply: 10000,
-                currentSupply: 2500,
-                royaltyPercentage: 5,
-                transferable: true,
-                mintPrice: 100,
-                mintCurrency: 'BZR'
-              },
-              contact: {
-                email: 'contato@techsolutions.com',
-                phone: '+55 11 99999-9999',
-                website: 'https://techsolutions.com'
-              },
-              reputation: {
-                rating: 4.8,
-                reviewCount: 156,
-                totalSales: 1200,
-                completionRate: 98.5
-              },
-              verification: {
-                verified: true,
-                verifiedAt: '2024-01-15T10:00:00.000Z',
-                documents: ['cnpj', 'address', 'identity']
-              },
-              settings: {
-                autoAcceptOrders: false,
-                minOrderValue: 50,
-                acceptedCurrencies: ['BZR', 'BRL'],
-                deliveryMethods: ['digital', 'express']
-              },
-              stats: {
-                totalListings: 45,
-                activeListings: 32,
-                soldListings: 13,
-                totalViews: 15420,
-                totalRevenue: { BZR: 50000, BRL: 120000 },
-                avgResponseTime: 15
-              },
-              status: 'active',
-              createdAt: '2023-06-15T00:00:00.000Z',
-              updatedAt: '2024-08-15T12:00:00.000Z'
-            }
-          ]
-
-          // Apply filters if provided
-          let filteredEnterprises = mockEnterprises
+          // Usa dados mock
+          let filteredEnterprises = [...mockEnterprises]
+          
+          // Aplica filtros se fornecidos
           if (filters) {
             if (filters.category) {
               filteredEnterprises = filteredEnterprises.filter(e => 
                 e.categories.includes(filters.category!)
               )
             }
+            if (filters.subcategory) {
+              filteredEnterprises = filteredEnterprises.filter(e => 
+                e.subcategories.includes(filters.subcategory!)
+              )
+            }
             if (filters.verified !== undefined) {
               filteredEnterprises = filteredEnterprises.filter(e => 
                 e.verification.verified === filters.verified
+              )
+            }
+            if (filters.tokenizable !== undefined) {
+              filteredEnterprises = filteredEnterprises.filter(e => 
+                e.tokenizable === filters.tokenizable
               )
             }
             if (filters.search) {
@@ -179,6 +136,50 @@ export const useEnterpriseStore = create<EnterpriseState>()(
                 e.name.toLowerCase().includes(query) ||
                 e.description.toLowerCase().includes(query)
               )
+            }
+            if (filters.minRating) {
+              filteredEnterprises = filteredEnterprises.filter(e => 
+                e.reputation.rating >= filters.minRating!
+              )
+            }
+            if (filters.location?.city) {
+              filteredEnterprises = filteredEnterprises.filter(e => 
+                e.address?.city.toLowerCase().includes(filters.location!.city!.toLowerCase())
+              )
+            }
+            if (filters.location?.state) {
+              filteredEnterprises = filteredEnterprises.filter(e => 
+                e.address?.state === filters.location!.state
+              )
+            }
+          }
+
+          // Aplica ordenação
+          if (filters?.sortBy) {
+            switch (filters.sortBy) {
+              case 'newest':
+                filteredEnterprises.sort((a, b) => 
+                  new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                )
+                break
+              case 'rating':
+                filteredEnterprises.sort((a, b) => 
+                  b.reputation.rating - a.reputation.rating
+                )
+                break
+              case 'sales':
+                filteredEnterprises.sort((a, b) => 
+                  b.reputation.totalSales - a.reputation.totalSales
+                )
+                break
+              case 'relevance':
+                // Para relevância, prioriza verificados e com melhor rating
+                filteredEnterprises.sort((a, b) => {
+                  const aScore = (a.verification.verified ? 1 : 0) + a.reputation.rating
+                  const bScore = (b.verification.verified ? 1 : 0) + b.reputation.rating
+                  return bScore - aScore
+                })
+                break
             }
           }
 
@@ -213,7 +214,9 @@ export const useEnterpriseStore = create<EnterpriseState>()(
         try {
           await new Promise(resolve => setTimeout(resolve, 300))
           
-          const enterprise = get().enterprises.find(e => e.id === id)
+          const enterprise = get().enterprises.find(e => e.id === id) || 
+                           mockEnterprises.find(e => e.id === id)
+          
           if (enterprise) {
             set({ currentEnterprise: enterprise })
             return enterprise
@@ -249,10 +252,11 @@ export const useEnterpriseStore = create<EnterpriseState>()(
               totalRevenue: { BZR: 0, BRL: 0 },
               avgResponseTime: 0
             },
+            status: 'active',
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
           }
-
+          
           get().addEnterprise(newEnterprise)
           return newEnterprise.id
         } catch (error) {
@@ -264,63 +268,50 @@ export const useEnterpriseStore = create<EnterpriseState>()(
       },
 
       searchEnterprises: async (query: string) => {
-        await get().fetchEnterprises({ search: query })
+        const filters = { ...get().filters, search: query }
+        await get().fetchEnterprises(filters)
       },
 
       toggleEnterpriseTokenization: async (id: string, enabled: boolean) => {
-        set({ isLoading: true })
         try {
-          await new Promise(resolve => setTimeout(resolve, 500))
+          await new Promise(resolve => setTimeout(resolve, 300))
           
-          const updates: Partial<Enterprise> = {
+          get().updateEnterprise(id, {
             tokenization: {
-              enabled,
-              totalSupply: enabled ? 10000 : undefined,
-              currentSupply: enabled ? 0 : undefined,
-              royaltyPercentage: enabled ? 5 : undefined,
-              transferable: enabled,
-              mintPrice: enabled ? 100 : undefined,
-              mintCurrency: enabled ? 'BZR' : undefined
+              ...get().enterprises.find(e => e.id === id)?.tokenization,
+              enabled
             }
-          }
-          
-          get().updateEnterprise(id, updates)
+          })
         } catch (error) {
           console.error('Error toggling tokenization:', error)
           throw error
-        } finally {
-          set({ isLoading: false })
         }
       },
 
       updateEnterpriseVerification: async (id: string, verified: boolean) => {
-        set({ isLoading: true })
         try {
           await new Promise(resolve => setTimeout(resolve, 300))
           
-          const updates: Partial<Enterprise> = {
+          get().updateEnterprise(id, {
             verification: {
+              ...get().enterprises.find(e => e.id === id)?.verification,
               verified,
-              verifiedAt: verified ? new Date().toISOString() : undefined,
-              documents: verified ? ['cnpj', 'address', 'identity'] : []
+              verifiedAt: verified ? new Date().toISOString() : undefined
             }
-          }
-          
-          get().updateEnterprise(id, updates)
+          })
         } catch (error) {
           console.error('Error updating verification:', error)
           throw error
-        } finally {
-          set({ isLoading: false })
         }
       }
     }),
     {
-      name: 'bazari-enterprise-store',
+      name: 'enterprise-storage',
       partialize: (state) => ({
         enterprises: state.enterprises,
         myEnterprises: state.myEnterprises,
-        filters: state.filters
+        filters: state.filters,
+        metrics: state.metrics
       })
     }
   )
