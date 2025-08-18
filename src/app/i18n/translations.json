@@ -499,6 +499,11 @@
       "en": "Search products...",
       "es": "Buscar productos..."
     },
+    "create_listing": {
+        "pt": "Criar Anúncio",
+        "en": "Create Listing",
+        "es": "Crear Anuncio"
+      },
     "filters": {
       "pt": "Filtros",
       "en": "Filters",
@@ -513,11 +518,286 @@
       "pt": "Produtos Digitais",
       "en": "Digital Products",
       "es": "Productos Digitales"
+    },    
+    "browse_title": {
+      "pt": "Explorar Marketplace",
+      "en": "Browse Marketplace", 
+      "es": "Explorar Marketplace"
+    },
+    "products_services": {
+      "pt": "Produtos & Serviços",
+      "en": "Products & Services",
+      "es": "Productos y Servicios"
+    },
+    "enterprises": {
+      "pt": "Empreendimentos",
+      "en": "Enterprises", 
+      "es": "Emprendimientos"
+    },
+    "search_products": {
+      "pt": "Buscar produtos e serviços...",
+      "en": "Search products and services...",
+      "es": "Buscar productos y servicios..."
+    },
+    "search_enterprises": {
+      "pt": "Buscar empreendimentos...",
+      "en": "Search enterprises...",
+      "es": "Buscar emprendimientos..."
+    },    
+    "clear_filters": {
+      "pt": "Limpar Filtros",
+      "en": "Clear Filters",
+      "es": "Limpiar Filtros"
+    },
+    "clear_all": {
+      "pt": "Limpar Tudo",
+      "en": "Clear All",
+      "es": "Limpiar Todo"
+    },
+    "filters_applied": {
+      "pt": "Filtros aplicados",
+      "en": "Filters applied",
+      "es": "Filtros aplicados"
+    },
+    "all_categories": {
+      "pt": "Todas as Categorias",
+      "en": "All Categories",
+      "es": "Todas las Categorías"
+    },
+    "all_subcategories": {
+      "pt": "Todas as Subcategorias", 
+      "en": "All Subcategories",
+      "es": "Todas las Subcategorías"
+    },
+    "all_conditions": {
+      "pt": "Todas as Condições",
+      "en": "All Conditions",
+      "es": "Todas las Condiciones"
+    },
+    "condition": {
+      "pt": "Condição",
+      "en": "Condition",
+      "es": "Condición"
+    },
+    "new": {
+      "pt": "Novo",
+      "en": "New",
+      "es": "Nuevo"
+    },
+    "used": {
+      "pt": "Usado",
+      "en": "Used", 
+      "es": "Usado"
+    },
+    "refurbished": {
+      "pt": "Recondicionado",
+      "en": "Refurbished",
+      "es": "Reacondicionado"
+    },
+    "location": {
+      "pt": "Localização",
+      "en": "Location",
+      "es": "Ubicación"
+    },
+    "city": {
+      "pt": "Cidade",
+      "en": "City",
+      "es": "Ciudad"
+    },
+    "state": {
+      "pt": "Estado",
+      "en": "State",
+      "es": "Estado"
+    },
+    "sort_by": {
+      "pt": "Ordenar por",
+      "en": "Sort by",
+      "es": "Ordenar por"
+    },
+    "relevance": {
+      "pt": "Relevância",
+      "en": "Relevance",
+      "es": "Relevancia"
+    },
+    "newest": {
+      "pt": "Mais Recentes",
+      "en": "Newest",
+      "es": "Más Recientes"
+    },
+    "price_asc": {
+      "pt": "Menor Preço",
+      "en": "Lowest Price",
+      "es": "Precio Menor"
+    },
+    "price_desc": {
+      "pt": "Maior Preço", 
+      "en": "Highest Price",
+      "es": "Precio Mayor"
+    },
+    "rating_desc": {
+      "pt": "Melhor Avaliação",
+      "en": "Best Rating",
+      "es": "Mejor Valoración"
+    },
+    "views_desc": {
+      "pt": "Mais Visualizados",
+      "en": "Most Viewed",
+      "es": "Más Vistos"
+    },
+    "sales_desc": {
+      "pt": "Mais Vendidos",
+      "en": "Best Selling",
+      "es": "Más Vendidos"
+    },
+    "verified_only": {
+      "pt": "Apenas Verificados",
+      "en": "Verified Only",
+      "es": "Solo Verificados"
+    },
+    "min_rating": {
+      "pt": "Avaliação Mínima",
+      "en": "Minimum Rating",
+      "es": "Valoración Mínima"
+    },
+    "any_rating": {
+      "pt": "Qualquer Avaliação",
+      "en": "Any Rating",
+      "es": "Cualquier Valoración"
+    },
+    "stars": {
+      "pt": "estrelas",
+      "en": "stars",
+      "es": "estrellas"
+    },
+    "results_found": {
+      "pt": "resultados encontrados",
+      "en": "results found",
+      "es": "resultados encontrados"
+    },
+    "for": {
+      "pt": "para",
+      "en": "for",
+      "es": "para"
+    },
+    "no_results_title": {
+      "pt": "Nenhum resultado encontrado",
+      "en": "No results found",
+      "es": "No se encontraron resultados"
+    },
+    "no_results_description": {
+      "pt": "Tente ajustar seus filtros ou termos de busca",
+      "en": "Try adjusting your filters or search terms",
+      "es": "Intenta ajustar tus filtros o términos de búsqueda"
+    },
+    "load_more": {
+      "pt": "Carregar Mais",
+      "en": "Load More",
+      "es": "Cargar Más"
+    },
+    "views": {
+      "pt": "visualizações",
+      "en": "views",
+      "es": "visualizaciones"
+    },
+    "sales": {
+      "pt": "vendas",
+      "en": "sales",
+      "es": "ventas"
+    },
+    "verified": {
+      "pt": "Verificado",
+      "en": "Verified",
+      "es": "Verificado"
+    },
+    "view_all": {
+      "pt": "Ver Todos",
+      "en": "View All",
+      "es": "Ver Todos"
+    },
+    "popular_products": {
+      "pt": "Produtos Populares",
+      "en": "Popular Products",
+      "es": "Productos Populares"
+    },
+    "recent_products": {
+      "pt": "Produtos Recentes",
+      "en": "Recent Products", 
+      "es": "Productos Recientes"
+    },
+    "featured_enterprises": {
+      "pt": "Empreendimentos em Destaque",
+      "en": "Featured Enterprises",
+      "es": "Emprendimientos Destacados"
+    },
+    "no_products_title": {
+      "pt": "Nenhum produto encontrado",
+      "en": "No products found",
+      "es": "No se encontraron productos"
+    },
+    "no_products_description": {
+      "pt": "Seja o primeiro a criar um anúncio!",
+      "en": "Be the first to create a listing!",
+      "es": "¡Sé el primero en crear un anuncio!"
+    },
+    "no_recent_products": {
+      "pt": "Nenhum produto recente",
+      "en": "No recent products",
+      "es": "No hay productos recientes"
+    },
+    "no_recent_products_description": {
+      "pt": "Novos produtos aparecerão aqui",
+      "en": "New products will appear here",
+      "es": "Los nuevos productos aparecerán aquí"
+    },
+    "no_enterprises_title": {
+      "pt": "Nenhum empreendimento encontrado",
+      "en": "No enterprises found",
+      "es": "No se encontraron emprendimientos"
+    },
+    "no_enterprises_description": {
+      "pt": "Cadastre seu negócio e comece a vender!",
+      "en": "Register your business and start selling!",
+      "es": "¡Registra tu negocio y comienza a vender!"
+    },
+    "create_first_listing": {
+      "pt": "Criar Primeiro Anúncio",
+      "en": "Create First Listing",
+      "es": "Crear Primer Anuncio"
+    },
+    "create_enterprise": {
+      "pt": "Criar Empreendimento",
+      "en": "Create Enterprise",
+      "es": "Crear Emprendimiento"
+    },
+    "start_selling": {
+      "pt": "Começar a Vender",
+      "en": "Start Selling",
+      "es": "Comenzar a Vender"
+    },
+    "explore_products": {
+      "pt": "Explorar Produtos",
+      "en": "Explore Products",
+      "es": "Explorar Productos"
+    },
+    "cta_title": {
+      "pt": "Pronto para começar?",
+      "en": "Ready to get started?",
+      "es": "¿Listo para empezar?"
+    },
+    "cta_description": {
+      "pt": "Junte-se à nossa comunidade de compradores e vendedores",
+      "en": "Join our community of buyers and sellers",
+      "es": "Únete a nuestra comunidad de compradores y vendedores"
+    },
+    "subtitle": {
+      "pt": "Compre, venda e descubra produtos incríveis na nossa plataforma descentralizada",
+      "en": "Buy, sell and discover amazing products on our decentralized platform",
+      "es": "Compra, vende y descubre productos increíbles en nuestra plataforma descentralizada"
     },
     "p2p_trading": {
-      "pt": "Trading P2P",
+      "pt": "Negociação P2P",
       "en": "P2P Trading",
-      "es": "Trading P2P"
+      "es": "Comercio P2P"
     }
   },
   "profile": {

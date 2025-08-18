@@ -10,10 +10,14 @@ import { MarketplaceListing } from '@features/marketplace/components/Marketplace
 import { MarketplaceCreate } from '@features/marketplace/components/MarketplaceCreate'
 import { MarketplaceMyListings } from '@features/marketplace/components/MarketplaceMyListings'
 
+// Nova página de navegação completa
+const MarketplaceBrowse = React.lazy(() => import('@features/marketplace/components/MarketplaceBrowse'))
+
 // P2P Components
 import { P2PHome } from '@features/marketplace/p2p/components/P2PHome'
 import { P2PCreate } from '@features/marketplace/p2p/components/P2PCreate'
 import { P2PPDP } from '@features/marketplace/p2p/components/P2PPDP'
+
 
 // Enterprise Components (lazy loaded for better performance)
 const EnterpriseList = React.lazy(() => import('@pages/marketplace/enterprise/EnterpriseList').then(module => ({ default: module.EnterpriseList })))
@@ -35,6 +39,7 @@ const MarketplacePage: React.FC = () => {
         <Routes>
           {/* Main Marketplace Routes */}
           <Route path="/" element={<MarketplaceHome />} />
+          <Route path="/browse" element={<MarketplaceBrowse />} />
           <Route path="/listing/:id" element={<MarketplaceListing />} />
           <Route path="/create" element={<MarketplaceCreate />} />
           <Route path="/my-listings" element={<MarketplaceMyListings />} />
