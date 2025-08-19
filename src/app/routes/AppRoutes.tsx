@@ -1,3 +1,5 @@
+// src/app/routes/AppRoutes.tsx
+
 import React, { Suspense } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { LoadingSpinner } from '@shared/ui/LoadingSpinner'
@@ -7,7 +9,7 @@ import { AuthGuard } from '@shared/guards/AuthGuard'
 const LandingPage = React.lazy(() => import('@pages/LandingPage'))
 const LoginPage = React.lazy(() => import('@pages/LoginPage'))
 const DashboardPage = React.lazy(() => import('@pages/DashboardPage'))
-const WalletPage = React.lazy(() => import('@pages/WalletPage'))
+const WalletPage = React.lazy(() => import('@pages/WalletPage')) // Updated wallet
 const MarketplacePage = React.lazy(() => import('@pages/MarketplacePage'))
 const ProfilePage = React.lazy(() => import('@pages/ProfilePage'))
 const ChatPage = React.lazy(() => import('@pages/ChatPage'))
@@ -34,6 +36,7 @@ export const AppRoutes: React.FC = () => {
           </AuthGuard>
         } />
         
+        {/* New Wallet Routes - Updated implementation */}
         <Route path="/wallet/*" element={
           <AuthGuard>
             <WalletPage />

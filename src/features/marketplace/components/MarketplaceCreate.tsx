@@ -25,13 +25,15 @@ export const MarketplaceCreate: React.FC = () => {
   const { addListing } = useMarketplaceStore()
   const { 
     enterprises, 
-    myEnterprises, 
     isLoading: loadingEnterprises, 
-    fetchEnterprises 
+    fetchEnterprises,
+    fetchEnterpriseById,
+    addOrMerge
   } = useEnterpriseStore()
   const { user } = useAuthStore()
   
-  // Estados locais para controle de carregamento e erro
+  // ✅ Estados para controle de inicialização
+  const [initializing, setInitializing] = React.useState(true)
   const [errorEnterprises, setErrorEnterprises] = React.useState<string | null>(null)
   const [selectedEnterpriseId, setSelectedEnterpriseId] = React.useState('')
   const [isSubmitting, setIsSubmitting] = React.useState(false)
@@ -72,46 +74,71 @@ export const MarketplaceCreate: React.FC = () => {
   const [images, setImages] = React.useState<string[]>([])
   const [showAdvancedOptions, setShowAdvancedOptions] = React.useState(false)
 
-  // Carregar empreendimentos do usuário
+  // ✅ Normalização de tipos e filtro por owner
+  const currentUserId = String(user?.id || '')
+  const myEnterprises = enterprises.filter(e => {
+    const enterpriseOwnerId = String(e.ownerId || '')
+    return enterpriseOwnerId === currentUserId
+  })
+
+  // ✅ Inicialização robusta conforme especificado no documento
   React.useEffect(() => {
-    const loadUserEnterprises = async () => {
-      if (!user?.id) return
-      
+    const initializeComponent = async () => {
+      if (!user?.id) {
+        setInitializing(false)
+        return
+      }
+
       try {
         setErrorEnterprises(null)
-        // Primeiro carrega todos os empreendimentos, depois filtra por ownerId
-        await fetchEnterprises()
+        
+        // 1. Ler enterpriseId da URL
+        const queryEnterpriseId = searchParams.get('enterpriseId')
+        
+        // 2. Carregar empreendimentos se ainda não carregou
+        if (enterprises.length === 0) {
+          await fetchEnterprises()
+        }
+        
+        // 3. Se há enterpriseId na URL, garantir que está no store
+        if (queryEnterpriseId) {
+          let targetEnterprise = enterprises.find(e => e.id === queryEnterpriseId)
+          
+          // Se não está no store, buscar por ID
+          if (!targetEnterprise) {
+            targetEnterprise = await fetchEnterpriseById(queryEnterpriseId)
+          }
+          
+          // 4. Validação de posse + normalização
+          if (targetEnterprise) {
+            const belongs = targetEnterprise.ownerId && String(targetEnterprise.ownerId) === currentUserId
+            
+            if (belongs) {
+              // ✅ Pré-selecionar se pertence ao usuário
+              setSelectedEnterpriseId(targetEnterprise.id)
+            } else {
+              // ❌ Não pertence ao usuário
+              toast.error(t('marketplace.enterprise_not_owned') || 'Este empreendimento não pertence a você')
+              // Não pré-seleciona, mas continua o fluxo normal
+            }
+          }
+          // Se não encontrou o empreendimento, apenas continua sem pré-seleção
+        }
+        
       } catch (error) {
         setErrorEnterprises('Erro ao carregar empreendimentos')
-        console.error('Error loading enterprises:', error)
+        console.error('Error initializing MarketplaceCreate:', error)
+      } finally {
+        // ✅ Só termina a inicialização quando todo o processo está completo
+        setInitializing(false)
       }
     }
 
-    loadUserEnterprises()
-  }, [user?.id, fetchEnterprises])
+    initializeComponent()
+  }, [user?.id, searchParams, fetchEnterprises, fetchEnterpriseById, currentUserId, t, enterprises.length])
 
-  // Filtrar empreendimentos do usuário atual
-  const userEnterprises = enterprises.filter(e => e.ownerId === user?.id) || []
-
-  // Tratar querystring enterpriseId
-  React.useEffect(() => {
-    const enterpriseIdFromQuery = searchParams.get('enterpriseId')
-    
-    if (enterpriseIdFromQuery && userEnterprises.length > 0) {
-      // Verificar se o empreendimento pertence ao usuário
-      const enterpriseExists = userEnterprises.find(e => e.id === enterpriseIdFromQuery)
-      
-      if (enterpriseExists) {
-        setSelectedEnterpriseId(enterpriseIdFromQuery)
-      } else {
-        // Empreendimento não pertence ao usuário
-        toast.error(t('marketplace.enterprise_not_owned'))
-      }
-    }
-  }, [searchParams, userEnterprises, t])
-
-  // Estados de loading/erro/empty
-  if (loadingEnterprises) {
+  // ✅ Gate correto (sem piscar EmptyState)
+  if (loadingEnterprises || initializing) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="flex items-center justify-center min-h-96">
@@ -128,7 +155,11 @@ export const MarketplaceCreate: React.FC = () => {
           title="Erro ao carregar empreendimentos"
           description={errorEnterprises}
           action={
-            <Button onClick={() => window.location.reload()}>
+            <Button onClick={() => {
+              setErrorEnterprises(null)
+              setInitializing(true)
+              fetchEnterprises().finally(() => setInitializing(false))
+            }}>
               Tentar novamente
             </Button>
           }
@@ -137,19 +168,22 @@ export const MarketplaceCreate: React.FC = () => {
     )
   }
 
-  // Gate: usuário precisa ter pelo menos 1 empreendimento
-  if (userEnterprises.length === 0) {
+  // ✅ Gate principal: só mostra EmptyState se não há empreendimentos E não há selecionado
+  const hasMine = myEnterprises.length > 0
+  const hasSelected = Boolean(selectedEnterpriseId)
+
+  if (!hasMine && !hasSelected) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-8">
         <EmptyState
-          title={t('marketplace.no_enterprise_title')}
-          description={t('marketplace.no_enterprise_desc')}
+          title={t('marketplace.no_enterprise_title') || 'Nenhum empreendimento encontrado'}
+          description={t('marketplace.no_enterprise_desc') || 'Você precisa ter pelo menos um empreendimento para criar anúncios.'}
           action={
             <Button 
               onClick={() => navigate('/marketplace/enterprises/create?returnTo=marketplace-create')}
               size="lg"
             >
-              {t('marketplace.create_enterprise_cta')}
+              {t('marketplace.create_enterprise_cta') || 'Criar Primeiro Empreendimento'}
             </Button>
           }
         />
@@ -243,6 +277,7 @@ export const MarketplaceCreate: React.FC = () => {
     setImages(prev => prev.filter((_, i) => i !== index))
   }
 
+  // ✅ Payload com enterpriseId conforme especificado
   const handleSubmit = async () => {
     // Validações obrigatórias
     if (!formData.title || !formData.description || !formData.price || !formData.category) {
@@ -250,9 +285,9 @@ export const MarketplaceCreate: React.FC = () => {
       return
     }
 
-    // Validação do empreendimento (obrigatório)
+    // ✅ Validação do empreendimento (obrigatório)
     if (!selectedEnterpriseId) {
-      toast.error(t('marketplace.enterprise_required'))
+      toast.error(t('marketplace.enterprise_required') || 'Selecione um empreendimento')
       return
     }
 
@@ -264,7 +299,7 @@ export const MarketplaceCreate: React.FC = () => {
     setIsSubmitting(true)
     
     try {
-      const selectedEnterprise = userEnterprises.find(e => e.id === selectedEnterpriseId)
+      const selectedEnterprise = myEnterprises.find(e => e.id === selectedEnterpriseId)
       
       const newListing = {
         id: crypto.randomUUID(),
@@ -280,7 +315,7 @@ export const MarketplaceCreate: React.FC = () => {
         sellerId: user!.id,
         sellerName: user!.name,
         sellerRating: user!.reputation.rating,
-        enterpriseId: selectedEnterpriseId, // ✅ Incluir enterpriseId no payload
+        enterpriseId: selectedEnterpriseId, // ✅ OBRIGATÓRIO: enterpriseId no payload
         enterpriseName: selectedEnterprise?.name,
         status: 'active' as const,
         createdAt: new Date().toISOString(),
@@ -311,6 +346,7 @@ export const MarketplaceCreate: React.FC = () => {
       navigate('/marketplace/my-listings')
     } catch (error) {
       toast.error('Erro ao criar anúncio')
+      console.error('Error creating listing:', error)
     } finally {
       setIsSubmitting(false)
     }
@@ -337,20 +373,21 @@ export const MarketplaceCreate: React.FC = () => {
           <Card className="p-6">
             <h2 className="text-xl font-semibold text-matte-black-900 mb-4 flex items-center">
               <Building className="mr-2" size={20} />
-              {t('marketplace.enterprise_label')} <span className="text-red-500 ml-1">*</span>
+              {t('marketplace.enterprise_label') || 'Empreendimento'} <span className="text-red-500 ml-1">*</span>
             </h2>
             
             <div className="space-y-3">
+              {/* ✅ Select controlado com value do selectedEnterpriseId */}
               <select
-                value={selectedEnterpriseId}
+                value={selectedEnterpriseId || ''}
                 onChange={(e) => setSelectedEnterpriseId(e.target.value)}
                 className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-bazari-red-500 focus:border-transparent ${
                   !selectedEnterpriseId ? 'border-red-300' : 'border-sand-200'
                 }`}
                 required
               >
-                <option value="">{t('marketplace.enterprise_placeholder')}</option>
-                {userEnterprises.map((enterprise) => (
+                <option value="">Selecione um empreendimento</option>
+                {myEnterprises.map((enterprise) => (
                   <option key={enterprise.id} value={enterprise.id}>
                     {enterprise.name}
                   </option>
@@ -359,81 +396,82 @@ export const MarketplaceCreate: React.FC = () => {
               
               {!selectedEnterpriseId && (
                 <p className="text-red-500 text-sm">
-                  {t('marketplace.enterprise_required')}
+                  É obrigatório selecionar um empreendimento para criar anúncios
                 </p>
               )}
               
-              {selectedEnterpriseId && (
-                <div className="flex items-center text-sm text-green-600">
-                  <Check size={16} className="mr-1" />
-                  Empreendimento selecionado
-                </div>
-              )}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate('/marketplace/enterprises/create?returnTo=marketplace-create')}
+              >
+                <Plus className="mr-2" size={16} />
+                Criar Novo Empreendimento
+              </Button>
             </div>
           </Card>
 
           {/* Informações Básicas */}
           <Card className="p-6">
-            <h2 className="text-xl font-semibold text-matte-black-900 mb-4 flex items-center">
-              <Package className="mr-2" size={20} />
+            <h2 className="text-xl font-semibold text-matte-black-900 mb-4">
               Informações Básicas
             </h2>
             
             <div className="space-y-4">
               <Input
-                label="Título do Anúncio *"
+                label="Título do anúncio"
+                placeholder="Ex: iPhone 15 Pro Max 256GB"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                placeholder="Ex: iPhone 15 Pro Max 256GB Novo"
                 required
               />
               
               <Textarea
-                label="Descrição *"
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                label="Descrição"
                 placeholder="Descreva seu produto ou serviço em detalhes..."
                 rows={4}
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 required
               />
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Input
-                  label="Preço *"
+                  label="Preço"
                   type="number"
+                  placeholder="0.00"
                   value={formData.price}
                   onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                  placeholder="0,00"
                   required
                 />
                 
                 <div>
                   <label className="block text-sm font-medium text-matte-black-700 mb-1">
-                    Moeda *
+                    Moeda
                   </label>
                   <select
                     value={formData.currency}
                     onChange={(e) => setFormData({ ...formData, currency: e.target.value as 'BZR' | 'BRL' })}
                     className="w-full px-3 py-2 border border-sand-200 rounded-lg focus:ring-2 focus:ring-bazari-red-500 focus:border-transparent"
                   >
-                    <option value="BRL">Real (BRL)</option>
-                    <option value="BZR">Bazari (BZR)</option>
+                    <option value="BRL">BRL (Real)</option>
+                    <option value="BZR">BZR (Bazari)</option>
                   </select>
                 </div>
               </div>
             </div>
           </Card>
 
-          {/* Categoria */}
+          {/* Categorias */}
           <Card className="p-6">
             <h2 className="text-xl font-semibold text-matte-black-900 mb-4">
-              Categoria *
+              Categorização
             </h2>
             
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-matte-black-700 mb-1">
-                  Categoria Principal
+                  Categoria <span className="text-red-500">*</span>
                 </label>
                 <select
                   value={formData.category}
@@ -444,7 +482,7 @@ export const MarketplaceCreate: React.FC = () => {
                   <option value="">Selecione uma categoria</option>
                   {categories.categories.map((category) => (
                     <option key={category.id} value={category.id}>
-                      {}
+                      {category.name.pt}
                     </option>
                   ))}
                 </select>
@@ -463,10 +501,86 @@ export const MarketplaceCreate: React.FC = () => {
                     <option value="">Selecione uma subcategoria</option>
                     {selectedCategory.subcategories.map((subcategory) => (
                       <option key={subcategory.id} value={subcategory.id}>
-                        {subcategory.name}
+                        {subcategory.name.pt}
                       </option>
                     ))}
                   </select>
+                </div>
+              )}
+
+              {selectedSubcategory?.subcategories && (
+                <div>
+                  <label className="block text-sm font-medium text-matte-black-700 mb-1">
+                    Subsubcategoria
+                  </label>
+                  <select
+                    value={formData.subsubcategory}
+                    onChange={(e) => handleCategoryChange(3, e.target.value)}
+                    className="w-full px-3 py-2 border border-sand-200 rounded-lg focus:ring-2 focus:ring-bazari-red-500 focus:border-transparent"
+                  >
+                    <option value="">Selecione uma subsubcategoria</option>
+                    {selectedSubcategory.subcategories.map((subsubcategory) => (
+                      <option key={subsubcategory.id} value={subsubcategory.id}>
+                        {subsubcategory.name.pt}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {selectedSubsubcategory?.subcategories && (
+                <div>
+                  <label className="block text-sm font-medium text-matte-black-700 mb-1">
+                    Categoria Específica
+                  </label>
+                  <select
+                    value={formData.subsubsubcategory}
+                    onChange={(e) => handleCategoryChange(4, e.target.value)}
+                    className="w-full px-3 py-2 border border-sand-200 rounded-lg focus:ring-2 focus:ring-bazari-red-500 focus:border-transparent"
+                  >
+                    <option value="">Selecione uma categoria específica</option>
+                    {selectedSubsubcategory.subcategories.map((subsubsubcategory) => (
+                      <option key={subsubsubcategory.id} value={subsubsubcategory.id}>
+                        {subsubsubcategory.name.pt}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {isDigitalCategory && (
+                <div className="border-t pt-4">
+                  <Badge variant="secondary" className="mb-3">
+                    Produto Digital
+                  </Badge>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-matte-black-700 mb-1">
+                        Tipo de produto digital
+                      </label>
+                      <select
+                        value={formData.digitalType}
+                        onChange={(e) => setFormData({ ...formData, digitalType: e.target.value })}
+                        className="w-full px-3 py-2 border border-sand-200 rounded-lg focus:ring-2 focus:ring-bazari-red-500 focus:border-transparent"
+                      >
+                        <option value="">Selecione o tipo</option>
+                        {digitalTypes.map((type) => (
+                          <option key={type.value} value={type.value}>
+                            {type.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    
+                    <Textarea
+                      label="Instruções de entrega digital"
+                      placeholder="Como o cliente receberá o produto após a compra..."
+                      rows={3}
+                      value={formData.deliveryInstructions}
+                      onChange={(e) => setFormData({ ...formData, deliveryInstructions: e.target.value })}
+                    />
+                  </div>
                 </div>
               )}
             </div>
@@ -481,15 +595,15 @@ export const MarketplaceCreate: React.FC = () => {
             <div className="space-y-4">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {images.map((image, index) => (
-                  <div key={index} className="relative aspect-square bg-sand-100 rounded-lg overflow-hidden">
+                  <div key={index} className="relative group">
                     <img
                       src={image}
-                      alt={`Upload ${index + 1}`}
-                      className="w-full h-full object-cover"
+                      alt={`Imagem ${index + 1}`}
+                      className="w-full h-24 object-cover rounded-lg"
                     />
                     <button
                       onClick={() => removeImage(index)}
-                      className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                       <X size={12} />
                     </button>
@@ -497,9 +611,9 @@ export const MarketplaceCreate: React.FC = () => {
                 ))}
                 
                 {images.length < 8 && (
-                  <label className="aspect-square bg-sand-100 border-2 border-dashed border-sand-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-bazari-red transition-colors">
-                    <Upload size={24} className="text-sand-500 mb-2" />
-                    <span className="text-sm text-sand-600">Adicionar</span>
+                  <label className="flex flex-col items-center justify-center h-24 border-2 border-dashed border-sand-300 rounded-lg cursor-pointer hover:border-bazari-red transition-colors">
+                    <Upload size={20} className="text-matte-black-400 mb-1" />
+                    <span className="text-xs text-matte-black-600">Adicionar</span>
                     <input
                       type="file"
                       multiple
@@ -512,83 +626,198 @@ export const MarketplaceCreate: React.FC = () => {
               </div>
               
               <p className="text-sm text-matte-black-600">
-                Adicione até 8 imagens. A primeira será a principal.
+                Adicione até 8 imagens. A primeira será a imagem principal.
               </p>
             </div>
           </Card>
 
-          {/* Métodos de Entrega */}
+          {/* Entrega */}
           <Card className="p-6">
             <h2 className="text-xl font-semibold text-matte-black-900 mb-4">
-              Métodos de Entrega *
+              Métodos de Entrega <span className="text-red-500">*</span>
             </h2>
             
-            <div className="space-y-3">
-              {deliveryMethods.map((method) => (
-                <label key={method} className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={formData.delivery.methods.includes(method)}
-                    onChange={() => handleDeliveryMethodToggle(method)}
-                    className="w-4 h-4 text-bazari-red border-sand-300 rounded focus:ring-bazari-red-500"
-                  />
-                  <span className="ml-2 text-sm text-matte-black-700">{method}</span>
-                </label>
-              ))}
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {deliveryMethods.map((method) => (
+                  <label key={method} className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      checked={formData.delivery.methods.includes(method)}
+                      onChange={() => handleDeliveryMethodToggle(method)}
+                      className="text-bazari-red focus:ring-bazari-red"
+                    />
+                    <span className="text-sm">{method}</span>
+                  </label>
+                ))}
+              </div>
+              
+              {formData.delivery.methods.length === 0 && (
+                <p className="text-red-500 text-sm">
+                  Selecione pelo menos um método de entrega
+                </p>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input
+                  label="Prazo de entrega (dias)"
+                  type="number"
+                  placeholder="0"
+                  value={formData.delivery.estimatedDays}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    delivery: { ...formData.delivery, estimatedDays: parseInt(e.target.value) || 0 }
+                  })}
+                />
+                
+                <Input
+                  label="Custo de envio"
+                  type="number"
+                  placeholder="0.00"
+                  value={formData.delivery.shippingCost}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    delivery: { ...formData.delivery, shippingCost: parseFloat(e.target.value) || 0 }
+                  })}
+                />
+              </div>
+
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  checked={formData.delivery.freeShipping}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    delivery: { ...formData.delivery, freeShipping: e.target.checked }
+                  })}
+                  className="text-bazari-red focus:ring-bazari-red"
+                />
+                <span className="text-sm">Frete grátis</span>
+              </label>
             </div>
-            
-            {formData.delivery.methods.length === 0 && (
-              <p className="text-red-500 text-sm mt-2">
-                Selecione pelo menos um método de entrega
-              </p>
-            )}
           </Card>
 
           {/* Opções Avançadas */}
           {showAdvancedOptions && (
             <Card className="p-6">
               <h2 className="text-xl font-semibold text-matte-black-900 mb-4">
-                Informações Adicionais
+                Opções Avançadas
               </h2>
               
               <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-matte-black-700 mb-1">
-                      Condição
-                    </label>
-                    <select
-                      value={formData.condition}
-                      onChange={(e) => setFormData({ ...formData, condition: e.target.value as any })}
-                      className="w-full px-3 py-2 border border-sand-200 rounded-lg focus:ring-2 focus:ring-bazari-red-500 focus:border-transparent"
-                    >
-                      <option value="new">Novo</option>
-                      <option value="used">Usado</option>
-                      <option value="refurbished">Recondicionado</option>
-                    </select>
-                  </div>
-                  
+                <div>
+                  <label className="block text-sm font-medium text-matte-black-700 mb-1">
+                    Condição
+                  </label>
+                  <select
+                    value={formData.condition}
+                    onChange={(e) => setFormData({ ...formData, condition: e.target.value as any })}
+                    className="w-full px-3 py-2 border border-sand-200 rounded-lg focus:ring-2 focus:ring-bazari-red-500 focus:border-transparent"
+                  >
+                    <option value="new">Novo</option>
+                    <option value="used">Usado</option>
+                    <option value="refurbished">Recondicionado</option>
+                  </select>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Input
                     label="Marca"
+                    placeholder="Ex: Apple, Samsung..."
                     value={formData.brand}
                     onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
-                    placeholder="Ex: Apple"
                   />
                   
                   <Input
                     label="Modelo"
+                    placeholder="Ex: iPhone 15 Pro Max"
                     value={formData.model}
                     onChange={(e) => setFormData({ ...formData, model: e.target.value })}
-                    placeholder="Ex: iPhone 15 Pro Max"
                   />
                 </div>
-                
+
                 <Input
                   label="Garantia"
+                  placeholder="Ex: 12 meses de garantia"
                   value={formData.warranty}
                   onChange={(e) => setFormData({ ...formData, warranty: e.target.value })}
-                  placeholder="Ex: 12 meses de garantia"
                 />
+
+                {isTokenizableCategory && (
+                  <div className="border-t pt-4">
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <h3 className="text-lg font-medium flex items-center">
+                          <Coins className="mr-2" size={20} />
+                          Produto Tokenizável
+                        </h3>
+                        <p className="text-sm text-matte-black-600">
+                          Permitir que investidores comprem tokens deste produto
+                        </p>
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={formData.tokenizable}
+                        onChange={(e) => setFormData({ ...formData, tokenizable: e.target.checked })}
+                        className="toggle"
+                      />
+                    </div>
+
+                    {formData.tokenizable && (
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <Input
+                            label="Quantidade de tokens"
+                            type="number"
+                            placeholder="1"
+                            value={formData.tokenization.quantity}
+                            onChange={(e) => setFormData({
+                              ...formData,
+                              tokenization: { ...formData.tokenization, quantity: parseInt(e.target.value) || 1 }
+                            })}
+                          />
+                          
+                          <Input
+                            label="% de royalty"
+                            type="number"
+                            placeholder="5"
+                            min="0"
+                            max="100"
+                            value={formData.tokenization.royaltyPercentage}
+                            onChange={(e) => setFormData({
+                              ...formData,
+                              tokenization: { ...formData.tokenization, royaltyPercentage: parseInt(e.target.value) || 5 }
+                            })}
+                          />
+                        </div>
+
+                        <Input
+                          label="Duração da venda (dias)"
+                          type="number"
+                          placeholder="30"
+                          value={formData.tokenization.sellDuration}
+                          onChange={(e) => setFormData({
+                            ...formData,
+                            tokenization: { ...formData.tokenization, sellDuration: parseInt(e.target.value) || 30 }
+                          })}
+                        />
+
+                        <label className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            checked={formData.tokenization.transferable}
+                            onChange={(e) => setFormData({
+                              ...formData,
+                              tokenization: { ...formData.tokenization, transferable: e.target.checked }
+                            })}
+                            className="text-bazari-red focus:ring-bazari-red"
+                          />
+                          <span className="text-sm">Tokens transferíveis</span>
+                        </label>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </Card>
           )}
@@ -597,14 +826,16 @@ export const MarketplaceCreate: React.FC = () => {
         {/* Sidebar */}
         <div className="space-y-6">
           <Card className="p-6">
-            <h3 className="font-semibold text-matte-black-900 mb-4">Resumo</h3>
+            <h3 className="text-lg font-semibold text-matte-black-900 mb-4">
+              Resumo
+            </h3>
             
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">
                 <span className="text-matte-black-600">Empreendimento:</span>
                 <span className={`font-medium ${selectedEnterpriseId ? 'text-green-600' : 'text-red-500'}`}>
                   {selectedEnterpriseId 
-                    ? userEnterprises.find(e => e.id === selectedEnterpriseId)?.name 
+                    ? myEnterprises.find(e => e.id === selectedEnterpriseId)?.name 
                     : 'Não selecionado'
                   }
                 </span>
@@ -613,7 +844,7 @@ export const MarketplaceCreate: React.FC = () => {
               <div className="flex justify-between">
                 <span className="text-matte-black-600">Categoria:</span>
                 <span className="font-medium">
-                  {formData.category ? selectedCategory?.name : 'Não selecionada'}
+                  {formData.category ? selectedCategory?.name.pt : 'Não selecionada'}
                 </span>
               </div>
               
@@ -637,11 +868,11 @@ export const MarketplaceCreate: React.FC = () => {
           </Card>
 
           <div className="space-y-3">
+            {/* ✅ Submit bloqueado se !selectedEnterpriseId */}
             <Button
               onClick={handleSubmit}
               disabled={
                 isSubmitting || 
-                loadingEnterprises || 
                 !selectedEnterpriseId || 
                 !formData.title || 
                 !formData.description || 
