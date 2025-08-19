@@ -460,7 +460,1373 @@
     "title": {
       "pt": "Carteira",
       "en": "Wallet",
-      "es": "Cartera"
+      "es": "Billetera"
+    },
+    "tabs": {
+      "tokens": {
+        "pt": "Tokens",
+        "en": "Tokens",
+        "es": "Tokens"
+      },
+      "nfts": {
+        "pt": "NFTs",
+        "en": "NFTs",
+        "es": "NFTs"
+      }
+    },
+    "actions": {
+      "send": {
+        "pt": "Enviar",
+        "en": "Send",
+        "es": "Enviar"
+      },
+      "receive": {
+        "pt": "Receber",
+        "en": "Receive",
+        "es": "Recibir"
+      },
+      "history": {
+        "pt": "Histórico",
+        "en": "History",
+        "es": "Historial"
+      },
+      "add_token": {
+        "pt": "Adicionar Token",
+        "en": "Add Token",
+        "es": "Agregar Token"
+      },
+      "add_nft": {
+        "pt": "Adicionar NFT",
+        "en": "Add NFT",
+        "es": "Agregar NFT"
+      }
+    },
+    "accounts": {
+      "title": {
+        "pt": "Gerenciar Contas",
+        "en": "Manage Accounts",
+        "es": "Gestionar Cuentas"
+      },
+      "description": {
+        "pt": "Crie, importe e gerencie suas contas da carteira.",
+        "en": "Create, import and manage your wallet accounts.",
+        "es": "Crea, importa y gestiona las cuentas de tu billetera."
+      },
+      "new": {
+        "pt": "Nova Conta",
+        "en": "New Account",
+        "es": "Nueva Cuenta"
+      },
+      "import": {
+        "pt": "Importar Conta",
+        "en": "Import Account",
+        "es": "Importar Cuenta"
+      },
+      "import_seed": {
+        "pt": "Importar Seed",
+        "en": "Import Seed",
+        "es": "Importar Seed"
+      },
+      "import_json": {
+        "pt": "Importar JSON",
+        "en": "Import JSON",
+        "es": "Importar JSON"
+      },
+      "watch_only": {
+        "pt": "Watch-Only",
+        "en": "Watch-Only",
+        "es": "Solo Vista"
+      },
+      "export_json": {
+        "pt": "Exportar JSON",
+        "en": "Export JSON",
+        "es": "Exportar JSON"
+      },
+      "remove": {
+        "pt": "Remover Conta",
+        "en": "Remove Account",
+        "es": "Eliminar Cuenta"
+      },
+      "rename": {
+        "pt": "Renomear Conta",
+        "en": "Rename Account",
+        "es": "Renombrar Cuenta"
+      },
+      "active": {
+        "pt": "Ativa",
+        "en": "Active",
+        "es": "Activa"
+      },
+      "quick_actions": {
+        "pt": "Ações Rápidas",
+        "en": "Quick Actions",
+        "es": "Acciones Rápidas"
+      },
+      "my_accounts": {
+        "pt": "Minhas Contas",
+        "en": "My Accounts",
+        "es": "Mis Cuentas"
+      },
+      "create_title": {
+        "pt": "Criar Nova Conta",
+        "en": "Create New Account",
+        "es": "Crear Nueva Cuenta"
+      },
+      "import_seed_title": {
+        "pt": "Importar com Seed",
+        "en": "Import with Seed",
+        "es": "Importar con Seed"
+      },
+      "import_json_title": {
+        "pt": "Importar JSON",
+        "en": "Import JSON",
+        "es": "Importar JSON"
+      },
+      "watch_title": {
+        "pt": "Adicionar Watch-Only",
+        "en": "Add Watch-Only",
+        "es": "Agregar Solo Vista"
+      },
+      "rename_title": {
+        "pt": "Renomear Conta",
+        "en": "Rename Account",
+        "es": "Renombrar Cuenta"
+      },
+      "export_title": {
+        "pt": "Exportar Conta",
+        "en": "Export Account",
+        "es": "Exportar Cuenta"
+      },
+      "remove_title": {
+        "pt": "Remover Conta",
+        "en": "Remove Account",
+        "es": "Eliminar Cuenta"
+      }
+    },
+    "send": {
+      "title": {
+        "pt": "Enviar",
+        "en": "Send",
+        "es": "Enviar"
+      },
+      "step_asset": {
+        "pt": "Ativo",
+        "en": "Asset",
+        "es": "Activo"
+      },
+      "step_recipient": {
+        "pt": "Destinatário",
+        "en": "Recipient",
+        "es": "Destinatario"
+      },
+      "step_amount": {
+        "pt": "Valor",
+        "en": "Amount",
+        "es": "Cantidad"
+      },
+      "step_review": {
+        "pt": "Revisão",
+        "en": "Review",
+        "es": "Revisar"
+      },
+      "select_asset": {
+        "pt": "Selecionar Ativo",
+        "en": "Select Asset",
+        "es": "Seleccionar Activo"
+      },
+      "select_asset_description": {
+        "pt": "Escolha o token ou NFT que deseja enviar.",
+        "en": "Choose the token or NFT you want to send.",
+        "es": "Elige el token o NFT que quieres enviar."
+      },
+      "recipient": {
+        "pt": "Destinatário",
+        "en": "Recipient",
+        "es": "Destinatario"
+      },
+      "recipient_description": {
+        "pt": "Digite o endereço do destinatário.",
+        "en": "Enter the recipient's address.",
+        "es": "Ingresa la dirección del destinatario."
+      },
+      "wallet_address": {
+        "pt": "Endereço da Carteira",
+        "en": "Wallet Address",
+        "es": "Dirección de Billetera"
+      },
+      "amount": {
+        "pt": "Valor",
+        "en": "Amount",
+        "es": "Cantidad"
+      },
+      "amount_description": {
+        "pt": "Digite o valor que deseja enviar.",
+        "en": "Enter the amount you want to send.",
+        "es": "Ingresa la cantidad que quieres enviar."
+      },
+      "max": {
+        "pt": "Máximo",
+        "en": "Max",
+        "es": "Máximo"
+      },
+      "memo": {
+        "pt": "Memo (Opcional)",
+        "en": "Memo (Optional)",
+        "es": "Memo (Opcional)"
+      },
+      "memo_placeholder": {
+        "pt": "Adicione uma nota...",
+        "en": "Add a note...",
+        "es": "Agregar una nota..."
+      },
+      "review": {
+        "pt": "Revisar Transação",
+        "en": "Review Transaction",
+        "es": "Revisar Transacción"
+      },
+      "review_description": {
+        "pt": "Confirme os detalhes antes de enviar.",
+        "en": "Confirm the details before sending.",
+        "es": "Confirma los detalles antes de enviar."
+      },
+      "from": {
+        "pt": "De",
+        "en": "From",
+        "es": "De"
+      },
+      "to": {
+        "pt": "Para",
+        "en": "To",
+        "es": "Para"
+      },
+      "asset": {
+        "pt": "Ativo",
+        "en": "Asset",
+        "es": "Activo"
+      },
+      "estimated_fee": {
+        "pt": "Taxa Estimada",
+        "en": "Estimated Fee",
+        "es": "Tarifa Estimada"
+      },
+      "warning_title": {
+        "pt": "Atenção!",
+        "en": "Warning!",
+        "es": "¡Atención!"
+      },
+      "warning": {
+        "pt": "Transações na blockchain são irreversíveis. Verifique todos os dados antes de confirmar.",
+        "en": "Blockchain transactions are irreversible. Check all data before confirming.",
+        "es": "Las transacciones blockchain son irreversibles. Verifica todos los datos antes de confirmar."
+      },
+      "confirm_send": {
+        "pt": "Confirmar & Enviar",
+        "en": "Confirm & Send",
+        "es": "Confirmar y Enviar"
+      },
+      "processing": {
+        "pt": "Processando Transação",
+        "en": "Processing Transaction",
+        "es": "Procesando Transacción"
+      },
+      "processing_description": {
+        "pt": "Sua transação está sendo processada...",
+        "en": "Your transaction is being processed...",
+        "es": "Tu transacción está siendo procesada..."
+      },
+      "success_title": {
+        "pt": "Transação Enviada!",
+        "en": "Transaction Sent!",
+        "es": "¡Transacción Enviada!"
+      },
+      "token_success": {
+        "pt": "Seus tokens foram enviados com sucesso.",
+        "en": "Your tokens have been sent successfully.",
+        "es": "Tus tokens han sido enviados exitosamente."
+      },
+      "nft_success": {
+        "pt": "Seu NFT foi enviado com sucesso.",
+        "en": "Your NFT has been sent successfully.",
+        "es": "Tu NFT ha sido enviado exitosamente."
+      },
+      "error_title": {
+        "pt": "Erro na Transação",
+        "en": "Transaction Error",
+        "es": "Error en Transacción"
+      },
+      "error_description": {
+        "pt": "Houve um erro ao processar sua transação. Tente novamente.",
+        "en": "There was an error processing your transaction. Please try again.",
+        "es": "Hubo un error al procesar tu transacción. Inténtalo de nuevo."
+      },
+      "transaction_hash": {
+        "pt": "Hash da Transação",
+        "en": "Transaction Hash",
+        "es": "Hash de Transacción"
+      },
+      "send_another": {
+        "pt": "Enviar Outro",
+        "en": "Send Another",
+        "es": "Enviar Otro"
+      },
+      "recipient_required": {
+        "pt": "Destinatário é obrigatório",
+        "en": "Recipient is required",
+        "es": "Destinatario es requerido"
+      },
+      "invalid_address": {
+        "pt": "Endereço inválido",
+        "en": "Invalid address",
+        "es": "Dirección inválida"
+      },
+      "amount_required": {
+        "pt": "Valor é obrigatório",
+        "en": "Amount is required",
+        "es": "Cantidad es requerida"
+      },
+      "insufficient_balance": {
+        "pt": "Saldo insuficiente",
+        "en": "Insufficient balance",
+        "es": "Saldo insuficiente"
+      },
+      "success": {
+        "pt": "Transferência iniciada!",
+        "en": "Transfer initiated!",
+        "es": "¡Transferencia iniciada!"
+      },
+      "watch_only_title": {
+        "pt": "Conta Watch-Only",
+        "en": "Watch-Only Account",
+        "es": "Cuenta Solo Vista"
+      },
+      "watch_only_description": {
+        "pt": "Não é possível enviar transações com contas watch-only.",
+        "en": "Cannot send transactions with watch-only accounts.",
+        "es": "No se pueden enviar transacciones con cuentas solo vista."
+      }
+    },
+    "receive": {
+      "title": {
+        "pt": "Receber",
+        "en": "Receive",
+        "es": "Recibir"
+      },
+      "description": {
+        "pt": "Compartilhe seu endereço para receber pagamentos.",
+        "en": "Share your address to receive payments.",
+        "es": "Comparte tu dirección para recibir pagos."
+      },
+      "qr_code": {
+        "pt": "QR Code",
+        "en": "QR Code",
+        "es": "Código QR"
+      },
+      "payment_request": {
+        "pt": "Solicitação de Pagamento (Opcional)",
+        "en": "Payment Request (Optional)",
+        "es": "Solicitud de Pago (Opcional)"
+      },
+      "select_token": {
+        "pt": "Selecionar Token",
+        "en": "Select Token",
+        "es": "Seleccionar Token"
+      },
+      "amount": {
+        "pt": "Valor (Opcional)",
+        "en": "Amount (Optional)",
+        "es": "Cantidad (Opcional)"
+      },
+      "memo": {
+        "pt": "Memo (Opcional)",
+        "en": "Memo (Optional)",
+        "es": "Memo (Opcional)"
+      },
+      "memo_placeholder": {
+        "pt": "Descrição do pagamento...",
+        "en": "Payment description...",
+        "es": "Descripción del pago..."
+      },
+      "show_qr": {
+        "pt": "Mostrar QR Code",
+        "en": "Show QR Code",
+        "es": "Mostrar Código QR"
+      },
+      "hide_qr": {
+        "pt": "Ocultar",
+        "en": "Hide",
+        "es": "Ocultar"
+      },
+      "download": {
+        "pt": "Baixar",
+        "en": "Download",
+        "es": "Descargar"
+      },
+      "qr_description": {
+        "pt": "Escaneie para enviar pagamento",
+        "en": "Scan to send payment",
+        "es": "Escanea para enviar pago"
+      },
+      "share_options": {
+        "pt": "Opções de Compartilhamento",
+        "en": "Share Options",
+        "es": "Opciones de Compartir"
+      },
+      "copy_address": {
+        "pt": "Copiar Endereço",
+        "en": "Copy Address",
+        "es": "Copiar Dirección"
+      },
+      "copy_address_desc": {
+        "pt": "Endereço simples",
+        "en": "Simple address",
+        "es": "Dirección simple"
+      },
+      "share_request": {
+        "pt": "Compartilhar Solicitação",
+        "en": "Share Request",
+        "es": "Compartir Solicitud"
+      },
+      "with_amount": {
+        "pt": "Com valor",
+        "en": "With amount",
+        "es": "Con cantidad"
+      },
+      "simple_share": {
+        "pt": "Compartilhamento simples",
+        "en": "Simple share",
+        "es": "Compartir simple"
+      },
+      "network_info": {
+        "pt": "Informações da Rede",
+        "en": "Network Information",
+        "es": "Información de Red"
+      },
+      "network": {
+        "pt": "Rede",
+        "en": "Network",
+        "es": "Red"
+      },
+      "prefix": {
+        "pt": "Prefixo",
+        "en": "Prefix",
+        "es": "Prefijo"
+      },
+      "important_notes": {
+        "pt": "Notas Importantes",
+        "en": "Important Notes",
+        "es": "Notas Importantes"
+      },
+      "note_1": {
+        "pt": "Este endereço recebe apenas tokens da rede Substrate",
+        "en": "This address only receives Substrate network tokens",
+        "es": "Esta dirección solo recibe tokens de la red Substrate"
+      },
+      "note_2": {
+        "pt": "Verifique sempre a rede antes de enviar",
+        "en": "Always verify the network before sending",
+        "es": "Siempre verifica la red antes de enviar"
+      },
+      "note_3": {
+        "pt": "Transações são irreversíveis",
+        "en": "Transactions are irreversible",
+        "es": "Las transacciones son irreversibles"
+      },
+      "note_4": {
+        "pt": "Guarde este endereço com segurança",
+        "en": "Keep this address secure",
+        "es": "Mantén esta dirección segura"
+      },
+      "your_address": {
+        "pt": "Seu Endereço",
+        "en": "Your Address",
+        "es": "Tu Dirección"
+      },
+      "qr_hint": {
+        "pt": "Código QR para recebimento",
+        "en": "QR code for receiving",
+        "es": "Código QR para recibir"
+      }
+    },
+    "history": {
+      "title": {
+        "pt": "Histórico de Transações",
+        "en": "Transaction History",
+        "es": "Historial de Transacciones"
+      },
+      "description": {
+        "pt": "Veja todas as suas transações de",
+        "en": "View all your transactions from",
+        "es": "Ve todas tus transacciones de"
+      },
+      "search_placeholder": {
+        "pt": "Buscar por hash, endereço ou ativo...",
+        "en": "Search by hash, address or asset...",
+        "es": "Buscar por hash, dirección o activo..."
+      },
+      "all": {
+        "pt": "Todas",
+        "en": "All",
+        "es": "Todas"
+      },
+      "sent": {
+        "pt": "Enviadas",
+        "en": "Sent",
+        "es": "Enviadas"
+      },
+      "received": {
+        "pt": "Recebidas",
+        "en": "Received",
+        "es": "Recibidas"
+      },
+      "minted": {
+        "pt": "Criado",
+        "en": "Minted",
+        "es": "Creado"
+      },
+      "burned": {
+        "pt": "Queimado",
+        "en": "Burned",
+        "es": "Quemado"
+      },
+      "date_from": {
+        "pt": "Data Inicial",
+        "en": "Date From",
+        "es": "Fecha Desde"
+      },
+      "date_to": {
+        "pt": "Data Final",
+        "en": "Date To",
+        "es": "Fecha Hasta"
+      },
+      "sort_by": {
+        "pt": "Ordenar por",
+        "en": "Sort By",
+        "es": "Ordenar Por"
+      },
+      "newest_first": {
+        "pt": "Mais recentes",
+        "en": "Newest First",
+        "es": "Más Recientes"
+      },
+      "oldest_first": {
+        "pt": "Mais antigas",
+        "en": "Oldest First",
+        "es": "Más Antiguas"
+      },
+      "highest_amount": {
+        "pt": "Maior valor",
+        "en": "Highest Amount",
+        "es": "Mayor Cantidad"
+      },
+      "lowest_amount": {
+        "pt": "Menor valor",
+        "en": "Lowest Amount",
+        "es": "Menor Cantidad"
+      },
+      "transactions": {
+        "pt": "Transações",
+        "en": "Transactions",
+        "es": "Transacciones"
+      },
+      "total": {
+        "pt": "transações",
+        "en": "transactions",
+        "es": "transacciones"
+      },
+      "of": {
+        "pt": "de",
+        "en": "of",
+        "es": "de"
+      },
+      "no_transactions": {
+        "pt": "Nenhuma transação",
+        "en": "No transactions",
+        "es": "Sin transacciones"
+      },
+      "no_transactions_desc": {
+        "pt": "Suas transações aparecerão aqui.",
+        "en": "Your transactions will appear here.",
+        "es": "Tus transacciones aparecerán aquí."
+      },
+      "no_results": {
+        "pt": "Nenhum resultado encontrado",
+        "en": "No results found",
+        "es": "No se encontraron resultados"
+      },
+      "try_different_filters": {
+        "pt": "Tente filtros diferentes.",
+        "en": "Try different filters.",
+        "es": "Prueba filtros diferentes."
+      },
+      "transaction_hash": {
+        "pt": "Hash da Transação",
+        "en": "Transaction Hash",
+        "es": "Hash de Transacción"
+      },
+      "explorer": {
+        "pt": "Explorer",
+        "en": "Explorer",
+        "es": "Explorador"
+      },
+      "view_on_chain": {
+        "pt": "Ver na Chain",
+        "en": "View on Chain",
+        "es": "Ver en Cadena"
+      },
+      "from_address": {
+        "pt": "Endereço de Origem",
+        "en": "From Address",
+        "es": "Dirección de Origen"
+      },
+      "to_address": {
+        "pt": "Endereço de Destino",
+        "en": "To Address",
+        "es": "Dirección de Destino"
+      },
+      "error": {
+        "pt": "Erro",
+        "en": "Error",
+        "es": "Error"
+      },
+      "refreshed": {
+        "pt": "Histórico atualizado!",
+        "en": "History updated!",
+        "es": "¡Historial actualizado!"
+      }
+    },
+    "add_token": {
+      "title": {
+        "pt": "Adicionar Token",
+        "en": "Add Token",
+        "es": "Agregar Token"
+      },
+      "description": {
+        "pt": "Adicione tokens personalizados à sua carteira.",
+        "en": "Add custom tokens to your wallet.",
+        "es": "Agrega tokens personalizados a tu billetera."
+      },
+      "search_title": {
+        "pt": "Buscar Token",
+        "en": "Search Token",
+        "es": "Buscar Token"
+      },
+      "search_description": {
+        "pt": "Escolha um token popular ou adicione um personalizado.",
+        "en": "Choose a popular token or add a custom one.",
+        "es": "Elige un token popular o agrega uno personalizado."
+      },
+      "search_placeholder": {
+        "pt": "Buscar por nome, símbolo ou Asset ID...",
+        "en": "Search by name, symbol or Asset ID...",
+        "es": "Buscar por nombre, símbolo o Asset ID..."
+      },
+      "popular_tokens": {
+        "pt": "Tokens Populares",
+        "en": "Popular Tokens",
+        "es": "Tokens Populares"
+      },
+      "no_results": {
+        "pt": "Nenhum token encontrado",
+        "en": "No tokens found",
+        "es": "No se encontraron tokens"
+      },
+      "all_added": {
+        "pt": "Todos os tokens populares já foram adicionados",
+        "en": "All popular tokens have been added",
+        "es": "Todos los tokens populares han sido agregados"
+      },
+      "custom_token": {
+        "pt": "Token Personalizado",
+        "en": "Custom Token",
+        "es": "Token Personalizado"
+      },
+      "custom_description": {
+        "pt": "Adicionar manualmente por Asset ID",
+        "en": "Add manually by Asset ID",
+        "es": "Agregar manualmente por Asset ID"
+      },
+      "confirm_token": {
+        "pt": "Confirmar Token",
+        "en": "Confirm Token",
+        "es": "Confirmar Token"
+      },
+      "token_details": {
+        "pt": "Detalhes do Token",
+        "en": "Token Details",
+        "es": "Detalles del Token"
+      },
+      "confirm_description": {
+        "pt": "Verifique os dados do token antes de adicionar.",
+        "en": "Verify token data before adding.",
+        "es": "Verifica los datos del token antes de agregar."
+      },
+      "details_description": {
+        "pt": "Preencha as informações do token personalizado.",
+        "en": "Fill in the custom token information.",
+        "es": "Completa la información del token personalizado."
+      },
+      "asset_id": {
+        "pt": "Asset ID",
+        "en": "Asset ID",
+        "es": "Asset ID"
+      },
+      "decimals": {
+        "pt": "Decimais",
+        "en": "Decimals",
+        "es": "Decimales"
+      },
+      "name": {
+        "pt": "Nome do Token",
+        "en": "Token Name",
+        "es": "Nombre del Token"
+      },
+      "symbol": {
+        "pt": "Símbolo",
+        "en": "Symbol",
+        "es": "Símbolo"
+      },
+      "icon_url": {
+        "pt": "URL do Ícone (Opcional)",
+        "en": "Icon URL (Optional)",
+        "es": "URL del Ícono (Opcional)"
+      },
+      "warning_title": {
+        "pt": "Importante!",
+        "en": "Important!",
+        "es": "¡Importante!"
+      },
+      "warning_1": {
+        "pt": "Verifique se o Asset ID está correto",
+        "en": "Verify that the Asset ID is correct",
+        "es": "Verifica que el Asset ID sea correcto"
+      },
+      "warning_2": {
+        "pt": "Tokens falsos podem causar perda de fundos",
+        "en": "Fake tokens may cause loss of funds",
+        "es": "Los tokens falsos pueden causar pérdida de fondos"
+      },
+      "warning_3": {
+        "pt": "Confirme os dados em fontes oficiais",
+        "en": "Confirm data from official sources",
+        "es": "Confirma los datos de fuentes oficiales"
+      },
+      "add": {
+        "pt": "Adicionar Token",
+        "en": "Add Token",
+        "es": "Agregar Token"
+      },
+      "success_title": {
+        "pt": "Token Adicionado!",
+        "en": "Token Added!",
+        "es": "¡Token Agregado!"
+      },
+      "success_description": {
+        "pt": "O token foi adicionado à sua carteira com sucesso.",
+        "en": "The token has been successfully added to your wallet.",
+        "es": "El token ha sido agregado exitosamente a tu billetera."
+      },
+      "add_another": {
+        "pt": "Adicionar Outro",
+        "en": "Add Another",
+        "es": "Agregar Otro"
+      },
+      "asset_id_required": {
+        "pt": "Asset ID é obrigatório",
+        "en": "Asset ID is required",
+        "es": "Asset ID es requerido"
+      },
+      "name_required": {
+        "pt": "Nome é obrigatório",
+        "en": "Name is required",
+        "es": "Nombre es requerido"
+      },
+      "symbol_required": {
+        "pt": "Símbolo é obrigatório",
+        "en": "Symbol is required",
+        "es": "Símbolo es requerido"
+      },
+      "invalid_decimals": {
+        "pt": "Decimais devem ser entre 0 e 32",
+        "en": "Decimals must be between 0 and 32",
+        "es": "Los decimales deben estar entre 0 y 32"
+      },
+      "already_exists": {
+        "pt": "Token já existe na sua carteira",
+        "en": "Token already exists in your wallet",
+        "es": "El token ya existe en tu billetera"
+      },
+      "success": {
+        "pt": "Token adicionado com sucesso!",
+        "en": "Token added successfully!",
+        "es": "¡Token agregado exitosamente!"
+      }
+    },
+    "add_nft": {
+      "title": {
+        "pt": "Adicionar NFT",
+        "en": "Add NFT",
+        "es": "Agregar NFT"
+      },
+      "description": {
+        "pt": "Adicione coleções de NFTs para visualização na sua carteira.",
+        "en": "Add NFT collections for viewing in your wallet.",
+        "es": "Agrega colecciones de NFTs para visualización en tu billetera."
+      },
+      "step_collection": {
+        "pt": "Coleção",
+        "en": "Collection",
+        "es": "Colección"
+      },
+      "step_details": {
+        "pt": "Detalhes",
+        "en": "Details",
+        "es": "Detalles"
+      },
+      "step_preview": {
+        "pt": "Preview",
+        "en": "Preview",
+        "es": "Vista Previa"
+      },
+      "step_success": {
+        "pt": "Sucesso",
+        "en": "Success",
+        "es": "Éxito"
+      },
+      "select_collection": {
+        "pt": "Selecionar Coleção",
+        "en": "Select Collection",
+        "es": "Seleccionar Colección"
+      },
+      "select_description": {
+        "pt": "Escolha uma coleção popular ou adicione uma personalizada.",
+        "en": "Choose a popular collection or add a custom one.",
+        "es": "Elige una colección popular o agrega una personalizada."
+      },
+      "popular_collections": {
+        "pt": "Coleções Populares",
+        "en": "Popular Collections",
+        "es": "Colecciones Populares"
+      },
+      "custom_collection": {
+        "pt": "Coleção Personalizada",
+        "en": "Custom Collection",
+        "es": "Colección Personalizada"
+      },
+      "custom_description": {
+        "pt": "Adicionar coleção manualmente",
+        "en": "Add collection manually",
+        "es": "Agregar colección manualmente"
+      },
+      "confirm_collection": {
+        "pt": "Confirmar Coleção",
+        "en": "Confirm Collection",
+        "es": "Confirmar Colección"
+      },
+      "collection_details": {
+        "pt": "Detalhes da Coleção",
+        "en": "Collection Details",
+        "es": "Detalles de la Colección"
+      },
+      "confirm_description": {
+        "pt": "Verifique os dados da coleção.",
+        "en": "Verify collection data.",
+        "es": "Verifica los datos de la colección."
+      },
+      "details_description": {
+        "pt": "Preencha as informações da coleção NFT.",
+        "en": "Fill in the NFT collection information.",
+        "es": "Completa la información de la colección NFT."
+      },
+      "collection_id": {
+        "pt": "ID da Coleção",
+        "en": "Collection ID",
+        "es": "ID de Colección"
+      },
+      "collection_name": {
+        "pt": "Nome da Coleção",
+        "en": "Collection Name",
+        "es": "Nombre de la Colección"
+      },
+      "api_endpoint": {
+        "pt": "Endpoint da API (Opcional)",
+        "en": "API Endpoint (Optional)",
+        "es": "Endpoint de API (Opcional)"
+      },
+      "preview_url": {
+        "pt": "URL de Preview (Opcional)",
+        "en": "Preview URL (Optional)",
+        "es": "URL de Vista Previa (Opcional)"
+      },
+      "description": {
+        "pt": "Descrição (Opcional)",
+        "en": "Description (Optional)",
+        "es": "Descripción (Opcional)"
+      },
+      "description_placeholder": {
+        "pt": "Descrição da coleção NFT...",
+        "en": "NFT collection description...",
+        "es": "Descripción de la colección NFT..."
+      },
+      "info_title": {
+        "pt": "Informação",
+        "en": "Information",
+        "es": "Información"
+      },
+      "info_description": {
+        "pt": "Esta função adiciona a coleção para visualização apenas. NFTs reais devem ser recebidos via transferência.",
+        "en": "This function adds the collection for viewing only. Real NFTs must be received via transfer.",
+        "es": "Esta función agrega la colección solo para visualización. Los NFTs reales deben recibirse vía transferencia."
+      },
+      "preview": {
+        "pt": "Preview",
+        "en": "Preview",
+        "es": "Vista Previa"
+      },
+      "preview_title": {
+        "pt": "Preview da Coleção",
+        "en": "Collection Preview",
+        "es": "Vista Previa de Colección"
+      },
+      "preview_description": {
+        "pt": "Veja como a coleção aparecerá na sua carteira.",
+        "en": "See how the collection will appear in your wallet.",
+        "es": "Ve cómo aparecerá la colección en tu billetera."
+      },
+      "verified": {
+        "pt": "Verificado",
+        "en": "Verified",
+        "es": "Verificado"
+      },
+      "total_supply": {
+        "pt": "Total",
+        "en": "Total",
+        "es": "Total"
+      },
+      "floor_price": {
+        "pt": "Preço Mín.",
+        "en": "Floor Price",
+        "es": "Precio Mín."
+      },
+      "sample_preview": {
+        "pt": "Exemplo de NFT",
+        "en": "Sample NFT",
+        "es": "NFT de Ejemplo"
+      },
+      "add": {
+        "pt": "Adicionar Coleção",
+        "en": "Add Collection",
+        "es": "Agregar Colección"
+      },
+      "success_title": {
+        "pt": "Coleção Adicionada!",
+        "en": "Collection Added!",
+        "es": "¡Colección Agregada!"
+      },
+      "success_description": {
+        "pt": "A coleção NFT foi adicionada à sua carteira com sucesso.",
+        "en": "The NFT collection has been successfully added to your wallet.",
+        "es": "La colección NFT ha sido agregada exitosamente a tu billetera."
+      },
+      "add_another": {
+        "pt": "Adicionar Outra",
+        "en": "Add Another",
+        "es": "Agregar Otra"
+      },
+      "collection_id_required": {
+        "pt": "ID da coleção é obrigatório",
+        "en": "Collection ID is required",
+        "es": "ID de colección es requerido"
+      },
+      "already_exists": {
+        "pt": "Esta coleção já foi adicionada",
+        "en": "This collection has already been added",
+        "es": "Esta colección ya ha sido agregada"
+      },
+      "success": {
+        "pt": "Coleção NFT adicionada!",
+        "en": "NFT collection added!",
+        "es": "¡Colección NFT agregada!"
+      }
+    },
+    "total_balance": {
+      "pt": "Saldo Total Estimado",
+      "en": "Total Estimated Balance",
+      "es": "Saldo Total Estimado"
+    },
+    "loading_balance": {
+      "pt": "Carregando saldo...",
+      "en": "Loading balance...",
+      "es": "Cargando saldo..."
+    },
+    "no_account_title": {
+      "pt": "Nenhuma conta encontrada",
+      "en": "No account found",
+      "es": "No se encontró cuenta"
+    },
+    "no_account_description": {
+      "pt": "Crie ou importe uma conta para começar a usar sua carteira.",
+      "en": "Create or import an account to start using your wallet.",
+      "es": "Crea o importa una cuenta para comenzar a usar tu billetera."
+    },
+    "manage_accounts": {
+      "pt": "Gerenciar Contas",
+      "en": "Manage Accounts",
+      "es": "Gestionar Cuentas"
+    },
+    "address_copied": {
+      "pt": "Endereço copiado!",
+      "en": "Address copied!",
+      "es": "¡Dirección copiada!"
+    },
+    "copy_failed": {
+      "pt": "Erro ao copiar",
+      "en": "Copy failed",
+      "es": "Error al copiar"
+    },
+    "account_switched": {
+      "pt": "Conta alterada!",
+      "en": "Account switched!",
+      "es": "¡Cuenta cambiada!"
+    },
+    "watch_only": {
+      "pt": "Watch",
+      "en": "Watch",
+      "es": "Vista"
+    },
+    "active": {
+      "pt": "Ativa",
+      "en": "Active",
+      "es": "Activa"
+    },
+    "switch": {
+      "pt": "Ativar",
+      "en": "Switch",
+      "es": "Cambiar"
+    },
+    "name_required": {
+      "pt": "Nome é obrigatório",
+      "en": "Name is required",
+      "es": "Nombre es requerido"
+    },
+    "seed_required": {
+      "pt": "Frase de recuperação é obrigatória",
+      "en": "Recovery phrase is required",
+      "es": "Frase de recuperación es requerida"
+    },
+    "invalid_seed_length": {
+      "pt": "A frase deve ter 12 ou 24 palavras",
+      "en": "Phrase must have 12 or 24 words",
+      "es": "La frase debe tener 12 o 24 palabras"
+    },
+    "account_created": {
+      "pt": "Conta criada com sucesso!",
+      "en": "Account created successfully!",
+      "es": "¡Cuenta creada exitosamente!"
+    },
+    "account_imported": {
+      "pt": "Conta importada com sucesso!",
+      "en": "Account imported successfully!",
+      "es": "¡Cuenta importada exitosamente!"
+    },
+    "file_and_password_required": {
+      "pt": "Arquivo e senha são obrigatórios",
+      "en": "File and password are required",
+      "es": "Archivo y contraseña son requeridos"
+    },
+    "address_required": {
+      "pt": "Endereço é obrigatório",
+      "en": "Address is required",
+      "es": "Dirección es requerida"
+    },
+    "watch_account_added": {
+      "pt": "Conta watch-only adicionada!",
+      "en": "Watch-only account added!",
+      "es": "¡Cuenta solo vista agregada!"
+    },
+    "account_renamed": {
+      "pt": "Conta renomeada!",
+      "en": "Account renamed!",
+      "es": "¡Cuenta renombrada!"
+    },
+    "password_required": {
+      "pt": "Senha é obrigatória",
+      "en": "Password is required",
+      "es": "Contraseña es requerida"
+    },
+    "account_exported": {
+      "pt": "Conta exportada!",
+      "en": "Account exported!",
+      "es": "¡Cuenta exportada!"
+    },
+    "account_removed": {
+      "pt": "Conta removida!",
+      "en": "Account removed!",
+      "es": "¡Cuenta eliminada!"
+    },
+    "account_name": {
+      "pt": "Nome da Conta",
+      "en": "Account Name",
+      "es": "Nombre de Cuenta"
+    },
+    "account_name_placeholder": {
+      "pt": "Minha Conta",
+      "en": "My Account",
+      "es": "Mi Cuenta"
+    },
+    "seed_phrase": {
+      "pt": "Frase de Recuperação",
+      "en": "Recovery Phrase",
+      "es": "Frase de Recuperación"
+    },
+    "seed_warning_title": {
+      "pt": "Importante!",
+      "en": "Important!",
+      "es": "¡Importante!"
+    },
+    "seed_warning": {
+      "pt": "Anote sua frase de recuperação em local seguro. É a única forma de recuperar sua conta.",
+      "en": "Write down your recovery phrase in a safe place. It's the only way to recover your account.",
+      "es": "Anota tu frase de recuperación en un lugar seguro. Es la única forma de recuperar tu cuenta."
+    },
+    "reveal_seed": {
+      "pt": "Clique para revelar",
+      "en": "Click to reveal",
+      "es": "Haz clic para revelar"
+    },
+    "copy_seed": {
+      "pt": "Copiar Frase",
+      "en": "Copy Phrase",
+      "es": "Copiar Frase"
+    },
+    "seed_copied": {
+      "pt": "Frase copiada!",
+      "en": "Phrase copied!",
+      "es": "¡Frase copiada!"
+    },
+    "create_account": {
+      "pt": "Criar Conta",
+      "en": "Create Account",
+      "es": "Crear Cuenta"
+    },
+    "import_account": {
+      "pt": "Importar Conta",
+      "en": "Import Account",
+      "es": "Importar Cuenta"
+    },
+    "seed_placeholder": {
+      "pt": "Digite suas 12 ou 24 palavras...",
+      "en": "Enter your 12 or 24 words...",
+      "es": "Ingresa tus 12 o 24 palabras..."
+    },
+    "select_file": {
+      "pt": "Selecionar Arquivo",
+      "en": "Select File",
+      "es": "Seleccionar Archivo"
+    },
+    "file_password": {
+      "pt": "Senha do Arquivo",
+      "en": "File Password",
+      "es": "Contraseña del Archivo"
+    },
+    "watch_name_placeholder": {
+      "pt": "Conta Watch-Only",
+      "en": "Watch-Only Account",
+      "es": "Cuenta Solo Vista"
+    },
+    "add_account": {
+      "pt": "Adicionar Conta",
+      "en": "Add Account",
+      "es": "Agregar Cuenta"
+    },
+    "new_name": {
+      "pt": "Novo Nome",
+      "en": "New Name",
+      "es": "Nuevo Nombre"
+    },
+    "rename": {
+      "pt": "Renomear",
+      "en": "Rename",
+      "es": "Renombrar"
+    },
+    "export_description": {
+      "pt": "Será gerado um arquivo JSON criptografado com sua chave privada.",
+      "en": "An encrypted JSON file will be generated with your private key.",
+      "es": "Se generará un archivo JSON encriptado con tu clave privada."
+    },
+    "export_password": {
+      "pt": "Senha para Criptografia",
+      "en": "Encryption Password",
+      "es": "Contraseña de Encriptación"
+    },
+    "export": {
+      "pt": "Exportar",
+      "en": "Export",
+      "es": "Exportar"
+    },
+    "remove_warning_title": {
+      "pt": "Atenção!",
+      "en": "Warning!",
+      "es": "¡Atención!"
+    },
+    "remove_warning": {
+      "pt": "Esta ação não pode ser desfeita. Certifique-se de ter backup da sua frase de recuperação.",
+      "en": "This action cannot be undone. Make sure you have a backup of your recovery phrase.",
+      "es": "Esta acción no se puede deshacer. Asegúrate de tener un respaldo de tu frase de recuperación."
+    },
+    "remove_confirmation": {
+      "pt": "Tem certeza que deseja remover a conta",
+      "en": "Are you sure you want to remove the account",
+      "es": "¿Estás seguro de que quieres eliminar la cuenta"
+    },
+    "remove": {
+      "pt": "Remover",
+      "en": "Remove",
+      "es": "Eliminar"
+    },
+    "no_tokens_title": {
+      "pt": "Nenhum token encontrado",
+      "en": "No tokens found",
+      "es": "No se encontraron tokens"
+    },
+    "no_tokens_description": {
+      "pt": "Seus tokens aparecerão aqui quando você tiver saldo.",
+      "en": "Your tokens will appear here when you have balance.",
+      "es": "Tus tokens aparecerán aquí cuando tengas saldo."
+    },
+    "refresh_balances": {
+      "pt": "Atualizar Saldos",
+      "en": "Refresh Balances",
+      "es": "Actualizar Saldos"
+    },
+    "search_tokens": {
+      "pt": "Buscar tokens...",
+      "en": "Search tokens...",
+      "es": "Buscar tokens..."
+    },
+    "sort_name": {
+      "pt": "Nome",
+      "en": "Name",
+      "es": "Nombre"
+    },
+    "sort_balance": {
+      "pt": "Saldo",
+      "en": "Balance",
+      "es": "Saldo"
+    },
+    "show_zero_balances": {
+      "pt": "Mostrar saldos zerados",
+      "en": "Show zero balances",
+      "es": "Mostrar saldos cero"
+    },
+    "no_results": {
+      "pt": "Nenhum resultado encontrado",
+      "en": "No results found",
+      "es": "No se encontraron resultados"
+    },
+    "try_different_search": {
+      "pt": "Tente uma busca diferente ou ajuste os filtros.",
+      "en": "Try a different search or adjust filters.",
+      "es": "Prueba una búsqueda diferente o ajusta los filtros."
+    },
+    "native": {
+      "pt": "Nativo",
+      "en": "Native",
+      "es": "Nativo"
+    },
+    "available": {
+      "pt": "Disponível",
+      "en": "Available",
+      "es": "Disponible"
+    },
+    "send_first_transaction": {
+      "pt": "Enviar Primeira Transação",
+      "en": "Send First Transaction",
+      "es": "Enviar Primera Transacción"
+    },
+    "no_nfts_title": {
+      "pt": "Nenhum NFT encontrado",
+      "en": "No NFTs found",
+      "es": "No se encontraron NFTs"
+    },
+    "no_nfts_description": {
+      "pt": "Seus NFTs aparecerão aqui quando você possuir algum.",
+      "en": "Your NFTs will appear here when you own some.",
+      "es": "Tus NFTs aparecerán aquí cuando tengas algunos."
+    },
+    "refresh": {
+      "pt": "Atualizar",
+      "en": "Refresh",
+      "es": "Actualizar"
+    },
+    "search_nfts": {
+      "pt": "Buscar NFTs...",
+      "en": "Search NFTs...",
+      "es": "Buscar NFTs..."
+    },
+    "filters": {
+      "pt": "Filtros",
+      "en": "Filters",
+      "es": "Filtros"
+    },
+    "collection": {
+      "pt": "Coleção",
+      "en": "Collection",
+      "es": "Colección"
+    },
+    "all_collections": {
+      "pt": "Todas",
+      "en": "All",
+      "es": "Todas"
+    },
+    "clear_filters": {
+      "pt": "Limpar Filtros",
+      "en": "Clear Filters",
+      "es": "Limpiar Filtros"
+    },
+    "view": {
+      "pt": "Ver",
+      "en": "View",
+      "es": "Ver"
+    },
+    "tokenized": {
+      "pt": "Tokenizado",
+      "en": "Tokenized",
+      "es": "Tokenizado"
+    },
+    "transfer": {
+      "pt": "Transferir",
+      "en": "Transfer",
+      "es": "Transferir"
+    },
+    "attributes": {
+      "pt": "Atributos",
+      "en": "Attributes",
+      "es": "Atributos"
+    },
+    "back_to_wallet": {
+      "pt": "Voltar à Carteira",
+      "en": "Back to Wallet",
+      "es": "Volver a Billetera"
+    },
+    "hash_copied": {
+      "pt": "Hash copiado!",
+      "en": "Hash copied!",
+      "es": "¡Hash copiado!"
+    },
+    "payment_request_copied": {
+      "pt": "Solicitação copiada!",
+      "en": "Request copied!",
+      "es": "¡Solicitud copiada!"
+    },
+    "qr_downloaded": {
+      "pt": "QR Code baixado!",
+      "en": "QR Code downloaded!",
+      "es": "¡Código QR descargado!"
+    },
+    "download_failed": {
+      "pt": "Erro no download",
+      "en": "Download failed",
+      "es": "Error en descarga"
     },
     "balance": {
       "pt": "Saldo Disponível",
@@ -481,6 +1847,28 @@
       "pt": "Histórico de Transações",
       "en": "Transaction History",
       "es": "Historial de Transacciones"
+    },
+    "status": {
+      "pending": {
+        "pt": "Pendente",
+        "en": "Pending",
+        "es": "Pendiente"
+      },
+      "included": {
+        "pt": "Incluída",
+        "en": "Included",
+        "es": "Incluida"
+      },
+      "finalized": {
+        "pt": "Finalizada",
+        "en": "Finalized",
+        "es": "Finalizada"
+      },
+      "failed": {
+        "pt": "Falhou",
+        "en": "Failed",
+        "es": "Falló"
+      }
     }
   },
   "marketplace": {

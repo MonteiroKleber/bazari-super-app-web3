@@ -88,6 +88,7 @@ export const useTokens = () => {
     customTokens,
     totalBalance,
     isLoading: isLoadingBalances,
+    getAllTokens, 
     refreshBalances,
     getTokenByKey,
     getTokenByAssetId,
