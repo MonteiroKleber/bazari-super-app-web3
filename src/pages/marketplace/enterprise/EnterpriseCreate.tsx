@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { motion } from 'framer-motion'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Upload, X, Plus, Check, Coins } from 'lucide-react'
 import { Card } from '@shared/ui/Card'
 import { Button } from '@shared/ui/Button'
@@ -17,12 +17,16 @@ import categories from '@app/data/categories.json'
 
 export const EnterpriseCreate: React.FC = () => {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { t } = useI18n()
   const { createEnterprise } = useEnterpriseStore()
   const { user } = useAuthStore()
   
   const [currentStep, setCurrentStep] = React.useState(1)
   const [isLoading, setIsLoading] = React.useState(false)
+  
+  // Verificar se veio do MarketplaceCreate
+  const returnToMarketplace = searchParams.get('returnTo') === 'marketplace-create'
   
   const [formData, setFormData] = React.useState({
     name: '',
@@ -133,7 +137,13 @@ export const EnterpriseCreate: React.FC = () => {
 
       const enterpriseId = await createEnterprise(enterpriseData)
       toast.success('Empreendimento criado com sucesso!')
-      navigate(`/marketplace/enterprises/${enterpriseId}`)
+      
+      // ✅ CORREÇÃO: Redirecionar para MarketplaceCreate se veio de lá
+      if (returnToMarketplace) {
+        navigate(`/marketplace/create?enterpriseId=${enterpriseId}`)
+      } else {
+        navigate(`/marketplace/enterprises/${enterpriseId}`)
+      }
     } catch (error) {
       toast.error('Erro ao criar empreendimento')
     } finally {
@@ -141,7 +151,36 @@ export const EnterpriseCreate: React.FC = () => {
     }
   }
 
-  const renderStep = () => {
+  const canProceed = () => {
+    switch (currentStep) {
+      case 1:
+        return formData.name && formData.description && formData.categories.length > 0
+      case 2:
+        return true // Campos opcionais
+      case 3:
+        return true // Campos opcionais
+      case 4:
+        return true // Campos opcionais
+      case 5:
+        return true
+      default:
+        return false
+    }
+  }
+
+  const nextStep = () => {
+    if (currentStep < 5) {
+      setCurrentStep(currentStep + 1)
+    }
+  }
+
+  const prevStep = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1)
+    }
+  }
+
+  const renderStepContent = () => {
     switch (currentStep) {
       case 1:
         return (
@@ -175,17 +214,10 @@ export const EnterpriseCreate: React.FC = () => {
                     className={`p-3 rounded-xl border-2 text-left transition-colors ${
                       formData.categories.includes(category.id)
                         ? 'border-bazari-red bg-bazari-red-50 text-bazari-red'
-                        : 'border-sand-200 hover:border-sand-300 text-matte-black-700'
+                        : 'border-sand-200 hover:border-sand-300'
                     }`}
                   >
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">
-                        {category.name.pt}
-                      </span>
-                      {formData.categories.includes(category.id) && (
-                        <Check size={16} className="text-bazari-red" />
-                      )}
-                    </div>
+                    <div className="font-medium text-sm">{category.name}</div>
                     {category.digital && (
                       <Badge variant="secondary" size="sm" className="mt-1">
                         Digital
@@ -194,6 +226,11 @@ export const EnterpriseCreate: React.FC = () => {
                   </button>
                 ))}
               </div>
+              {formData.categories.length === 0 && (
+                <p className="text-red-500 text-sm mt-2">
+                  Selecione pelo menos uma categoria
+                </p>
+              )}
             </div>
           </div>
         )
@@ -201,103 +238,91 @@ export const EnterpriseCreate: React.FC = () => {
       case 2:
         return (
           <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-matte-black-900 mb-4">
-                Endereço (Opcional)
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input
-                  label="Rua e Número"
-                  placeholder="Ex: Rua das Flores, 123"
-                  value={formData.address.street}
-                  onChange={(e) => setFormData({
-                    ...formData,
-                    address: { ...formData.address, street: e.target.value }
-                  })}
-                />
-                
-                <Input
-                  label="CEP"
-                  placeholder="Ex: 01234-567"
-                  value={formData.address.zipCode}
-                  onChange={(e) => setFormData({
-                    ...formData,
-                    address: { ...formData.address, zipCode: e.target.value }
-                  })}
-                />
-                
-                <Input
-                  label="Cidade"
-                  placeholder="Ex: São Paulo"
-                  value={formData.address.city}
-                  onChange={(e) => setFormData({
-                    ...formData,
-                    address: { ...formData.address, city: e.target.value }
-                  })}
-                />
-                
-                <Input
-                  label="Estado"
-                  placeholder="Ex: SP"
-                  value={formData.address.state}
-                  onChange={(e) => setFormData({
-                    ...formData,
-                    address: { ...formData.address, state: e.target.value }
-                  })}
-                />
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Input
+                label="Rua"
+                placeholder="Rua das Flores, 123"
+                value={formData.address.street}
+                onChange={(e) => setFormData({
+                  ...formData,
+                  address: { ...formData.address, street: e.target.value }
+                })}
+              />
+              
+              <Input
+                label="Cidade"
+                placeholder="São Paulo"
+                value={formData.address.city}
+                onChange={(e) => setFormData({
+                  ...formData,
+                  address: { ...formData.address, city: e.target.value }
+                })}
+              />
             </div>
 
-            <div>
-              <h3 className="text-lg font-semibold text-matte-black-900 mb-4">
-                Informações de Contato
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input
-                  label="E-mail"
-                  type="email"
-                  placeholder="contato@empresa.com"
-                  value={formData.contact.email}
-                  onChange={(e) => setFormData({
-                    ...formData,
-                    contact: { ...formData.contact, email: e.target.value }
-                  })}
-                />
-                
-                <Input
-                  label="Telefone"
-                  placeholder="(11) 99999-9999"
-                  value={formData.contact.phone}
-                  onChange={(e) => setFormData({
-                    ...formData,
-                    contact: { ...formData.contact, phone: e.target.value }
-                  })}
-                />
-                
-                <Input
-                  label="Website"
-                  placeholder="https://empresa.com"
-                  value={formData.contact.website}
-                  onChange={(e) => setFormData({
-                    ...formData,
-                    contact: { ...formData.contact, website: e.target.value }
-                  })}
-                />
-                
-                <Input
-                  label="Instagram"
-                  placeholder="@empresa"
-                  value={formData.contact.socialMedia.instagram}
-                  onChange={(e) => setFormData({
-                    ...formData,
-                    contact: {
-                      ...formData.contact,
-                      socialMedia: { ...formData.contact.socialMedia, instagram: e.target.value }
-                    }
-                  })}
-                />
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Input
+                label="Estado"
+                placeholder="SP"
+                value={formData.address.state}
+                onChange={(e) => setFormData({
+                  ...formData,
+                  address: { ...formData.address, state: e.target.value }
+                })}
+              />
+              
+              <Input
+                label="País"
+                value={formData.address.country}
+                onChange={(e) => setFormData({
+                  ...formData,
+                  address: { ...formData.address, country: e.target.value }
+                })}
+              />
+              
+              <Input
+                label="CEP"
+                placeholder="01234-567"
+                value={formData.address.zipCode}
+                onChange={(e) => setFormData({
+                  ...formData,
+                  address: { ...formData.address, zipCode: e.target.value }
+                })}
+              />
             </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Input
+                label="Telefone"
+                placeholder="(11) 99999-9999"
+                value={formData.contact.phone}
+                onChange={(e) => setFormData({
+                  ...formData,
+                  contact: { ...formData.contact, phone: e.target.value }
+                })}
+              />
+              
+              <Input
+                label="Email"
+                type="email"
+                placeholder="contato@empresa.com"
+                value={formData.contact.email}
+                onChange={(e) => setFormData({
+                  ...formData,
+                  contact: { ...formData.contact, email: e.target.value }
+                })}
+              />
+            </div>
+
+            <Input
+              label="Website"
+              placeholder="https://meusite.com"
+              value={formData.contact.website}
+              onChange={(e) => setFormData({
+                ...formData,
+                contact: { ...formData.contact, website: e.target.value }
+              })}
+            />
           </div>
         )
 
@@ -305,76 +330,63 @@ export const EnterpriseCreate: React.FC = () => {
         return (
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-semibold text-matte-black-900 mb-4">
-                Configurações de Pedidos
-              </h3>
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <input
-                    type="checkbox"
-                    id="autoAccept"
-                    checked={formData.settings.autoAcceptOrders}
-                    onChange={(e) => setFormData({
-                      ...formData,
-                      settings: { ...formData.settings, autoAcceptOrders: e.target.checked }
-                    })}
-                    className="w-4 h-4 text-bazari-red border-gray-300 rounded focus:ring-bazari-red"
-                  />
-                  <label htmlFor="autoAccept" className="text-sm text-matte-black-700">
-                    Aceitar pedidos automaticamente
+              <label className="block text-sm font-medium text-matte-black-900 mb-3">
+                Métodos de Entrega
+              </label>
+              <div className="space-y-2">
+                {deliveryOptions.map((method) => (
+                  <label key={method} className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={formData.settings.deliveryMethods.includes(method)}
+                      onChange={() => handleDeliveryMethodToggle(method)}
+                      className="w-4 h-4 text-bazari-red border-sand-300 rounded focus:ring-bazari-red-500"
+                    />
+                    <span className="ml-2 text-sm text-matte-black-700">{method}</span>
                   </label>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Input
-                    label="Valor Mínimo de Pedido"
-                    type="number"
-                    placeholder="0"
-                    value={formData.settings.minOrderValue || ''}
-                    onChange={(e) => setFormData({
-                      ...formData,
-                      settings: { ...formData.settings, minOrderValue: parseFloat(e.target.value) || 0 }
-                    })}
-                  />
-                  
-                  <Input
-                    label="Valor Máximo de Pedido"
-                    type="number"
-                    placeholder="0 (ilimitado)"
-                    value={formData.settings.maxOrderValue || ''}
-                    onChange={(e) => setFormData({
-                      ...formData,
-                      settings: { ...formData.settings, maxOrderValue: parseFloat(e.target.value) || 0 }
-                    })}
-                  />
-                </div>
+                ))}
               </div>
             </div>
 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Input
+                label="Valor Mínimo do Pedido"
+                type="number"
+                placeholder="0"
+                value={formData.settings.minOrderValue}
+                onChange={(e) => setFormData({
+                  ...formData,
+                  settings: { ...formData.settings, minOrderValue: Number(e.target.value) }
+                })}
+              />
+              
+              <Input
+                label="Valor Máximo do Pedido"
+                type="number"
+                placeholder="0"
+                value={formData.settings.maxOrderValue}
+                onChange={(e) => setFormData({
+                  ...formData,
+                  settings: { ...formData.settings, maxOrderValue: Number(e.target.value) }
+                })}
+              />
+            </div>
+
             <div>
-              <h3 className="text-lg font-semibold text-matte-black-900 mb-4">
-                Métodos de Entrega
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {deliveryOptions.map((method) => (
-                  <button
-                    key={method}
-                    onClick={() => handleDeliveryMethodToggle(method)}
-                    className={`p-3 rounded-xl border-2 text-left transition-colors ${
-                      formData.settings.deliveryMethods.includes(method)
-                        ? 'border-bazari-red bg-bazari-red-50 text-bazari-red'
-                        : 'border-sand-200 hover:border-sand-300 text-matte-black-700'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">{method}</span>
-                      {formData.settings.deliveryMethods.includes(method) && (
-                        <Check size={16} className="text-bazari-red" />
-                      )}
-                    </div>
-                  </button>
-                ))}
-              </div>
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={formData.settings.autoAcceptOrders}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    settings: { ...formData.settings, autoAcceptOrders: e.target.checked }
+                  })}
+                  className="w-4 h-4 text-bazari-red border-sand-300 rounded focus:ring-bazari-red-500"
+                />
+                <span className="ml-2 text-sm text-matte-black-700">
+                  Aceitar pedidos automaticamente
+                </span>
+              </label>
             </div>
           </div>
         )
@@ -382,70 +394,61 @@ export const EnterpriseCreate: React.FC = () => {
       case 4:
         return (
           <div className="space-y-6">
-            <div className="bg-bazari-gold-50 p-6 rounded-xl border border-bazari-gold-200">
-              <div className="flex items-center mb-4">
-                <Coins className="text-bazari-gold-600 mr-3" size={24} />
-                <h3 className="text-lg font-semibold text-matte-black-900">
-                  Tokenização do Empreendimento
-                </h3>
-              </div>
-              <p className="text-sm text-matte-black-700 mb-4">
-                Transforme seu empreendimento em tokens negociáveis, permitindo que investidores 
-                participem do crescimento do seu negócio.
-              </p>
-              
-              <div className="flex items-center space-x-3">
+            <div>
+              <label className="flex items-center">
                 <input
                   type="checkbox"
-                  id="tokenizable"
                   checked={formData.tokenizable}
                   onChange={(e) => setFormData({ ...formData, tokenizable: e.target.checked })}
-                  className="w-4 h-4 text-bazari-red border-gray-300 rounded focus:ring-bazari-red"
+                  className="w-4 h-4 text-bazari-red border-sand-300 rounded focus:ring-bazari-red-500"
                 />
-                <label htmlFor="tokenizable" className="text-sm font-medium text-matte-black-900">
-                  Habilitar tokenização para este empreendimento
-                </label>
-              </div>
+                <span className="ml-2 text-sm text-matte-black-700">
+                  Habilitar tokenização do empreendimento
+                </span>
+              </label>
+              <p className="text-xs text-matte-black-500 mt-1 ml-6">
+                Permite criar tokens representando participação no empreendimento
+              </p>
             </div>
 
             {formData.tokenizable && (
-              <div className="space-y-4">
+              <div className="space-y-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Input
-                    label="Total de Tokens"
+                    label="Supply Total de Tokens"
                     type="number"
                     value={formData.tokenization.totalSupply}
                     onChange={(e) => setFormData({
                       ...formData,
-                      tokenization: { ...formData.tokenization, totalSupply: parseInt(e.target.value) || 10000 }
+                      tokenization: { ...formData.tokenization, totalSupply: Number(e.target.value) }
                     })}
                   />
                   
                   <Input
-                    label="Royalty (%)"
+                    label="Percentual de Royalty (%)"
                     type="number"
-                    min="0"
-                    max="100"
                     value={formData.tokenization.royaltyPercentage}
                     onChange={(e) => setFormData({
                       ...formData,
-                      tokenization: { ...formData.tokenization, royaltyPercentage: parseFloat(e.target.value) || 5 }
+                      tokenization: { ...formData.tokenization, royaltyPercentage: Number(e.target.value) }
                     })}
                   />
-                  
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Input
-                    label="Preço por Token"
+                    label="Preço do Mint"
                     type="number"
                     value={formData.tokenization.mintPrice}
                     onChange={(e) => setFormData({
                       ...formData,
-                      tokenization: { ...formData.tokenization, mintPrice: parseFloat(e.target.value) || 100 }
+                      tokenization: { ...formData.tokenization, mintPrice: Number(e.target.value) }
                     })}
                   />
                   
                   <div>
-                    <label className="block text-sm font-medium text-matte-black-900 mb-2">
-                      Moeda do Token
+                    <label className="block text-sm font-medium text-matte-black-700 mb-1">
+                      Moeda do Mint
                     </label>
                     <select
                       value={formData.tokenization.mintCurrency}
@@ -455,25 +458,26 @@ export const EnterpriseCreate: React.FC = () => {
                       })}
                       className="w-full px-3 py-2 border border-sand-200 rounded-lg focus:ring-2 focus:ring-bazari-red-500 focus:border-transparent"
                     >
-                      <option value="BZR">BZR</option>
-                      <option value="BRL">BRL</option>
+                      <option value="BZR">Bazari (BZR)</option>
+                      <option value="BRL">Real (BRL)</option>
                     </select>
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-3">
-                  <input
-                    type="checkbox"
-                    id="transferable"
-                    checked={formData.tokenization.transferable}
-                    onChange={(e) => setFormData({
-                      ...formData,
-                      tokenization: { ...formData.tokenization, transferable: e.target.checked }
-                    })}
-                    className="w-4 h-4 text-bazari-red border-gray-300 rounded focus:ring-bazari-red"
-                  />
-                  <label htmlFor="transferable" className="text-sm text-matte-black-700">
-                    Permitir transferência entre usuários
+                <div>
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={formData.tokenization.transferable}
+                      onChange={(e) => setFormData({
+                        ...formData,
+                        tokenization: { ...formData.tokenization, transferable: e.target.checked }
+                      })}
+                      className="w-4 h-4 text-bazari-red border-sand-300 rounded focus:ring-bazari-red-500"
+                    />
+                    <span className="ml-2 text-sm text-matte-black-700">
+                      Tokens transferíveis
+                    </span>
                   </label>
                 </div>
               </div>
@@ -484,46 +488,45 @@ export const EnterpriseCreate: React.FC = () => {
       case 5:
         return (
           <div className="space-y-6">
-            <div className="bg-sand-50 p-6 rounded-xl">
-              <h3 className="text-lg font-semibold text-matte-black-900 mb-4">
-                Revisão Final
+            <div className="bg-sand-50 p-6 rounded-lg">
+              <h3 className="font-semibold text-matte-black-900 mb-4">
+                Resumo do Empreendimento
               </h3>
               
-              <div className="space-y-4">
+              <div className="space-y-3 text-sm">
                 <div>
-                  <h4 className="font-medium text-matte-black-900">Nome:</h4>
-                  <p className="text-matte-black-700">{formData.name}</p>
+                  <span className="font-medium">Nome:</span> {formData.name}
                 </div>
-                
                 <div>
-                  <h4 className="font-medium text-matte-black-900">Descrição:</h4>
-                  <p className="text-matte-black-700">{formData.description}</p>
+                  <span className="font-medium">Descrição:</span> {formData.description}
                 </div>
-                
                 <div>
-                  <h4 className="font-medium text-matte-black-900">Categorias:</h4>
-                  <div className="flex flex-wrap gap-2 mt-1">
-                    {formData.categories.map(categoryId => {
-                      const category = categories.categories.find(c => c.id === categoryId)
-                      return category ? (
-                        <Badge key={categoryId} variant="outline" size="sm">
-                          {category.name.pt}
-                        </Badge>
-                      ) : null
-                    })}
-                  </div>
+                  <span className="font-medium">Categorias:</span> {formData.categories.length} selecionadas
                 </div>
-                
-                {formData.tokenizable && (
-                  <div>
-                    <h4 className="font-medium text-matte-black-900">Tokenização:</h4>
-                    <p className="text-matte-black-700">
-                      {formData.tokenization.totalSupply} tokens a {formData.tokenization.mintPrice} {formData.tokenization.mintCurrency} cada
-                    </p>
-                  </div>
-                )}
+                <div>
+                  <span className="font-medium">Tokenizável:</span> {formData.tokenizable ? 'Sim' : 'Não'}
+                </div>
+                <div>
+                  <span className="font-medium">Métodos de Entrega:</span> {formData.settings.deliveryMethods.length} selecionados
+                </div>
               </div>
             </div>
+
+            {returnToMarketplace && (
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <div className="flex items-center">
+                  <Coins className="text-blue-600 mr-2" size={20} />
+                  <div>
+                    <p className="font-medium text-blue-900">
+                      Retornando ao Marketplace
+                    </p>
+                    <p className="text-sm text-blue-700">
+                      Após criar o empreendimento, você será redirecionado para continuar criando seu anúncio.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )
 
@@ -543,69 +546,87 @@ export const EnterpriseCreate: React.FC = () => {
           Criar Empreendimento
         </h1>
         <p className="text-matte-black-600">
-          Configure seu negócio na plataforma Bazari
+          Configure seu empreendimento para começar a vender
         </p>
       </motion.div>
 
-      {/* Progress Steps */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
-          {steps.map((step, index) => (
-            <div
-              key={step.id}
-              className={`flex items-center ${index < steps.length - 1 ? 'flex-1' : ''}`}
-            >
-              <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
-                currentStep >= step.id
-                  ? 'border-bazari-red bg-bazari-red text-white'
-                  : 'border-sand-300 bg-white text-matte-black-400'
-              }`}>
-                {currentStep > step.id ? <Check size={16} /> : step.id}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        {/* Progress Steps */}
+        <div className="lg:col-span-1">
+          <div className="space-y-4">
+            {steps.map((step) => (
+              <div key={step.id} className="flex items-start">
+                <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
+                  currentStep === step.id
+                    ? 'bg-bazari-red text-white'
+                    : currentStep > step.id
+                    ? 'bg-success text-white'
+                    : 'bg-sand-200 text-matte-black-600'
+                }`}>
+                  {currentStep > step.id ? (
+                    <Check size={16} />
+                  ) : (
+                    step.id
+                  )}
+                </div>
+                <div className="ml-3">
+                  <p className={`text-sm font-medium ${
+                    currentStep === step.id ? 'text-bazari-red' : 'text-matte-black-900'
+                  }`}>
+                    {step.title}
+                  </p>
+                  <p className="text-xs text-matte-black-600">
+                    {step.description}
+                  </p>
+                </div>
               </div>
-              
-              {index < steps.length - 1 && (
-                <div className={`flex-1 h-0.5 mx-4 ${
-                  currentStep > step.id ? 'bg-bazari-red' : 'bg-sand-200'
-                }`} />
-              )}
+            ))}
+          </div>
+        </div>
+
+        {/* Form Content */}
+        <div className="lg:col-span-3">
+          <Card className="p-6">
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold text-matte-black-900 mb-2">
+                {steps[currentStep - 1].title}
+              </h2>
+              <p className="text-matte-black-600">
+                {steps[currentStep - 1].description}
+              </p>
             </div>
-          ))}
-        </div>
-        
-        <div className="mt-4">
-          <h2 className="text-xl font-semibold text-matte-black-900">
-            {steps[currentStep - 1].title}
-          </h2>
-          <p className="text-matte-black-600">
-            {steps[currentStep - 1].description}
-          </p>
-        </div>
-      </div>
 
-      {/* Form Content */}
-      <Card className="p-8 mb-8">
-        {renderStep()}
-      </Card>
+            {renderStepContent()}
 
-      {/* Navigation */}
-      <div className="flex items-center justify-between">
-        <Button
-          variant="outline"
-          onClick={() => currentStep > 1 ? setCurrentStep(currentStep - 1) : navigate('/marketplace/enterprises')}
-        >
-          {currentStep > 1 ? 'Anterior' : 'Cancelar'}
-        </Button>
-        
-        <div className="flex space-x-3">
-          {currentStep < steps.length ? (
-            <Button onClick={() => setCurrentStep(currentStep + 1)}>
-              Próximo
-            </Button>
-          ) : (
-            <Button onClick={handleSubmit} loading={isLoading}>
-              Criar Empreendimento
-            </Button>
-          )}
+            <div className="flex justify-between mt-8 pt-6 border-t border-sand-200">
+              <Button
+                variant="outline"
+                onClick={prevStep}
+                disabled={currentStep === 1}
+              >
+                Anterior
+              </Button>
+
+              <div className="flex space-x-3">
+                {currentStep < 5 ? (
+                  <Button
+                    onClick={nextStep}
+                    disabled={!canProceed()}
+                  >
+                    Próximo
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={handleSubmit}
+                    disabled={!canProceed() || isLoading}
+                    loading={isLoading}
+                  >
+                    Criar Empreendimento
+                  </Button>
+                )}
+              </div>
+            </div>
+          </Card>
         </div>
       </div>
     </div>

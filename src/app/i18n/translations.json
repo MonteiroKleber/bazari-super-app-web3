@@ -500,10 +500,10 @@
       "es": "Buscar productos..."
     },
     "create_listing": {
-        "pt": "Criar Anúncio",
-        "en": "Create Listing",
-        "es": "Crear Anuncio"
-      },
+      "pt": "Criar Anúncio",
+      "en": "Create Listing",
+      "es": "Crear Anuncio"
+    },
     "filters": {
       "pt": "Filtros",
       "en": "Filters",
@@ -518,10 +518,10 @@
       "pt": "Produtos Digitais",
       "en": "Digital Products",
       "es": "Productos Digitales"
-    },    
+    },
     "browse_title": {
       "pt": "Explorar Marketplace",
-      "en": "Browse Marketplace", 
+      "en": "Browse Marketplace",
       "es": "Explorar Marketplace"
     },
     "products_services": {
@@ -531,7 +531,7 @@
     },
     "enterprises": {
       "pt": "Empreendimentos",
-      "en": "Enterprises", 
+      "en": "Enterprises",
       "es": "Emprendimientos"
     },
     "search_products": {
@@ -543,7 +543,7 @@
       "pt": "Buscar empreendimentos...",
       "en": "Search enterprises...",
       "es": "Buscar emprendimientos..."
-    },    
+    },
     "clear_filters": {
       "pt": "Limpar Filtros",
       "en": "Clear Filters",
@@ -565,7 +565,7 @@
       "es": "Todas las Categorías"
     },
     "all_subcategories": {
-      "pt": "Todas as Subcategorias", 
+      "pt": "Todas as Subcategorias",
       "en": "All Subcategories",
       "es": "Todas las Subcategorías"
     },
@@ -586,7 +586,7 @@
     },
     "used": {
       "pt": "Usado",
-      "en": "Used", 
+      "en": "Used",
       "es": "Usado"
     },
     "refurbished": {
@@ -630,7 +630,7 @@
       "es": "Precio Menor"
     },
     "price_desc": {
-      "pt": "Maior Preço", 
+      "pt": "Maior Preço",
       "en": "Highest Price",
       "es": "Precio Mayor"
     },
@@ -721,7 +721,7 @@
     },
     "recent_products": {
       "pt": "Produtos Recentes",
-      "en": "Recent Products", 
+      "en": "Recent Products",
       "es": "Productos Recientes"
     },
     "featured_enterprises": {
@@ -798,6 +798,46 @@
       "pt": "Negociação P2P",
       "en": "P2P Trading",
       "es": "Comercio P2P"
+    },
+    "no_enterprise_title": {
+      "pt": "Você precisa de um Empreendimento",
+      "en": "You need an Enterprise",
+      "es": "Necesitas una Empresa"
+    },
+    "no_enterprise_desc": {
+      "pt": "Para anunciar produtos ou serviços, crie um Empreendimento primeiro.",
+      "en": "To advertise products or services, create an Enterprise first.",
+      "es": "Para anunciar productos o servicios, crea una Empresa primero."
+    },
+    "create_enterprise_cta": {
+      "pt": "Criar Empreendimento",
+      "en": "Create Enterprise",
+      "es": "Crear Empresa"
+    },
+    "back_to_marketplace": {
+      "pt": "Voltar ao Marketplace",
+      "en": "Back to Marketplace",
+      "es": "Volver al Marketplace"
+    },
+    "enterprise_label": {
+      "pt": "Selecione o Empreendimento",
+      "en": "Select Enterprise",
+      "es": "Seleccionar Empresa"
+    },
+    "enterprise_placeholder": {
+      "pt": "Escolha onde este anúncio será vinculado",
+      "en": "Choose where this listing will be linked",
+      "es": "Elige dónde se vinculará este anuncio"
+    },
+    "enterprise_required": {
+      "pt": "Selecione um empreendimento para continuar.",
+      "en": "Select an enterprise to continue.",
+      "es": "Selecciona una empresa para continuar."
+    },
+    "enterprise_not_owned": {
+      "pt": "O empreendimento informado não pertence à sua conta.",
+      "en": "The specified enterprise does not belong to your account.",
+      "es": "La empresa especificada no pertenece a tu cuenta."
     }
   },
   "profile": {

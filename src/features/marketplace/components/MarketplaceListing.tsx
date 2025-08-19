@@ -20,7 +20,8 @@ import {
   Phone,
   Mail,
   Verified,
-  AlertTriangle
+  AlertTriangle,
+  Check // ✅ ADICIONADO: Import do ícone Check que estava faltando
 } from 'lucide-react'
 import { Card } from '@shared/ui/Card'
 import { Button } from '@shared/ui/Button'
@@ -97,88 +98,53 @@ export const MarketplaceListing: React.FC = () => {
                 Tipo: {listing.digital.type === 'course' ? 'Curso Online' :
                        listing.digital.type === 'ebook' ? 'E-book' :
                        listing.digital.type === 'software' ? 'Software' :
-                       listing.digital.type === 'media' ? 'Mídia Digital' :
+                       listing.digital.type === 'media' ? 'Mídia' :
                        listing.digital.type === 'template' ? 'Template' : 'Outro'}
               </p>
               
-              {listing.digital.deliveryInstructions && (
-                <div>
-                  <p className="text-sm font-medium text-blue-900 mb-1">
-                    Instruções de Entrega:
-                  </p>
-                  <p className="text-sm text-blue-800">
-                    {listing.digital.deliveryInstructions}
-                  </p>
-                </div>
-              )}
-
-              {/* Tokenization Info */}
               {listing.digital.tokenizable && listing.digital.tokenization && (
-                <div className="mt-4 p-3 bg-bazari-gold-50 rounded-lg border border-bazari-gold-200">
-                  <div className="flex items-center mb-2">
-                    <Coins className="text-bazari-gold-600 mr-2" size={16} />
-                    <span className="font-medium text-bazari-gold-900">Produto Tokenizado</span>
+                <div className="bg-bazari-red-50 p-3 rounded border border-bazari-red-200 mt-3">
+                  <h5 className="font-medium text-bazari-red-900 mb-2 flex items-center">
+                    <Coins size={14} className="mr-1" />
+                    Produto Tokenizado
+                  </h5>
+                  <div className="grid grid-cols-2 gap-2 text-xs text-bazari-red-800">
+                    <div>Tokens disponíveis: {listing.digital.tokenization.currentSupply || 0}/{listing.digital.tokenization.quantity}</div>
+                    <div>Royalty: {listing.digital.tokenization.royaltyPercentage}%</div>
+                    <div>Preço por token: {formatPrice(listing.digital.tokenization.pricePerToken || 0, listing.currency)}</div>
+                    <div>Transferível: {listing.digital.tokenization.transferable ? 'Sim' : 'Não'}</div>
                   </div>
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <p className="text-bazari-gold-700">Tokens Disponíveis:</p>
-                      <p className="font-bold text-bazari-gold-900">
-                        {listing.digital.tokenization.quantity}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-bazari-gold-700">Royalty:</p>
-                      <p className="font-bold text-bazari-gold-900">
-                        {listing.digital.tokenization.royaltyPercentage}%
-                      </p>
-                    </div>
-                  </div>
-                  <p className="text-xs text-bazari-gold-600 mt-2">
-                    Transferível: {listing.digital.tokenization.transferable ? 'Sim' : 'Não'}
-                  </p>
                 </div>
               )}
             </div>
           )}
 
-          {/* Product Specifications */}
+          {/* Product Metadata */}
           {listing.metadata && (
-            <div className="bg-sand-50 p-4 rounded-lg">
-              <h4 className="font-semibold text-matte-black-900 mb-3">
-                Especificações
-              </h4>
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                {listing.metadata.condition && (
-                  <div>
-                    <p className="text-matte-black-600">Condição:</p>
-                    <p className="font-medium text-matte-black-900">
-                      {listing.metadata.condition === 'new' ? 'Novo' :
-                       listing.metadata.condition === 'used' ? 'Usado' : 'Recondicionado'}
-                    </p>
-                  </div>
-                )}
-                
-                {listing.metadata.brand && (
-                  <div>
-                    <p className="text-matte-black-600">Marca:</p>
-                    <p className="font-medium text-matte-black-900">{listing.metadata.brand}</p>
-                  </div>
-                )}
-                
-                {listing.metadata.model && (
-                  <div>
-                    <p className="text-matte-black-600">Modelo:</p>
-                    <p className="font-medium text-matte-black-900">{listing.metadata.model}</p>
-                  </div>
-                )}
-                
-                {listing.metadata.warranty && (
-                  <div>
-                    <p className="text-matte-black-600">Garantia:</p>
-                    <p className="font-medium text-matte-black-900">{listing.metadata.warranty}</p>
-                  </div>
-                )}
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {listing.metadata.condition && (
+                <div className="bg-sand-50 p-4 rounded-lg">
+                  <h5 className="font-medium text-matte-black-900 mb-2">Condição</h5>
+                  <p className="text-sm text-matte-black-700 capitalize">
+                    {listing.metadata.condition === 'new' ? 'Novo' :
+                     listing.metadata.condition === 'used' ? 'Usado' : 'Recondicionado'}
+                  </p>
+                </div>
+              )}
+              
+              {listing.metadata.brand && (
+                <div className="bg-sand-50 p-4 rounded-lg">
+                  <h5 className="font-medium text-matte-black-900 mb-2">Marca</h5>
+                  <p className="text-sm text-matte-black-700">{listing.metadata.brand}</p>
+                </div>
+              )}
+              
+              {listing.metadata.warranty && (
+                <div className="bg-sand-50 p-4 rounded-lg">
+                  <h5 className="font-medium text-matte-black-900 mb-2">Garantia</h5>
+                  <p className="text-sm text-matte-black-700">{listing.metadata.warranty}</p>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -191,47 +157,64 @@ export const MarketplaceListing: React.FC = () => {
         <div className="space-y-4">
           {listing.metadata?.shipping ? (
             <>
-              <div className="flex items-center space-x-2 mb-4">
-                <Truck className="text-bazari-red" size={20} />
-                <h4 className="font-semibold text-matte-black-900">
-                  Opções de Entrega
-                </h4>
-                {listing.metadata.shipping.free && (
-                  <Badge variant="success" size="sm">Frete Grátis</Badge>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <Truck size={20} className="text-success mr-2" />
+                  <span className="font-medium">
+                    {listing.metadata.shipping.free ? 'Frete Grátis' : 'Frete Pago'}
+                  </span>
+                </div>
+                {!listing.metadata.shipping.free && listing.metadata.shipping.cost && (
+                  <span className="text-matte-black-600">
+                    {formatPrice(listing.metadata.shipping.cost, 'BRL')}
+                  </span>
                 )}
               </div>
-
-              <div className="space-y-3">
-                {listing.metadata.shipping.methods.map((method, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-sand-50 rounded-lg">
-                    <div className="flex items-center">
-                      <Package size={16} className="text-matte-black-600 mr-3" />
-                      <span className="font-medium text-matte-black-900">{method}</span>
-                    </div>
-                    <div className="text-right">
-                      {listing.metadata.shipping.free ? (
-                        <span className="text-success font-medium">Grátis</span>
-                      ) : (
-                        <span className="font-medium text-matte-black-900">
-                          {formatPrice(listing.metadata.shipping.cost || 0, 'BRL')}
-                        </span>
-                      )}
-                      {listing.metadata.shipping.estimatedDays > 0 && (
-                        <p className="text-sm text-matte-black-600">
-                          {listing.metadata.shipping.estimatedDays} dias úteis
-                        </p>
-                      )}
+              
+              <div className="space-y-2">
+                <div className="flex items-center">
+                  <Clock size={16} className="text-matte-black-500 mr-2" />
+                  <span className="text-sm text-matte-black-700">
+                    Entrega em até {listing.metadata.shipping.estimatedDays} dias úteis
+                  </span>
+                </div>
+                
+                {listing.metadata.shipping.methods?.length > 0 && (
+                  <div>
+                    <p className="text-sm font-medium text-matte-black-900 mb-2">Métodos disponíveis:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {listing.metadata.shipping.methods.map((method, index) => (
+                        <Badge key={index} variant="secondary" size="sm">
+                          {method}
+                        </Badge>
+                      ))}
                     </div>
                   </div>
-                ))}
+                )}
               </div>
-
-              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+              
+              {listing.metadata.location && (
+                <div className="bg-sand-50 p-4 rounded-lg">
+                  <h5 className="font-medium text-matte-black-900 mb-2 flex items-center">
+                    <MapPin size={16} className="mr-2" />
+                    Localização
+                  </h5>
+                  <p className="text-sm text-matte-black-700">
+                    {listing.metadata.location.city && `${listing.metadata.location.city}, `}
+                    {listing.metadata.location.state}
+                    {listing.metadata.location.country && ` - ${listing.metadata.location.country}`}
+                  </p>
+                </div>
+              )}
+              
+              <div className="bg-green-50 p-4 rounded-lg border border-green-200">
                 <div className="flex items-start">
-                  <Shield className="text-blue-600 mr-2 mt-0.5" size={16} />
-                  <div className="text-sm text-blue-800">
-                    <p className="font-medium">Proteção do Comprador</p>
-                    <p>Sua compra está protegida. Receba o produto ou seu dinheiro de volta.</p>
+                  <Shield size={20} className="text-green-600 mt-0.5 mr-3 flex-shrink-0" />
+                  <div>
+                    <h5 className="font-medium text-green-900 mb-1">Proteção na Entrega</h5>
+                    <p className="text-sm text-green-800">
+                      Receba o produto ou seu dinheiro de volta.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -326,17 +309,9 @@ export const MarketplaceListing: React.FC = () => {
                         {enterprise.reputation.rating.toFixed(1)}
                       </div>
                       
-                      <div className="flex items-center">
-                        <Package className="mr-1" size={14} />
-                        {enterprise.stats.activeListings} produtos
+                      <div>
+                        {enterprise.reputation.totalSales} vendas
                       </div>
-                      
-                      {enterprise.address && (
-                        <div className="flex items-center">
-                          <MapPin className="mr-1" size={14} />
-                          {enterprise.address.city}
-                        </div>
-                      )}
                     </div>
                     
                     <Button
@@ -344,117 +319,98 @@ export const MarketplaceListing: React.FC = () => {
                       size="sm"
                       onClick={handleViewEnterprise}
                     >
-                      Ver Empreendimento
-                      <ExternalLink size={14} className="ml-1" />
+                      Ver Empresa
                     </Button>
                   </div>
-
-                  {/* Enterprise Contact */}
-                  {(enterprise.contact.phone || enterprise.contact.email) && (
-                    <div className="mt-3 pt-3 border-t border-bazari-red-200">
-                      <div className="flex items-center space-x-4 text-sm">
-                        {enterprise.contact.phone && (
-                          <div className="flex items-center text-matte-black-600">
-                            <Phone size={14} className="mr-1" />
-                            {enterprise.contact.phone}
-                          </div>
-                        )}
-                        
-                        {enterprise.contact.email && (
-                          <div className="flex items-center text-matte-black-600">
-                            <Mail size={14} className="mr-1" />
-                            {enterprise.contact.email}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
             </Card>
           )}
 
-          {/* Security Notice */}
-          <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-            <div className="flex items-start">
-              <AlertTriangle className="text-yellow-600 mr-2 mt-0.5" size={16} />
-              <div className="text-sm text-yellow-800">
-                <p className="font-medium mb-1">Dicas de Segurança</p>
-                <ul className="list-disc list-inside space-y-1">
-                  <li>Prefira negociar através da plataforma</li>
-                  <li>Não transfira dinheiro antes de receber o produto</li>
-                  <li>Use meios de pagamento seguros (PIX, cartão)</li>
-                  <li>Desconfie de preços muito abaixo do mercado</li>
-                </ul>
+          {/* Contact Options */}
+          <Card className="p-4">
+            <h4 className="font-semibold text-matte-black-900 mb-3">Formas de Contato</h4>
+            
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <MessageCircle size={16} className="text-matte-black-500 mr-2" />
+                  <span className="text-sm">Chat da plataforma</span>
+                </div>
+                <Badge variant="success" size="sm">Disponível</Badge>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <Phone size={16} className="text-matte-black-500 mr-2" />
+                  <span className="text-sm">Telefone</span>
+                </div>
+                <Badge variant="secondary" size="sm">Após contato</Badge>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <Mail size={16} className="text-matte-black-500 mr-2" />
+                  <span className="text-sm">Email</span>
+                </div>
+                <Badge variant="secondary" size="sm">Após contato</Badge>
               </div>
             </div>
-          </div>
+          </Card>
         </div>
       )
     }
   ]
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main Content */}
-        <div className="lg:col-span-2">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
+    <div className="min-h-screen bg-sand">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-6">
             {/* Images */}
-            <Card className="p-6 mb-6">
-              <div className="aspect-video bg-sand-200 rounded-xl mb-4 relative overflow-hidden">
-                {listing.images[activeImageIndex] ? (
-                  <img 
-                    src={listing.images[activeImageIndex]} 
+            <Card className="p-0 overflow-hidden">
+              <div className="aspect-video bg-sand-200 relative">
+                {listing.images[activeImageIndex] && (
+                  <img
+                    src={listing.images[activeImageIndex]}
                     alt={listing.title}
                     className="w-full h-full object-cover"
                   />
-                ) : (
-                  <div className="flex items-center justify-center h-full">
-                    <Package className="text-matte-black-400" size={64} />
+                )}
+                
+                {/* Image Navigation */}
+                {listing.images.length > 1 && (
+                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+                    <div className="flex space-x-2">
+                      {listing.images.map((_, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setActiveImageIndex(index)}
+                          className={`w-2 h-2 rounded-full transition-colors ${
+                            index === activeImageIndex ? 'bg-white' : 'bg-white/50'
+                          }`}
+                        />
+                      ))}
+                    </div>
                   </div>
                 )}
-
-                {/* Status Badge */}
-                <div className="absolute top-4 left-4">
-                  <Badge variant={listing.status === 'active' ? 'success' : 'secondary'}>
-                    {listing.status === 'active' ? 'Disponível' : listing.status}
-                  </Badge>
-                </div>
-
-                {/* Digital/Tokenized Badges */}
-                <div className="absolute top-4 right-4 space-y-2">
-                  {listing.digital && (
-                    <Badge variant="primary">Digital</Badge>
-                  )}
-                  {listing.digital?.tokenizable && (
-                    <Badge variant="secondary">
-                      <Coins size={12} className="mr-1" />
-                      Tokenizado
-                    </Badge>
-                  )}
-                </div>
               </div>
               
-              {/* Thumbnail Navigation */}
+              {/* Thumbnails */}
               {listing.images.length > 1 && (
-                <div className="flex space-x-2 overflow-x-auto">
+                <div className="p-4 flex space-x-2 overflow-x-auto">
                   {listing.images.map((image, index) => (
                     <button
                       key={index}
                       onClick={() => setActiveImageIndex(index)}
-                      className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 ${
-                        activeImageIndex === index 
-                          ? 'border-bazari-red' 
-                          : 'border-sand-200'
+                      className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-colors ${
+                        index === activeImageIndex ? 'border-bazari-red' : 'border-transparent'
                       }`}
                     >
-                      <img 
-                        src={image} 
-                        alt={`${listing.title} ${index + 1}`}
+                      <img
+                        src={image}
+                        alt={`${listing.title} - ${index + 1}`}
                         className="w-full h-full object-cover"
                       />
                     </button>
@@ -463,197 +419,163 @@ export const MarketplaceListing: React.FC = () => {
               )}
             </Card>
 
-            {/* Product Info */}
-            <Card className="p-6 mb-6">
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex-1">
-                  <h1 className="text-3xl font-bold text-matte-black-900 mb-2">
-                    {listing.title}
-                  </h1>
+            {/* Details */}
+            <Card className="p-6">
+              <div className="mb-6">
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex-1 mr-4">
+                    <h1 className="text-2xl font-bold text-matte-black-900 mb-2">
+                      {listing.title}
+                    </h1>
+                    
+                    <div className="flex items-center space-x-4 mb-4">
+                      <div className="text-3xl font-bold text-bazari-red">
+                        {formatPrice(listing.price, listing.currency)}
+                      </div>
+                      
+                      <div className="flex items-center text-sm text-matte-black-600">
+                        <Star className="text-bazari-gold mr-1" size={14} />
+                        {listing.sellerRating.toFixed(1)} • {listing.views} visualizações
+                      </div>
+                    </div>
+                  </div>
                   
-                  <div className="flex items-center space-x-4 text-sm text-matte-black-600 mb-4">
-                    <span>{listing.views} visualizações</span>
-                    <span>•</span>
-                    <span>Categoria: {listing.category}</span>
-                    {listing.subcategory && (
-                      <>
-                        <span>•</span>
-                        <span>{listing.subcategory}</span>
-                      </>
-                    )}
+                  <div className="flex space-x-2">
+                    <Button variant="ghost" size="sm">
+                      <Heart size={16} />
+                    </Button>
+                    <Button variant="ghost" size="sm">
+                      <Share2 size={16} />
+                    </Button>
                   </div>
                 </div>
                 
-                <div className="flex space-x-2">
-                  <Button variant="ghost" size="sm">
-                    <Heart size={16} />
-                  </Button>
-                  <Button variant="ghost" size="sm">
-                    <Share2 size={16} />
-                  </Button>
+                <div className="flex items-center space-x-2 mb-4">
+                  <Badge variant="secondary">
+                    {listing.category}
+                  </Badge>
+                  {listing.subcategory && (
+                    <Badge variant="outline">
+                      {listing.subcategory}
+                    </Badge>
+                  )}
+                  {listing.digital && (
+                    <Badge variant="primary">
+                      Digital
+                    </Badge>
+                  )}
                 </div>
               </div>
 
-              {/* Enterprise Link */}
-              {enterprise && (
-                <div className="flex items-center space-x-2 mb-4 p-3 bg-bazari-red-50 rounded-lg">
-                  <Building className="text-bazari-red" size={16} />
-                  <span className="text-sm text-matte-black-700">Vendido por</span>
-                  <button
-                    onClick={handleViewEnterprise}
-                    className="font-medium text-bazari-red hover:text-bazari-red-700"
-                  >
-                    {enterprise.name}
-                  </button>
-                  {enterprise.verification.verified && (
-                    <Verified className="text-success" size={14} />
-                  )}
-                </div>
-              )}
+              {/* Tabs */}
+              <Tabs
+                tabs={tabsData}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+              />
+            </Card>
+          </div>
 
-              <div className="text-4xl font-bold text-bazari-red mb-6">
-                {formatPrice(listing.price, listing.currency)}
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Action Card */}
+            <Card className="p-6">
+              <div className="space-y-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-bazari-red mb-2">
+                    {formatPrice(listing.price, listing.currency)}
+                  </div>
+                  
+                  <Badge 
+                    variant={listing.status === 'active' ? 'success' : 'secondary'} 
+                    size="sm"
+                  >
+                    {listing.status === 'active' ? 'Disponível' : 'Indisponível'}
+                  </Badge>
+                </div>
+                
+                <div className="space-y-3">
+                  <Button className="w-full" size="lg">
+                    Comprar Agora
+                  </Button>
+                  
+                  <Button variant="outline" className="w-full">
+                    <MessageCircle size={16} className="mr-2" />
+                    Conversar
+                  </Button>
+                </div>
               </div>
             </Card>
 
-            {/* Tabs */}
-            <Tabs
-              tabs={tabsData}
-              activeTab={activeTab}
-              onTabChange={setActiveTab}
-            />
-          </motion.div>
-        </div>
-
-        {/* Sidebar */}
-        <div className="space-y-6">
-          {/* Purchase Card */}
-          <Card className="p-6 sticky top-8">
-            <div className="text-center mb-6">
-              <div className="text-3xl font-bold text-bazari-red mb-2">
-                {formatPrice(listing.price, listing.currency)}
-              </div>
-              <p className="text-sm text-matte-black-600">
-                {listing.currency === 'BZR' ? 'Aceita BZR' : 'Valor em reais'}
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              <Button 
-                className="w-full" 
-                size="lg"
-                onClick={handleContactSeller}
-              >
-                <MessageCircle size={16} className="mr-2" />
-                Entrar em Contato
-              </Button>
+            {/* Security Info */}
+            <Card className="p-6">
+              <h3 className="font-semibold text-matte-black-900 mb-4 flex items-center">
+                <Shield className="mr-2 text-success" size={20} />
+                Compra Protegida
+              </h3>
               
-              {listing.digital && (
-                <Button 
-                  variant="outline" 
-                  className="w-full"
-                  onClick={handleContactSeller}
-                >
-                  <Download size={16} className="mr-2" />
-                  Comprar Digital
-                </Button>
-              )}
-            </div>
-
-            {/* Quick Info */}
-            <div className="mt-6 pt-6 border-t border-sand-200 space-y-3">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-matte-black-600">Vendedor:</span>
-                <span className="font-medium text-matte-black-900">{listing.sellerName}</span>
-              </div>
-              
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-matte-black-600">Avaliação:</span>
-                <div className="flex items-center">
-                  <Star className="text-bazari-gold-600 mr-1" size={14} fill="currentColor" />
-                  <span className="font-medium text-matte-black-900">
-                    {listing.sellerRating.toFixed(1)}
-                  </span>
+              <div className="space-y-3 text-sm">
+                <div className="flex items-center text-success">
+                  <Check className="mr-2" size={16} />
+                  <span>Proteção do comprador</span>
+                </div>
+                
+                <div className="flex items-center text-success">
+                  <Check className="mr-2" size={16} />
+                  <span>Dados pessoais seguros</span>
+                </div>
+                
+                <div className="flex items-center text-success">
+                  <Check className="mr-2" size={16} />
+                  <span>Chat dentro da plataforma</span>
                 </div>
               </div>
-              
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-matte-black-600">Status:</span>
-                <Badge variant={listing.status === 'active' ? 'success' : 'secondary'} size="sm">
-                  {listing.status === 'active' ? 'Disponível' : 'Indisponível'}
-                </Badge>
-              </div>
-            </div>
-          </Card>
+            </Card>
 
-          {/* Security Info */}
-          <Card className="p-6">
-            <h3 className="font-semibold text-matte-black-900 mb-4 flex items-center">
-              <Shield className="mr-2 text-success" size={20} />
-              Compra Protegida
-            </h3>
-            
-            <div className="space-y-3 text-sm">
-              <div className="flex items-center text-success">
-                <Check className="mr-2" size={16} />
-                <span>Proteção do comprador</span>
-              </div>
+            {/* Similar Products */}
+            <Card className="p-6">
+              <h3 className="font-semibold text-matte-black-900 mb-4">
+                Produtos Similares
+              </h3>
               
-              <div className="flex items-center text-success">
-                <Check className="mr-2" size={16} />
-                <span>Dados pessoais seguros</span>
+              <div className="space-y-3">
+                {listings
+                  .filter(l => l.id !== listing.id && l.category === listing.category)
+                  .slice(0, 3)
+                  .map((similarListing) => (
+                    <button
+                      key={similarListing.id}
+                      onClick={() => navigate(`/marketplace/listing/${similarListing.id}`)}
+                      className="flex space-x-3 p-2 rounded-lg hover:bg-sand-50 w-full text-left"
+                    >
+                      <div className="w-12 h-12 bg-sand-200 rounded-lg flex-shrink-0">
+                        {similarListing.images[0] ? (
+                          <img 
+                            src={similarListing.images[0]} 
+                            alt={similarListing.title}
+                            className="w-full h-full object-cover rounded-lg"
+                          />
+                        ) : (
+                          <div className="flex items-center justify-center h-full">
+                            <Package className="text-matte-black-400" size={16} />
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-matte-black-900 line-clamp-2">
+                          {similarListing.title}
+                        </p>
+                        <p className="text-sm text-bazari-red font-semibold">
+                          {formatPrice(similarListing.price, similarListing.currency)}
+                        </p>
+                      </div>
+                    </button>
+                  ))
+                }
               </div>
-              
-              <div className="flex items-center text-success">
-                <Check className="mr-2" size={16} />
-                <span>Chat dentro da plataforma</span>
-              </div>
-            </div>
-          </Card>
-
-          {/* Similar Products */}
-          <Card className="p-6">
-            <h3 className="font-semibold text-matte-black-900 mb-4">
-              Produtos Similares
-            </h3>
-            
-            <div className="space-y-3">
-              {listings
-                .filter(l => l.id !== listing.id && l.category === listing.category)
-                .slice(0, 3)
-                .map((similarListing) => (
-                  <button
-                    key={similarListing.id}
-                    onClick={() => navigate(`/marketplace/listing/${similarListing.id}`)}
-                    className="flex space-x-3 p-2 rounded-lg hover:bg-sand-50 w-full text-left"
-                  >
-                    <div className="w-12 h-12 bg-sand-200 rounded-lg flex-shrink-0">
-                      {similarListing.images[0] ? (
-                        <img 
-                          src={similarListing.images[0]} 
-                          alt={similarListing.title}
-                          className="w-full h-full object-cover rounded-lg"
-                        />
-                      ) : (
-                        <div className="flex items-center justify-center h-full">
-                          <Package className="text-matte-black-400" size={16} />
-                        </div>
-                      )}
-                    </div>
-                    
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-matte-black-900 line-clamp-2">
-                        {similarListing.title}
-                      </p>
-                      <p className="text-sm text-bazari-red font-semibold">
-                        {formatPrice(similarListing.price, similarListing.currency)}
-                      </p>
-                    </div>
-                  </button>
-                ))
-              }
-            </div>
-          </Card>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
