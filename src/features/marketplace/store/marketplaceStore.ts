@@ -1,4 +1,5 @@
 // src/features/marketplace/store/marketplaceStore.ts
+// ✅ EXTENSÃO para suportar filtros por enterprise no EnterpriseDetail
 
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
@@ -19,7 +20,7 @@ export interface Listing {
   sellerId: string
   sellerName: string
   sellerRating: number
-  enterpriseId?: string
+  enterpriseId?: string // ✅ IMPORTANTE: vinculação com enterprise
   enterpriseName?: string
   status: 'active' | 'paused' | 'sold' | 'expired'
   createdAt: string
@@ -71,7 +72,7 @@ interface MarketplaceFilters {
   tokenizableOnly?: boolean
   freeShippingOnly?: boolean
   condition?: 'new' | 'used' | 'refurbished'
-  enterpriseId?: string
+  enterpriseId?: string // ✅ FILTRO POR ENTERPRISE
   location?: {
     city?: string
     state?: string
@@ -101,9 +102,13 @@ interface MarketplaceState {
   fetchListingById: (id: string) => Promise<Listing | null>
   incrementViews: (id: string) => void
   getRelatedListings: (listingId: string, limit?: number) => Listing[]
-  getListingsByEnterprise: (enterpriseId: string) => Listing[]
+  getListingsByEnterprise: (enterpriseId: string) => Listing[] // ✅ MÉTODO PARA ENTERPRISE DETAIL
   getPopularListings: (limit?: number) => Listing[]
   getRecentListings: (limit?: number) => Listing[]
+  
+  // ✅ NOVOS MÉTODOS para EnterpriseDetail
+  fetchListingsByEnterprise: (enterpriseId: string, filters?: Partial<MarketplaceFilters>) => Promise<Listing[]>
+  searchListingsInEnterprise: (enterpriseId: string, query: string) => Listing[]
 }
 
 export const useMarketplaceStore = create<MarketplaceState>()(
@@ -164,70 +169,49 @@ export const useMarketplaceStore = create<MarketplaceState>()(
 
       fetchListings: async (filters?: MarketplaceFilters) => {
         set({ isLoading: true })
-        
         try {
-          // Simula delay de API
-          await new Promise(resolve => setTimeout(resolve, 500))
+          // Mock API call
+          await new Promise(resolve => setTimeout(resolve, 300))
           
-          // Usa dados mock ao invés de API
           let filteredListings = [...mockListings]
           
-          // Aplica filtros se fornecidos
           if (filters) {
-            if (filters.category) {
-              filteredListings = filteredListings.filter(l => 
-                l.category === filters.category
-              )
-            }
-            if (filters.subcategory) {
-              filteredListings = filteredListings.filter(l => 
-                l.subcategory === filters.subcategory
-              )
-            }
             if (filters.search) {
               const query = filters.search.toLowerCase()
-              filteredListings = filteredListings.filter(l =>
-                l.title.toLowerCase().includes(query) ||
-                l.description.toLowerCase().includes(query) ||
-                l.sellerName.toLowerCase().includes(query)
+              filteredListings = filteredListings.filter(listing => 
+                listing.title.toLowerCase().includes(query) ||
+                listing.description.toLowerCase().includes(query) ||
+                listing.category.toLowerCase().includes(query) ||
+                listing.subcategory.toLowerCase().includes(query)
               )
             }
-            if (filters.digitalOnly) {
-              filteredListings = filteredListings.filter(l => l.digital)
+            
+            if (filters.category) {
+              filteredListings = filteredListings.filter(l => l.category === filters.category)
             }
-            if (filters.minPrice || filters.maxPrice) {
-              filteredListings = filteredListings.filter(l => {
-                const price = l.price
-                if (filters.minPrice && price < filters.minPrice) return false
-                if (filters.maxPrice && price > filters.maxPrice) return false
-                return true
-              })
-            }
-            if (filters.currency) {
-              filteredListings = filteredListings.filter(l => 
-                l.currency === filters.currency
-              )
-            }
-            if (filters.condition) {
-              filteredListings = filteredListings.filter(l => 
-                l.metadata?.condition === filters.condition
-              )
-            }
+            
             if (filters.enterpriseId) {
-              filteredListings = filteredListings.filter(l => 
-                l.enterpriseId === filters.enterpriseId
-              )
+              filteredListings = filteredListings.filter(l => l.enterpriseId === filters.enterpriseId)
             }
-          }
-          
-          // Aplica ordenação
-          if (filters?.sortBy) {
+            
+            if (filters.minPrice !== undefined) {
+              filteredListings = filteredListings.filter(l => l.price >= filters.minPrice!)
+            }
+            
+            if (filters.maxPrice !== undefined) {
+              filteredListings = filteredListings.filter(l => l.price <= filters.maxPrice!)
+            }
+            
+            if (filters.condition) {
+              filteredListings = filteredListings.filter(l => l.metadata?.condition === filters.condition)
+            }
+            
+            if (filters.digitalOnly) {
+              filteredListings = filteredListings.filter(l => !!l.digital)
+            }
+            
+            // Ordenação
             switch (filters.sortBy) {
-              case 'newest':
-                filteredListings.sort((a, b) => 
-                  new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-                )
-                break
               case 'price_asc':
                 filteredListings.sort((a, b) => a.price - b.price)
                 break
@@ -239,6 +223,10 @@ export const useMarketplaceStore = create<MarketplaceState>()(
                 break
               case 'views_desc':
                 filteredListings.sort((a, b) => b.views - a.views)
+                break
+              case 'newest':
+              default:
+                filteredListings.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                 break
             }
           }
@@ -307,8 +295,12 @@ export const useMarketplaceStore = create<MarketplaceState>()(
           .slice(0, limit)
       },
 
+      // ✅ MÉTODO PRINCIPAL para EnterpriseDetail
       getListingsByEnterprise: (enterpriseId: string) => {
-        return get().listings.filter(l => l.enterpriseId === enterpriseId)
+        return get().listings.filter(l => 
+          l.enterpriseId === enterpriseId && 
+          l.status === 'active'
+        )
       },
 
       getPopularListings: (limit = 6) => {
@@ -323,6 +315,67 @@ export const useMarketplaceStore = create<MarketplaceState>()(
           .filter(l => l.status === 'active')
           .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
           .slice(0, limit)
+      },
+
+      // ✅ NOVOS MÉTODOS para EnterpriseDetail
+
+      fetchListingsByEnterprise: async (enterpriseId: string, filters?: Partial<MarketplaceFilters>) => {
+        try {
+          // Em produção, fazer API call específica
+          await new Promise(resolve => setTimeout(resolve, 200))
+          
+          let enterpriseListings = get().listings.filter(l => 
+            l.enterpriseId === enterpriseId && l.status === 'active'
+          )
+          
+          // Aplicar filtros se fornecidos
+          if (filters) {
+            if (filters.search) {
+              const query = filters.search.toLowerCase()
+              enterpriseListings = enterpriseListings.filter(listing => 
+                listing.title.toLowerCase().includes(query) ||
+                listing.description.toLowerCase().includes(query) ||
+                listing.category.toLowerCase().includes(query)
+              )
+            }
+            
+            if (filters.category) {
+              enterpriseListings = enterpriseListings.filter(l => l.category === filters.category)
+            }
+            
+            if (filters.minPrice !== undefined) {
+              enterpriseListings = enterpriseListings.filter(l => l.price >= filters.minPrice!)
+            }
+            
+            if (filters.maxPrice !== undefined) {
+              enterpriseListings = enterpriseListings.filter(l => l.price <= filters.maxPrice!)
+            }
+            
+            if (filters.condition) {
+              enterpriseListings = enterpriseListings.filter(l => l.metadata?.condition === filters.condition)
+            }
+          }
+          
+          return enterpriseListings
+        } catch (error) {
+          console.error('Error fetching enterprise listings:', error)
+          return []
+        }
+      },
+
+      searchListingsInEnterprise: (enterpriseId: string, query: string) => {
+        const enterpriseListings = get().getListingsByEnterprise(enterpriseId)
+        
+        if (!query.trim()) return enterpriseListings
+        
+        const searchTerms = query.toLowerCase()
+        return enterpriseListings.filter(listing =>
+          listing.title.toLowerCase().includes(searchTerms) ||
+          listing.description.toLowerCase().includes(searchTerms) ||
+          listing.category.toLowerCase().includes(searchTerms) ||
+          listing.subcategory.toLowerCase().includes(searchTerms) ||
+          (listing.metadata?.brand && listing.metadata.brand.toLowerCase().includes(searchTerms))
+        )
       }
     }),
     {

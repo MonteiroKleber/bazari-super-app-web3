@@ -42,6 +42,23 @@ export interface Enterprise {
     mintPrice?: number
     mintCurrency?: 'BZR' | 'BRL'
   }
+  
+  // ✅ NOVOS CAMPOS OPCIONAIS PARA TOKENIZAÇÃO AVANÇADA
+  tokenized?: boolean // Alias para tokenization?.enabled (compatibilidade)
+  tokenSymbol?: string // ex.: ZARI, BZR-enterprise
+  totalSupply?: number // Oferta total de tokens
+  circulatingSupply?: number // Tokens em circulação
+  holdersCount?: number // Número de detentores
+  treasuryBalanceBZR?: number // Saldo do tesouro em BZR
+  revenueLast30dBZR?: number // Receita últimos 30 dias em BZR
+  revenueLast12mBZR?: number // Receita últimos 12 meses em BZR
+  profitMarginPct?: number // Margem de lucro em percentual
+  dividendPolicy?: 'none' | 'monthly' | 'quarterly' | 'yearly' // Política de dividendos
+  lastPayoutDate?: string // ISO date do último pagamento
+  priceBZR?: number // Preço atual do token em BZR (se existir)
+  priceChange24hPct?: number // Variação de preço em 24h
+  onChainAddress?: string // Endereço do contrato/token na blockchain
+
   reputation: {
     rating: number
     reviewCount: number
@@ -92,6 +109,7 @@ export interface EnterpriseFilters {
     radius?: number // km
   }
   tokenizable?: boolean
+  tokenized?: boolean // ✅ NOVO: filtrar por tokenizados
   verified?: boolean
   minRating?: number
   search?: string
@@ -108,4 +126,24 @@ export interface EnterpriseMetrics {
     categoryName: string
     count: number
   }[]
+}
+
+// ✅ NOVO: Interface para dados econômicos históricos
+export interface EnterpriseEconomicData {
+  enterpriseId: string
+  period: string // 'YYYY-MM' 
+  revenue: number
+  profit: number
+  profitMarginPct: number
+  holders: number
+  tokenPrice?: number
+  dividendsPaid?: number
+}
+
+// ✅ NOVO: Interface para holder de tokens
+export interface TokenHolder {
+  address: string
+  balance: number
+  percentage: number
+  since: string // ISO date
 }

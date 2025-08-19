@@ -2,7 +2,7 @@
 
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { Enterprise, EnterpriseFilters, EnterpriseMetrics } from '../types/enterprise.types'
+import { Enterprise, EnterpriseFilters, EnterpriseMetrics, EnterpriseEconomicData } from '../types/enterprise.types'
 import { mockEnterprises } from '@app/data/mockMarketplaceData'
 
 interface EnterpriseState {
@@ -13,10 +13,13 @@ interface EnterpriseState {
   isLoading: boolean
   metrics: EnterpriseMetrics | null
   
+  // ✅ NOVO: dados econômicos históricos
+  economicData: { [enterpriseId: string]: EnterpriseEconomicData[] }
+  
   // Actions
   setEnterprises: (enterprises: Enterprise[]) => void
   addEnterprise: (enterprise: Enterprise) => void
-  addOrMerge: (enterprise: Enterprise) => void // ✅ NOVO MÉTODO
+  addOrMerge: (enterprise: Enterprise) => void
   updateEnterprise: (id: string, updates: Partial<Enterprise>) => void
   removeEnterprise: (id: string) => void
   setCurrentEnterprise: (enterprise: Enterprise | null) => void
@@ -26,12 +29,15 @@ interface EnterpriseState {
   
   // API Actions
   fetchEnterprises: (filters?: EnterpriseFilters) => Promise<void>
-  fetchMyEnterprises: () => Promise<void>
-  fetchEnterpriseById: (id: string) => Promise<Enterprise | null>
-  createEnterprise: (data: Omit<Enterprise, 'id' | 'createdAt' | 'updatedAt' | 'stats' | 'reputation'>) => Promise<string>
+  fetchEnterpriseById: (id: string) => Promise<void>
+  createEnterprise: (enterpriseData: Omit<Enterprise, 'id' | 'createdAt' | 'updatedAt' | 'stats'>) => Promise<string>
   searchEnterprises: (query: string) => Promise<void>
   toggleEnterpriseTokenization: (id: string, enabled: boolean) => Promise<void>
   updateEnterpriseVerification: (id: string, verified: boolean) => Promise<void>
+  
+  // ✅ NOVOS MÉTODOS para funcionalidades econômicas
+  fetchEconomicData: (enterpriseId: string) => Promise<void>
+  updateTokenMetrics: (enterpriseId: string, metrics: Partial<Enterprise>) => Promise<void>
 }
 
 export const useEnterpriseStore = create<EnterpriseState>()(
@@ -43,18 +49,10 @@ export const useEnterpriseStore = create<EnterpriseState>()(
       filters: {},
       isLoading: false,
       metrics: null,
+      economicData: {},
 
       setEnterprises: (enterprises: Enterprise[]) => {
         set({ enterprises })
-        
-        // Atualizar myEnterprises baseado no usuário atual (se disponível)
-        // Nota: idealmente receberia userId como parâmetro ou do contexto
-        set(state => ({
-          myEnterprises: state.enterprises.filter(e => {
-            // Esta lógica será refinada no MarketplaceCreate
-            return e.ownerId // placeholder
-          })
-        }))
       },
 
       addEnterprise: (enterprise: Enterprise) => {
@@ -64,35 +62,30 @@ export const useEnterpriseStore = create<EnterpriseState>()(
         }))
       },
 
-      // ✅ NOVO MÉTODO: addOrMerge conforme especificado no documento
       addOrMerge: (enterprise: Enterprise) => {
         set(state => {
-          const enterprisesCopy = [...state.enterprises]
-          const myEnterprisesCopy = [...state.myEnterprises]
+          const existingIndex = state.enterprises.findIndex(e => e.id === enterprise.id)
           
-          // Verificar se já existe nos enterprises
-          const enterpriseIdx = enterprisesCopy.findIndex(x => x.id === enterprise.id)
-          if (enterpriseIdx >= 0) {
-            // Merge: atualizar existente
-            enterprisesCopy[enterpriseIdx] = { ...enterprisesCopy[enterpriseIdx], ...enterprise }
+          if (existingIndex >= 0) {
+            // Atualizar existente
+            const updatedEnterprises = [...state.enterprises]
+            updatedEnterprises[existingIndex] = enterprise
+            
+            const myExistingIndex = state.myEnterprises.findIndex(e => e.id === enterprise.id)
+            const updatedMyEnterprises = myExistingIndex >= 0 
+              ? state.myEnterprises.map(e => e.id === enterprise.id ? enterprise : e)
+              : state.myEnterprises
+            
+            return {
+              enterprises: updatedEnterprises,
+              myEnterprises: updatedMyEnterprises
+            }
           } else {
-            // Add: adicionar novo
-            enterprisesCopy.unshift(enterprise)
-          }
-          
-          // Verificar se já existe nos myEnterprises
-          const myIdx = myEnterprisesCopy.findIndex(x => x.id === enterprise.id)
-          if (myIdx >= 0) {
-            // Merge: atualizar existente
-            myEnterprisesCopy[myIdx] = { ...myEnterprisesCopy[myIdx], ...enterprise }
-          } else {
-            // Add: adicionar novo (se pertencer ao usuário)
-            myEnterprisesCopy.unshift(enterprise)
-          }
-          
-          return {
-            enterprises: enterprisesCopy,
-            myEnterprises: myEnterprisesCopy
+            // Adicionar novo
+            return {
+              enterprises: [enterprise, ...state.enterprises],
+              myEnterprises: [enterprise, ...state.myEnterprises]
+            }
           }
         })
       },
@@ -103,26 +96,25 @@ export const useEnterpriseStore = create<EnterpriseState>()(
           updatedAt: new Date().toISOString() 
         }
         
-        set(state => ({
-          enterprises: state.enterprises.map(e => 
+        set(state => {
+          const updateFn = (e: Enterprise) => 
             e.id === id ? { ...e, ...updatedEnterprise } : e
-          ),
-          myEnterprises: state.myEnterprises.map(e => 
-            e.id === id ? { ...e, ...updatedEnterprise } : e
-          ),
-          currentEnterprise: state.currentEnterprise?.id === id 
-            ? { ...state.currentEnterprise, ...updatedEnterprise }
-            : state.currentEnterprise
-        }))
+          
+          return {
+            enterprises: state.enterprises.map(updateFn),
+            myEnterprises: state.myEnterprises.map(updateFn),
+            currentEnterprise: state.currentEnterprise?.id === id 
+              ? { ...state.currentEnterprise, ...updatedEnterprise }
+              : state.currentEnterprise
+          }
+        })
       },
 
       removeEnterprise: (id: string) => {
         set(state => ({
           enterprises: state.enterprises.filter(e => e.id !== id),
           myEnterprises: state.myEnterprises.filter(e => e.id !== id),
-          currentEnterprise: state.currentEnterprise?.id === id 
-            ? null 
-            : state.currentEnterprise
+          currentEnterprise: state.currentEnterprise?.id === id ? null : state.currentEnterprise
         }))
       },
 
@@ -145,143 +137,111 @@ export const useEnterpriseStore = create<EnterpriseState>()(
       fetchEnterprises: async (filters?: EnterpriseFilters) => {
         set({ isLoading: true })
         try {
-          // Simula delay de API
-          await new Promise(resolve => setTimeout(resolve, 300))
+          // Mock API call
+          await new Promise(resolve => setTimeout(resolve, 500))
           
-          // Usa dados mock
           let filteredEnterprises = [...mockEnterprises]
           
-          // Aplica filtros se fornecidos
           if (filters) {
+            if (filters.search) {
+              const query = filters.search.toLowerCase()
+              filteredEnterprises = filteredEnterprises.filter(e => 
+                e.name.toLowerCase().includes(query) ||
+                e.description.toLowerCase().includes(query) ||
+                e.categories.some(cat => cat.toLowerCase().includes(query))
+              )
+            }
+            
             if (filters.category) {
               filteredEnterprises = filteredEnterprises.filter(e => 
                 e.categories.includes(filters.category!)
               )
             }
-            if (filters.subcategory) {
-              filteredEnterprises = filteredEnterprises.filter(e => 
-                e.subcategories.includes(filters.subcategory!)
-              )
-            }
-            if (filters.verified !== undefined) {
-              filteredEnterprises = filteredEnterprises.filter(e => 
-                e.verification.verified === filters.verified
-              )
-            }
+            
             if (filters.tokenizable !== undefined) {
               filteredEnterprises = filteredEnterprises.filter(e => 
                 e.tokenizable === filters.tokenizable
               )
             }
-            if (filters.search) {
-              const query = filters.search.toLowerCase()
-              filteredEnterprises = filteredEnterprises.filter(e =>
-                e.name.toLowerCase().includes(query) ||
-                e.description.toLowerCase().includes(query)
+            
+            // ✅ NOVO: filtro por tokenizado
+            if (filters.tokenized !== undefined) {
+              filteredEnterprises = filteredEnterprises.filter(e => 
+                (e.tokenizable && e.tokenization?.enabled) === filters.tokenized
               )
             }
+            
+            if (filters.verified !== undefined) {
+              filteredEnterprises = filteredEnterprises.filter(e => 
+                e.verification.verified === filters.verified
+              )
+            }
+            
             if (filters.minRating) {
               filteredEnterprises = filteredEnterprises.filter(e => 
                 e.reputation.rating >= filters.minRating!
               )
             }
-            if (filters.location) {
-              if (filters.location.city) {
-                filteredEnterprises = filteredEnterprises.filter(e =>
-                  e.address?.city?.toLowerCase().includes(filters.location!.city!.toLowerCase())
-                )
-              }
-              if (filters.location.state) {
-                filteredEnterprises = filteredEnterprises.filter(e =>
-                  e.address?.state?.toLowerCase().includes(filters.location!.state!.toLowerCase())
-                )
-              }
-            }
             
             // Ordenação
-            if (filters.sortBy) {
-              switch (filters.sortBy) {
-                case 'newest':
-                  filteredEnterprises.sort((a, b) => 
-                    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-                  )
-                  break
-                case 'rating':
-                  filteredEnterprises.sort((a, b) => b.reputation.rating - a.reputation.rating)
-                  break
-                case 'sales':
-                  filteredEnterprises.sort((a, b) => b.reputation.totalSales - a.reputation.totalSales)
-                  break
-                default:
-                  // 'relevance' - manter ordem padrão
-                  break
-              }
+            switch (filters.sortBy) {
+              case 'rating':
+                filteredEnterprises.sort((a, b) => b.reputation.rating - a.reputation.rating)
+                break
+              case 'sales':
+                filteredEnterprises.sort((a, b) => b.reputation.totalSales - a.reputation.totalSales)
+                break
+              case 'newest':
+                filteredEnterprises.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                break
+              default:
+                // relevance - manter ordem original
+                break
             }
           }
           
-          set({ enterprises: filteredEnterprises, filters })
+          set({ enterprises: filteredEnterprises, filters: filters || {} })
         } catch (error) {
           console.error('Error fetching enterprises:', error)
-          throw error
         } finally {
           set({ isLoading: false })
         }
       },
 
-      fetchMyEnterprises: async () => {
-        // Esta função assumiria algum contexto do usuário
-        // Por ora, usa a lista completa e filtra por ownerId
-        // (será refinado no MarketplaceCreate.tsx)
-        await get().fetchEnterprises()
-      },
-
-      // ✅ MELHORADO: fetchEnterpriseById mais robusto
       fetchEnterpriseById: async (id: string) => {
         set({ isLoading: true })
         try {
-          // Primeiro verifica se já está no store
-          const existing = get().enterprises.find(e => e.id === id)
-          if (existing) {
-            set({ currentEnterprise: existing, isLoading: false })
-            return existing
-          }
-          
-          // Simula delay de API para buscar por ID específico
           await new Promise(resolve => setTimeout(resolve, 300))
           
-          // Busca nos dados mock
-          const enterprise = mockEnterprises.find(e => e.id === id)
+          const enterprise = get().enterprises.find(e => e.id === id) || 
+                           mockEnterprises.find(e => e.id === id)
           
           if (enterprise) {
-            // Usa addOrMerge para atualizar o store
-            get().addOrMerge(enterprise)
             set({ currentEnterprise: enterprise })
-            return enterprise
+            
+            // Se não estava na lista, adicionar
+            if (!get().enterprises.find(e => e.id === id)) {
+              get().addOrMerge(enterprise)
+            }
+          } else {
+            set({ currentEnterprise: null })
           }
-          
-          return null
         } catch (error) {
           console.error('Error fetching enterprise:', error)
-          return null
+          set({ currentEnterprise: null })
         } finally {
           set({ isLoading: false })
         }
       },
 
-      createEnterprise: async (data) => {
+      createEnterprise: async (enterpriseData) => {
         set({ isLoading: true })
         try {
           await new Promise(resolve => setTimeout(resolve, 800))
           
           const newEnterprise: Enterprise = {
-            ...data,
-            id: crypto.randomUUID(),
-            reputation: {
-              rating: 0,
-              reviewCount: 0,
-              totalSales: 0,
-              completionRate: 0
-            },
+            ...enterpriseData,
+            id: `enterprise_${Date.now()}`,
             stats: {
               totalListings: 0,
               activeListings: 0,
@@ -295,7 +255,6 @@ export const useEnterpriseStore = create<EnterpriseState>()(
             updatedAt: new Date().toISOString()
           }
           
-          // ✅ USA addOrMerge em vez de addEnterprise
           get().addOrMerge(newEnterprise)
           return newEnterprise.id
         } catch (error) {
@@ -319,7 +278,8 @@ export const useEnterpriseStore = create<EnterpriseState>()(
             tokenization: {
               ...get().enterprises.find(e => e.id === id)?.tokenization,
               enabled
-            }
+            },
+            tokenized: enabled // ✅ Atualizar campo alias também
           })
         } catch (error) {
           console.error('Error toggling tokenization:', error)
@@ -342,6 +302,60 @@ export const useEnterpriseStore = create<EnterpriseState>()(
           console.error('Error updating verification:', error)
           throw error
         }
+      },
+
+      // ✅ NOVOS MÉTODOS
+
+      fetchEconomicData: async (enterpriseId: string) => {
+        try {
+          await new Promise(resolve => setTimeout(resolve, 200))
+          
+          // Mock data - últimos 12 meses
+          const months = 12
+          const mockData: EnterpriseEconomicData[] = []
+          const baseRevenue = 10000
+          
+          for (let i = months - 1; i >= 0; i--) {
+            const date = new Date()
+            date.setMonth(date.getMonth() - i)
+            
+            const growth = Math.random() * 0.3 + 0.85 // 85% a 115% do mês anterior
+            const revenue = Math.round(baseRevenue * (1 + i * 0.1) * growth)
+            const profitMargin = Math.random() * 10 + 5 // 5% a 15%
+            const profit = Math.round(revenue * (profitMargin / 100))
+            
+            mockData.push({
+              enterpriseId,
+              period: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`,
+              revenue,
+              profit,
+              profitMarginPct: profitMargin,
+              holders: Math.round(50 + i * 5 + Math.random() * 10),
+              tokenPrice: 100 + Math.random() * 50,
+              dividendsPaid: Math.round(profit * 0.3) // 30% do lucro como dividendos
+            })
+          }
+          
+          set(state => ({
+            economicData: {
+              ...state.economicData,
+              [enterpriseId]: mockData
+            }
+          }))
+        } catch (error) {
+          console.error('Error fetching economic data:', error)
+        }
+      },
+
+      updateTokenMetrics: async (enterpriseId: string, metrics: Partial<Enterprise>) => {
+        try {
+          await new Promise(resolve => setTimeout(resolve, 200))
+          
+          get().updateEnterprise(enterpriseId, metrics)
+        } catch (error) {
+          console.error('Error updating token metrics:', error)
+          throw error
+        }
       }
     }),
     {
@@ -350,7 +364,8 @@ export const useEnterpriseStore = create<EnterpriseState>()(
         enterprises: state.enterprises,
         myEnterprises: state.myEnterprises,
         filters: state.filters,
-        metrics: state.metrics
+        metrics: state.metrics,
+        economicData: state.economicData
       })
     }
   )

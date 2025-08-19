@@ -1871,6 +1871,231 @@
       }
     }
   },
+
+
+"enterpriseDetail": {
+    "tabs": {
+      "overview": {
+        "pt": "Visão Geral",
+        "en": "Overview", 
+        "es": "Resumen"
+      },
+      "listings": {
+        "pt": "Produtos & Serviços",
+        "en": "Products & Services",
+        "es": "Productos y Servicios"
+      },
+      "economy": {
+        "pt": "Economia / Token",
+        "en": "Economy / Token",
+        "es": "Economía / Token"
+      },
+      "about": {
+        "pt": "Sobre",
+        "en": "About",
+        "es": "Acerca de"
+      }
+    },
+    "actions": {
+      "share": {
+        "pt": "Compartilhar",
+        "en": "Share",
+        "es": "Compartir"
+      },
+      "contact": {
+        "pt": "Entrar em contato",
+        "en": "Contact",
+        "es": "Contactar"
+      },
+      "createListing": {
+        "pt": "Criar Anúncio",
+        "en": "Create Listing",
+        "es": "Crear Anuncio"
+      },
+      "linkCopied": {
+        "pt": "Link copiado!",
+        "en": "Link copied!",
+        "es": "¡Enlace copiado!"
+      }
+    },
+    "overview": {
+      "segment": {
+        "pt": "Segmento",
+        "en": "Segment",
+        "es": "Segmento"
+      },
+      "location": {
+        "pt": "Localização",
+        "en": "Location",
+        "es": "Ubicación"
+      },
+      "since": {
+        "pt": "Desde",
+        "en": "Since",
+        "es": "Desde"
+      },
+      "rating": {
+        "pt": "Avaliação",
+        "en": "Rating",
+        "es": "Calificación"
+      },
+      "listingsCount": {
+        "pt": "Anúncios",
+        "en": "Listings",
+        "es": "Anuncios"
+      }
+    },
+    "listings": {
+      "searchPlaceholder": {
+        "pt": "Busque por título, tags…",
+        "en": "Search by title, tags…",
+        "es": "Buscar por título, etiquetas…"
+      },
+      "filters": {
+        "category": {
+          "pt": "Categoria",
+          "en": "Category",
+          "es": "Categoría"
+        },
+        "subcategory": {
+          "pt": "Subcategoria",
+          "en": "Subcategory",
+          "es": "Subcategoría"
+        },
+        "priceMin": {
+          "pt": "Preço mín.",
+          "en": "Min. price",
+          "es": "Precio mín."
+        },
+        "priceMax": {
+          "pt": "Preço máx.",
+          "en": "Max. price",
+          "es": "Precio máx."
+        },
+        "condition": {
+          "pt": "Condição",
+          "en": "Condition",
+          "es": "Condición"
+        },
+        "sortBy": {
+          "pt": "Ordenar por",
+          "en": "Sort by",
+          "es": "Ordenar por"
+        }
+      },
+      "loadMore": {
+        "pt": "Carregar mais",
+        "en": "Load more",
+        "es": "Cargar más"
+      },
+      "empty": {
+        "pt": "Nenhum produto/serviço encontrado com esses filtros.",
+        "en": "No products/services found with these filters.",
+        "es": "No se encontraron productos/servicios con estos filtros."
+      }
+    },
+    "economy": {
+      "token": {
+        "pt": "Token",
+        "en": "Token",
+        "es": "Token"
+      },
+      "price": {
+        "pt": "Preço (BZR)",
+        "en": "Price (BZR)",
+        "es": "Precio (BZR)"
+      },
+      "change24h": {
+        "pt": "Variação 24h",
+        "en": "24h Change",
+        "es": "Cambio 24h"
+      },
+      "holders": {
+        "pt": "Holders",
+        "en": "Holders",
+        "es": "Tenedores"
+      },
+      "supply": {
+        "pt": "Oferta",
+        "en": "Supply",
+        "es": "Oferta"
+      },
+      "treasury": {
+        "pt": "Tesouro (BZR)",
+        "en": "Treasury (BZR)",
+        "es": "Tesorería (BZR)"
+      },
+      "revenue30d": {
+        "pt": "Receita (30d)",
+        "en": "Revenue (30d)",
+        "es": "Ingresos (30d)"
+      },
+      "revenue12m": {
+        "pt": "Receita (12m)",
+        "en": "Revenue (12m)",
+        "es": "Ingresos (12m)"
+      },
+      "profitMargin": {
+        "pt": "Margem de Lucro",
+        "en": "Profit Margin",
+        "es": "Margen de Beneficio"
+      },
+      "dividendPolicy": {
+        "pt": "Política de Dividendos",
+        "en": "Dividend Policy",
+        "es": "Política de Dividendos"
+      },
+      "lastPayout": {
+        "pt": "Último Pagamento",
+        "en": "Last Payout",
+        "es": "Último Pago"
+      },
+      "address": {
+        "pt": "Endereço on-chain",
+        "en": "On-chain Address",
+        "es": "Dirección on-chain"
+      },
+      "copy": {
+        "pt": "Copiar",
+        "en": "Copy",
+        "es": "Copiar"
+      },
+      "disclaimer": {
+        "pt": "Informações meramente ilustrativas e não constituem recomendação de investimento.",
+        "en": "Information is for illustration purposes only and does not constitute investment advice.",
+        "es": "La información es meramente ilustrativa y no constituye recomendación de inversión."
+      }
+    },
+    "about": {
+      "description": {
+        "pt": "Descrição",
+        "en": "Description",
+        "es": "Descripción"
+      },
+      "team": {
+        "pt": "Equipe",
+        "en": "Team",
+        "es": "Equipo"
+      },
+      "contacts": {
+        "pt": "Contatos",
+        "en": "Contacts",
+        "es": "Contactos"
+      },
+      "docs": {
+        "pt": "Documentos",
+        "en": "Documents",
+        "es": "Documentos"
+      }
+    },
+    "notFound": {
+      "pt": "Empreendimento não encontrado.",
+      "en": "Enterprise not found.",
+      "es": "Empresa no encontrada."
+    }
+  },
+
+
   "marketplace": {
     "title": {
       "pt": "Marketplace",
