@@ -1,9 +1,11 @@
 // src/features/marketplace/store/enterpriseStore.ts
+// ✅ CORRIGIDO: EnterpriseStore com carregamento correto dos dados mock
 
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { Enterprise, EnterpriseFilters, EnterpriseMetrics, EnterpriseEconomicData } from '../types/enterprise.types'
 import { mockEnterprises } from '@app/data/mockMarketplaceData'
+import { mockEnterprisesExtended } from '@app/data/mockEnterpriseTokenizationData'
 
 interface EnterpriseState {
   enterprises: Enterprise[]
@@ -12,6 +14,7 @@ interface EnterpriseState {
   filters: EnterpriseFilters
   isLoading: boolean
   metrics: EnterpriseMetrics | null
+  isInitialized: boolean // ✅ NOVO: flag para controlar inicialização
   
   // ✅ NOVO: dados econômicos históricos
   economicData: { [enterpriseId: string]: EnterpriseEconomicData[] }
@@ -38,6 +41,27 @@ interface EnterpriseState {
   // ✅ NOVOS MÉTODOS para funcionalidades econômicas
   fetchEconomicData: (enterpriseId: string) => Promise<void>
   updateTokenMetrics: (enterpriseId: string, metrics: Partial<Enterprise>) => Promise<void>
+  
+  // ✅ MÉTODO para inicialização
+  initializeMockData: () => void
+}
+
+// ✅ Combinar todos os dados mock
+const getAllMockEnterprises = (): Enterprise[] => {
+  const allEnterprises = [...mockEnterprises, ...mockEnterprisesExtended]
+  
+  // Remover duplicados
+  const uniqueEnterprises = allEnterprises.reduce((acc, enterprise) => {
+    const existingIndex = acc.findIndex(e => e.id === enterprise.id)
+    if (existingIndex >= 0) {
+      acc[existingIndex] = enterprise // Substituir com a versão mais recente
+    } else {
+      acc.push(enterprise)
+    }
+    return acc
+  }, [] as Enterprise[])
+  
+  return uniqueEnterprises
 }
 
 export const useEnterpriseStore = create<EnterpriseState>()(
@@ -50,9 +74,10 @@ export const useEnterpriseStore = create<EnterpriseState>()(
       isLoading: false,
       metrics: null,
       economicData: {},
+      isInitialized: false,
 
       setEnterprises: (enterprises: Enterprise[]) => {
-        set({ enterprises })
+        set({ enterprises, isInitialized: true })
       },
 
       addEnterprise: (enterprise: Enterprise) => {
@@ -134,13 +159,38 @@ export const useEnterpriseStore = create<EnterpriseState>()(
         set({ metrics })
       },
 
+      // ✅ MÉTODO para inicializar dados mock
+      initializeMockData: () => {
+        const state = get()
+        if (!state.isInitialized || state.enterprises.length === 0) {
+          const allMockEnterprises = getAllMockEnterprises()
+          console.log('Inicializando enterprises mock:', allMockEnterprises.length, 'enterprises')
+          set({ 
+            enterprises: allMockEnterprises, 
+            isInitialized: true 
+          })
+        }
+      },
+
       fetchEnterprises: async (filters?: EnterpriseFilters) => {
         set({ isLoading: true })
         try {
-          // Mock API call
+          // ✅ CORRIGIDO: Inicializar dados mock se necessário
+          const state = get()
+          if (!state.isInitialized || state.enterprises.length === 0) {
+            state.initializeMockData()
+          }
+          
+          // Mock API delay
           await new Promise(resolve => setTimeout(resolve, 500))
           
-          let filteredEnterprises = [...mockEnterprises]
+          let filteredEnterprises = [...get().enterprises]
+          
+          // ✅ Se ainda não tem dados, carregar dos mocks
+          if (filteredEnterprises.length === 0) {
+            filteredEnterprises = getAllMockEnterprises()
+            console.log('Carregando enterprises mock diretamente:', filteredEnterprises.length)
+          }
           
           if (filters) {
             if (filters.search) {
@@ -158,49 +208,52 @@ export const useEnterpriseStore = create<EnterpriseState>()(
               )
             }
             
-            if (filters.tokenizable !== undefined) {
-              filteredEnterprises = filteredEnterprises.filter(e => 
-                e.tokenizable === filters.tokenizable
-              )
-            }
-            
-            // ✅ NOVO: filtro por tokenizado
-            if (filters.tokenized !== undefined) {
-              filteredEnterprises = filteredEnterprises.filter(e => 
-                (e.tokenizable && e.tokenization?.enabled) === filters.tokenized
-              )
-            }
-            
             if (filters.verified !== undefined) {
               filteredEnterprises = filteredEnterprises.filter(e => 
-                e.verification.verified === filters.verified
+                e.verification?.verified === filters.verified
+              )
+            }
+            
+            if (filters.tokenized !== undefined) {
+              filteredEnterprises = filteredEnterprises.filter(e => 
+                e.tokenized === filters.tokenized
               )
             }
             
             if (filters.minRating) {
               filteredEnterprises = filteredEnterprises.filter(e => 
-                e.reputation.rating >= filters.minRating!
+                (e.reputation?.rating || 0) >= filters.minRating!
               )
             }
             
             // Ordenação
             switch (filters.sortBy) {
               case 'rating':
-                filteredEnterprises.sort((a, b) => b.reputation.rating - a.reputation.rating)
+                filteredEnterprises.sort((a, b) => (b.reputation?.rating || 0) - (a.reputation?.rating || 0))
                 break
               case 'sales':
-                filteredEnterprises.sort((a, b) => b.reputation.totalSales - a.reputation.totalSales)
+                filteredEnterprises.sort((a, b) => (b.reputation?.totalSales || 0) - (a.reputation?.totalSales || 0))
                 break
               case 'newest':
                 filteredEnterprises.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                 break
               default:
-                // relevance - manter ordem original
+                // relevance
                 break
             }
           }
           
-          set({ enterprises: filteredEnterprises, filters: filters || {} })
+          // ✅ Se não há filtros, carregar todos os dados
+          if (!filters) {
+            set({ 
+              enterprises: filteredEnterprises, 
+              filters: {},
+              isInitialized: true 
+            })
+          } else {
+            set({ filters: filters || {} })
+          }
+          
         } catch (error) {
           console.error('Error fetching enterprises:', error)
         } finally {
@@ -211,19 +264,20 @@ export const useEnterpriseStore = create<EnterpriseState>()(
       fetchEnterpriseById: async (id: string) => {
         set({ isLoading: true })
         try {
+          // ✅ Garantir que dados estão carregados
+          const state = get()
+          if (!state.isInitialized || state.enterprises.length === 0) {
+            state.initializeMockData()
+          }
+          
           await new Promise(resolve => setTimeout(resolve, 300))
           
-          const enterprise = get().enterprises.find(e => e.id === id) || 
-                           mockEnterprises.find(e => e.id === id)
-          
+          const enterprise = get().enterprises.find(e => e.id === id)
           if (enterprise) {
             set({ currentEnterprise: enterprise })
-            
-            // Se não estava na lista, adicionar
-            if (!get().enterprises.find(e => e.id === id)) {
-              get().addOrMerge(enterprise)
-            }
+            console.log('Enterprise encontrado:', enterprise.name, `(${enterprise.id})`)
           } else {
+            console.error('Enterprise não encontrado:', id)
             set({ currentEnterprise: null })
           }
         } catch (error) {
@@ -237,11 +291,13 @@ export const useEnterpriseStore = create<EnterpriseState>()(
       createEnterprise: async (enterpriseData) => {
         set({ isLoading: true })
         try {
-          await new Promise(resolve => setTimeout(resolve, 800))
+          await new Promise(resolve => setTimeout(resolve, 1000))
           
           const newEnterprise: Enterprise = {
             ...enterpriseData,
             id: `enterprise_${Date.now()}`,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
             stats: {
               totalListings: 0,
               activeListings: 0,
@@ -250,12 +306,19 @@ export const useEnterpriseStore = create<EnterpriseState>()(
               totalRevenue: { BZR: 0, BRL: 0 },
               avgResponseTime: 0
             },
-            status: 'active',
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            reputation: {
+              rating: 0,
+              reviewCount: 0,
+              totalSales: 0,
+              completionRate: 0
+            },
+            verification: {
+              verified: false,
+              documents: []
+            }
           }
           
-          get().addOrMerge(newEnterprise)
+          get().addEnterprise(newEnterprise)
           return newEnterprise.id
         } catch (error) {
           console.error('Error creating enterprise:', error)
@@ -271,68 +334,54 @@ export const useEnterpriseStore = create<EnterpriseState>()(
       },
 
       toggleEnterpriseTokenization: async (id: string, enabled: boolean) => {
+        set({ isLoading: true })
         try {
-          await new Promise(resolve => setTimeout(resolve, 300))
+          await new Promise(resolve => setTimeout(resolve, 500))
           
-          get().updateEnterprise(id, {
-            tokenization: {
-              ...get().enterprises.find(e => e.id === id)?.tokenization,
-              enabled
-            },
-            tokenized: enabled // ✅ Atualizar campo alias também
+          get().updateEnterprise(id, { 
+            tokenized: enabled,
+            tokenizable: true
           })
         } catch (error) {
           console.error('Error toggling tokenization:', error)
-          throw error
+        } finally {
+          set({ isLoading: false })
         }
       },
 
       updateEnterpriseVerification: async (id: string, verified: boolean) => {
+        set({ isLoading: true })
         try {
-          await new Promise(resolve => setTimeout(resolve, 300))
+          await new Promise(resolve => setTimeout(resolve, 500))
           
-          get().updateEnterprise(id, {
-            verification: {
-              ...get().enterprises.find(e => e.id === id)?.verification,
-              verified,
-              verifiedAt: verified ? new Date().toISOString() : undefined
-            }
+          get().updateEnterprise(id, { 
+            verification: { verified, documents: ['cnpj'] }
           })
         } catch (error) {
           console.error('Error updating verification:', error)
-          throw error
+        } finally {
+          set({ isLoading: false })
         }
       },
 
-      // ✅ NOVOS MÉTODOS
-
       fetchEconomicData: async (enterpriseId: string) => {
+        set({ isLoading: true })
         try {
-          await new Promise(resolve => setTimeout(resolve, 200))
+          await new Promise(resolve => setTimeout(resolve, 300))
           
-          // Mock data - últimos 12 meses
-          const months = 12
+          // Mock economic data
           const mockData: EnterpriseEconomicData[] = []
-          const baseRevenue = 10000
-          
-          for (let i = months - 1; i >= 0; i--) {
+          for (let i = 0; i < 12; i++) {
             const date = new Date()
             date.setMonth(date.getMonth() - i)
-            
-            const growth = Math.random() * 0.3 + 0.85 // 85% a 115% do mês anterior
-            const revenue = Math.round(baseRevenue * (1 + i * 0.1) * growth)
-            const profitMargin = Math.random() * 10 + 5 // 5% a 15%
-            const profit = Math.round(revenue * (profitMargin / 100))
-            
             mockData.push({
               enterpriseId,
-              period: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`,
-              revenue,
-              profit,
-              profitMarginPct: profitMargin,
-              holders: Math.round(50 + i * 5 + Math.random() * 10),
-              tokenPrice: 100 + Math.random() * 50,
-              dividendsPaid: Math.round(profit * 0.3) // 30% do lucro como dividendos
+              period: date.toISOString().slice(0, 7), // YYYY-MM
+              revenue: Math.floor(Math.random() * 50000) + 20000,
+              profit: Math.floor(Math.random() * 8000) + 2000,
+              profitMarginPct: Math.random() * 15 + 10,
+              holders: Math.floor(Math.random() * 100) + 200,
+              tokenPrice: Math.random() * 20 + 40
             })
           }
           
@@ -344,17 +393,21 @@ export const useEnterpriseStore = create<EnterpriseState>()(
           }))
         } catch (error) {
           console.error('Error fetching economic data:', error)
+        } finally {
+          set({ isLoading: false })
         }
       },
 
       updateTokenMetrics: async (enterpriseId: string, metrics: Partial<Enterprise>) => {
+        set({ isLoading: true })
         try {
-          await new Promise(resolve => setTimeout(resolve, 200))
+          await new Promise(resolve => setTimeout(resolve, 300))
           
           get().updateEnterprise(enterpriseId, metrics)
         } catch (error) {
           console.error('Error updating token metrics:', error)
-          throw error
+        } finally {
+          set({ isLoading: false })
         }
       }
     }),
@@ -364,8 +417,8 @@ export const useEnterpriseStore = create<EnterpriseState>()(
         enterprises: state.enterprises,
         myEnterprises: state.myEnterprises,
         filters: state.filters,
-        metrics: state.metrics,
-        economicData: state.economicData
+        economicData: state.economicData,
+        isInitialized: state.isInitialized
       })
     }
   )

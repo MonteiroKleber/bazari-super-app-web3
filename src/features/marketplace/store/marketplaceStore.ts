@@ -1,10 +1,11 @@
 // src/features/marketplace/store/marketplaceStore.ts
-// ✅ EXTENSÃO para suportar filtros por enterprise no EnterpriseDetail
+// ✅ CORRIGIDO: fetchListings agora carrega dados mock corretamente
 
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import categories from '@app/data/categories.json'
 import { mockListings } from '@app/data/mockMarketplaceData'
+import { mockListingsExtended } from '@app/data/mockEnterpriseTokenizationData'
 
 export interface Listing {
   id: string
@@ -88,6 +89,7 @@ interface MarketplaceState {
   filters: MarketplaceFilters
   isLoading: boolean
   categories: typeof categories.categories
+  isInitialized: boolean // ✅ NOVO: flag para controlar inicialização
   
   // Actions
   setListings: (listings: Listing[]) => void
@@ -109,6 +111,27 @@ interface MarketplaceState {
   // ✅ NOVOS MÉTODOS para EnterpriseDetail
   fetchListingsByEnterprise: (enterpriseId: string, filters?: Partial<MarketplaceFilters>) => Promise<Listing[]>
   searchListingsInEnterprise: (enterpriseId: string, query: string) => Listing[]
+  
+  // ✅ MÉTODO para inicialização
+  initializeMockData: () => void
+}
+
+// ✅ Combinar todos os dados mock
+const getAllMockListings = (): Listing[] => {
+  const allListings = [...mockListings, ...mockListingsExtended]
+  
+  // Remover duplicados
+  const uniqueListings = allListings.reduce((acc, listing) => {
+    const existingIndex = acc.findIndex(l => l.id === listing.id)
+    if (existingIndex >= 0) {
+      acc[existingIndex] = listing // Substituir com a versão mais recente
+    } else {
+      acc.push(listing)
+    }
+    return acc
+  }, [] as Listing[])
+  
+  return uniqueListings
 }
 
 export const useMarketplaceStore = create<MarketplaceState>()(
@@ -119,6 +142,7 @@ export const useMarketplaceStore = create<MarketplaceState>()(
       filters: {},
       isLoading: false,
       categories: categories.categories,
+      isInitialized: false,
 
       setListings: (listings: Listing[]) => {
         set({ listings })
@@ -162,6 +186,19 @@ export const useMarketplaceStore = create<MarketplaceState>()(
         set({ isLoading })
       },
 
+      // ✅ MÉTODO para inicializar dados mock
+      initializeMockData: () => {
+        const state = get()
+        if (!state.isInitialized || state.listings.length === 0) {
+          const allMockListings = getAllMockListings()
+          console.log('Inicializando dados mock:', allMockListings.length, 'listings')
+          set({ 
+            listings: allMockListings, 
+            isInitialized: true 
+          })
+        }
+      },
+
       searchListings: async (query: string) => {
         const filters = { ...get().filters, search: query }
         await get().fetchListings(filters)
@@ -170,11 +207,24 @@ export const useMarketplaceStore = create<MarketplaceState>()(
       fetchListings: async (filters?: MarketplaceFilters) => {
         set({ isLoading: true })
         try {
-          // Mock API call
+          // ✅ CORRIGIDO: Inicializar dados mock se necessário
+          const state = get()
+          if (!state.isInitialized || state.listings.length === 0) {
+            state.initializeMockData()
+          }
+          
+          // Mock API delay
           await new Promise(resolve => setTimeout(resolve, 300))
           
-          let filteredListings = [...mockListings]
+          let filteredListings = [...get().listings] // Usar dados já carregados
           
+          // ✅ Se ainda não tem dados, carregar dos mocks
+          if (filteredListings.length === 0) {
+            filteredListings = getAllMockListings()
+            console.log('Carregando dados mock diretamente:', filteredListings.length)
+          }
+          
+          // Aplicar filtros se fornecidos
           if (filters) {
             if (filters.search) {
               const query = filters.search.toLowerCase()
@@ -188,6 +238,10 @@ export const useMarketplaceStore = create<MarketplaceState>()(
             
             if (filters.category) {
               filteredListings = filteredListings.filter(l => l.category === filters.category)
+            }
+            
+            if (filters.subcategory) {
+              filteredListings = filteredListings.filter(l => l.subcategory === filters.subcategory)
             }
             
             if (filters.enterpriseId) {
@@ -231,7 +285,17 @@ export const useMarketplaceStore = create<MarketplaceState>()(
             }
           }
           
-          set({ listings: filteredListings, filters: filters || {} })
+          // ✅ Se não há filtros, carregar todos os dados
+          if (!filters) {
+            set({ 
+              listings: filteredListings, 
+              filters: {},
+              isInitialized: true 
+            })
+          } else {
+            set({ filters: filters || {} })
+          }
+          
         } catch (error) {
           console.error('Error fetching listings:', error)
         } finally {
@@ -261,6 +325,12 @@ export const useMarketplaceStore = create<MarketplaceState>()(
         set({ isLoading: true })
         try {
           await new Promise(resolve => setTimeout(resolve, 200))
+          
+          // ✅ Garantir que dados estão carregados
+          const state = get()
+          if (state.listings.length === 0) {
+            state.initializeMockData()
+          }
           
           const listing = get().listings.find(l => l.id === id)
           return listing || null
@@ -297,10 +367,20 @@ export const useMarketplaceStore = create<MarketplaceState>()(
 
       // ✅ MÉTODO PRINCIPAL para EnterpriseDetail
       getListingsByEnterprise: (enterpriseId: string) => {
-        return get().listings.filter(l => 
+        const listings = get().listings
+        
+        // ✅ Se não há listings, inicializar
+        if (listings.length === 0) {
+          get().initializeMockData()
+        }
+        
+        const result = get().listings.filter(l => 
           l.enterpriseId === enterpriseId && 
           l.status === 'active'
         )
+        
+        console.log(`Listings para enterprise ${enterpriseId}:`, result.length)
+        return result
       },
 
       getPopularListings: (limit = 6) => {
@@ -323,6 +403,12 @@ export const useMarketplaceStore = create<MarketplaceState>()(
         try {
           // Em produção, fazer API call específica
           await new Promise(resolve => setTimeout(resolve, 200))
+          
+          // ✅ Garantir que dados estão carregados
+          const state = get()
+          if (state.listings.length === 0) {
+            state.initializeMockData()
+          }
           
           let enterpriseListings = get().listings.filter(l => 
             l.enterpriseId === enterpriseId && l.status === 'active'
@@ -356,6 +442,7 @@ export const useMarketplaceStore = create<MarketplaceState>()(
             }
           }
           
+          console.log(`fetchListingsByEnterprise ${enterpriseId}:`, enterpriseListings.length)
           return enterpriseListings
         } catch (error) {
           console.error('Error fetching enterprise listings:', error)
@@ -383,7 +470,8 @@ export const useMarketplaceStore = create<MarketplaceState>()(
       partialize: (state) => ({
         listings: state.listings,
         myListings: state.myListings,
-        filters: state.filters
+        filters: state.filters,
+        isInitialized: state.isInitialized
       })
     }
   )

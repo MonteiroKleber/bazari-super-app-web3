@@ -1,5 +1,5 @@
-// src/app/data/mockMarketplaceDataExtended.ts
-// ✅ Dados mock estendidos que vinculam enterprises e listings
+// src/app/data/mockEnterpriseTokenizationData.ts
+// ✅ CORRIGIDO: Dados mock estendidos com vinculação correta entre enterprises e listings
 
 import { Enterprise } from '@features/marketplace/types/enterprise.types'
 import { Listing } from '@features/marketplace/store/marketplaceStore'
@@ -12,251 +12,185 @@ export const mockEnterprisesExtended: Enterprise[] = [
     ownerName: 'João Silva',
     name: 'Bazari Tech Solutions',
     description: 'Especializada em soluções tecnológicas inovadoras para transformação digital de empresas. Oferecemos desenvolvimento de software, consultoria em blockchain e implementação de sistemas descentralizados.',
-    logo: 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=400',
-    banner: 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?w=1200&h=400&fit=crop',
-    categories: ['technology', 'software'],
-    subcategories: ['blockchain', 'web-development'],
+    logo: 'https://picsum.photos/100/100?random=101',
+    banner: 'https://picsum.photos/800/200?random=201',
+    categories: ['technology', 'blockchain'],
+    subcategories: ['software_development', 'consulting'],
     address: {
-      street: 'Rua das Inovações, 123',
+      street: 'Av. Paulista, 1000',
       city: 'São Paulo',
       state: 'SP',
       country: 'Brasil',
-      zipCode: '01310-100',
-      coordinates: {
-        lat: -23.5505,
-        lng: -46.6333
-      }
+      zipCode: '01310-100'
     },
     contact: {
-      phone: '+55 11 99999-0001',
+      phone: '+55 11 99999-9999',
       email: 'contato@bazaritech.com',
       website: 'https://bazaritech.com',
       socialMedia: {
-        instagram: 'bazaritech',
-        linkedin: 'bazari-tech-solutions',
-        twitter: 'bazaritech'
+        instagram: '@bazaritech',
+        linkedin: 'bazari-tech-solutions'
       }
     },
+    // ✅ Dados de tokenização
     tokenizable: true,
-    tokenization: {
-      enabled: true,
-      totalSupply: 100000,
-      currentSupply: 75000,
-      royaltyPercentage: 8,
-      transferable: true,
-      mintPrice: 50,
-      mintCurrency: 'BZR'
-    },
-    // ✅ CAMPOS ESTENDIDOS DE TOKENIZAÇÃO
     tokenized: true,
     tokenSymbol: 'BZRT',
-    totalSupply: 100000,
-    circulatingSupply: 75000,
+    totalSupply: 1000000,
+    circulatingSupply: 750000,
     holdersCount: 342,
     treasuryBalanceBZR: 125000,
-    revenueLast30dBZR: 45000,
-    revenueLast12mBZR: 520000,
+    revenueLast30dBZR: 52000,
+    revenueLast12mBZR: 580000,
     profitMarginPct: 12.5,
     dividendPolicy: 'quarterly',
-    lastPayoutDate: '2024-12-31T00:00:00Z',
-    priceBZR: 52.75,
-    priceChange24hPct: 2.3,
-    onChainAddress: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
+    lastPayoutDate: '2024-12-15T00:00:00Z',
+    priceBZR: 52.30,
+    priceChange24hPct: 3.45,
+    onChainAddress: '5F3fKFQG9MJNjzCfHmVGbBpfQvHnYz8mG9J4a2b3c4d5e6f7',
     reputation: {
       rating: 4.8,
-      reviewCount: 127,
+      reviewCount: 156,
       totalSales: 89,
-      completionRate: 98.5
+      completionRate: 98.9
     },
     verification: {
       verified: true,
-      verifiedAt: '2024-01-15T10:00:00Z',
-      documents: ['cnpj', 'address_proof', 'bank_account']
+      documents: ['cnpj', 'proof_of_address', 'bank_account']
     },
     settings: {
       autoAcceptOrders: false,
-      minOrderValue: 100,
+      minOrderValue: 1000,
       maxOrderValue: 50000,
       acceptedCurrencies: ['BZR', 'BRL'],
-      deliveryMethods: ['digital', 'consulting']
+      deliveryMethods: ['digital', 'custom']
     },
     stats: {
-      totalListings: 12,
-      activeListings: 10,
-      soldListings: 89,
-      totalViews: 5420,
-      totalRevenue: {
-        BZR: 156000,
-        BRL: 89000
-      },
-      avgResponseTime: 45
+      totalListings: 8,
+      activeListings: 6,
+      soldListings: 2,
+      totalViews: 12450,
+      totalRevenue: { BZR: 125000, BRL: 85000 },
+      avgResponseTime: 15
     },
     status: 'active',
-    createdAt: '2023-08-15T09:00:00Z',
-    updatedAt: '2025-01-15T14:30:00Z'
+    createdAt: '2023-06-15T00:00:00.000Z',
+    updatedAt: '2025-01-15T10:30:00.000Z'
   },
   {
     id: 'enterprise_2',
     ownerId: 'user_2',
     ownerName: 'Maria Santos',
-    name: 'Verde Sustentável',
-    description: 'Empresa focada em soluções sustentáveis e produtos ecológicos. Desenvolvemos projetos de energia renovável, consultoria ambiental e comercializamos produtos orgânicos certificados.',
-    logo: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400',
-    banner: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1200&h=400&fit=crop',
-    categories: ['sustainability', 'environment'],
-    subcategories: ['renewable-energy', 'organic-products'],
+    name: 'EcoVerde Sustentável',
+    description: 'Produtos sustentáveis e ecológicos para um futuro mais verde. Especializados em soluções ambientalmente responsáveis para casa e empresa.',
+    logo: 'https://picsum.photos/100/100?random=102',
+    banner: 'https://picsum.photos/800/200?random=202',
+    categories: ['sustainability', 'home'],
+    subcategories: ['eco_products', 'cleaning'],
     address: {
-      street: 'Av. das Árvores, 456',
+      street: 'R. das Flores, 123',
       city: 'Curitiba',
       state: 'PR',
       country: 'Brasil',
-      zipCode: '80010-000'
+      zipCode: '80020-100'
     },
     contact: {
-      phone: '+55 41 98888-0002',
-      email: 'contato@verdesustentavel.com',
-      website: 'https://verdesustentavel.com',
+      phone: '+55 41 98888-8888',
+      email: 'maria@ecoverde.com.br',
+      website: 'https://ecoverde.com.br',
       socialMedia: {
-        instagram: 'verdesustentavel',
-        facebook: 'VerdeS ustentavel'
+        instagram: '@ecoverde_sustentavel'
       }
     },
-    tokenizable: true,
-    tokenization: {
-      enabled: true,
-      totalSupply: 50000,
-      currentSupply: 32000,
-      royaltyPercentage: 6,
-      transferable: true,
-      mintPrice: 80,
-      mintCurrency: 'BZR'
-    },
-    // ✅ CAMPOS ESTENDIDOS DE TOKENIZAÇÃO
-    tokenized: true,
-    tokenSymbol: 'VERDE',
-    totalSupply: 50000,
-    circulatingSupply: 32000,
-    holdersCount: 187,
-    treasuryBalanceBZR: 95000,
-    revenueLast30dBZR: 28000,
-    revenueLast12mBZR: 340000,
-    profitMarginPct: 9.8,
-    dividendPolicy: 'monthly',
-    lastPayoutDate: '2025-01-31T00:00:00Z',
-    priceBZR: 85.20,
-    priceChange24hPct: -1.2,
-    onChainAddress: '5FvwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
+    tokenizable: false,
+    tokenized: false,
     reputation: {
-      rating: 4.6,
-      reviewCount: 89,
-      totalSales: 67,
-      completionRate: 95.2
+      rating: 4.5,
+      reviewCount: 78,
+      totalSales: 234,
+      completionRate: 96.5
     },
     verification: {
       verified: true,
-      verifiedAt: '2024-03-20T15:30:00Z',
-      documents: ['cnpj', 'environmental_license']
+      documents: ['cnpj', 'proof_of_address']
     },
     settings: {
       autoAcceptOrders: true,
-      minOrderValue: 50,
-      acceptedCurrencies: ['BZR', 'BRL'],
-      deliveryMethods: ['shipping', 'pickup']
+      minOrderValue: 25,
+      maxOrderValue: 1000,
+      acceptedCurrencies: ['BRL'],
+      deliveryMethods: ['standard', 'express', 'pickup']
     },
     stats: {
-      totalListings: 18,
-      activeListings: 15,
-      soldListings: 67,
-      totalViews: 3890,
-      totalRevenue: {
-        BZR: 89000,
-        BRL: 124000
-      },
-      avgResponseTime: 120
+      totalListings: 15,
+      activeListings: 12,
+      soldListings: 3,
+      totalViews: 8950,
+      totalRevenue: { BZR: 0, BRL: 25400 },
+      avgResponseTime: 25
     },
     status: 'active',
-    createdAt: '2023-11-10T11:20:00Z',
-    updatedAt: '2025-01-20T16:45:00Z'
+    createdAt: '2023-08-20T00:00:00.000Z',
+    updatedAt: '2025-01-12T14:20:00.000Z'
   },
   {
     id: 'enterprise_3',
     ownerId: 'user_3',
     ownerName: 'Carlos Oliveira',
     name: 'Artesãos Unidos',
-    description: 'Cooperativa de artesãos especializados em produtos únicos feitos à mão. Valorizamos técnicas tradicionais e materiais sustentáveis para criar peças exclusivas de decoração, utensílios e arte.',
-    logo: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
-    banner: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=1200&h=400&fit=crop',
+    description: 'Cooperativa de artesãos que preserva técnicas tradicionais brasileiras. Cada peça é única e feita com carinho por mestres artesãos.',
+    logo: 'https://picsum.photos/100/100?random=103',
+    banner: 'https://picsum.photos/800/200?random=203',
     categories: ['handcraft', 'art'],
-    subcategories: ['decoration', 'traditional'],
+    subcategories: ['ceramics', 'furniture', 'decoration'],
     address: {
-      street: 'Rua dos Artistas, 789',
+      street: 'Praça da Arte, 45',
       city: 'Ouro Preto',
       state: 'MG',
       country: 'Brasil',
       zipCode: '35400-000'
     },
     contact: {
-      phone: '+55 31 97777-0003',
-      email: 'contato@artesaosunidos.com',
+      phone: '+55 31 97777-7777',
+      email: 'carlos@artesaosunidos.com.br',
       socialMedia: {
-        instagram: 'artesaosunidos'
+        instagram: '@artesaos_unidos'
       }
     },
     tokenizable: true,
-    tokenization: {
-      enabled: false, // Suporta mas não ativou ainda
-      totalSupply: 25000,
-      currentSupply: 0,
-      royaltyPercentage: 5,
-      transferable: true,
-      mintPrice: 25,
-      mintCurrency: 'BZR'
-    },
-    // ✅ NÃO TOKENIZADO AINDA
-    tokenized: false,
-    tokenSymbol: 'ARTE',
-    totalSupply: 25000,
-    circulatingSupply: 0,
-    holdersCount: 0,
-    treasuryBalanceBZR: 0,
-    revenueLast30dBZR: 15000, // Ainda tem receita normal
-    revenueLast12mBZR: 180000,
-    profitMarginPct: 15.2,
-    dividendPolicy: 'none',
+    tokenized: false, // Pode ser tokenizado mas ainda não foi
     reputation: {
       rating: 4.4,
-      reviewCount: 52,
-      totalSales: 34,
-      completionRate: 92.8
+      reviewCount: 45,
+      totalSales: 67,
+      completionRate: 94.2
     },
     verification: {
       verified: false,
-      documents: []
+      documents: ['cnpj']
     },
     settings: {
       autoAcceptOrders: false,
-      minOrderValue: 30,
-      acceptedCurrencies: ['BZR', 'BRL'],
-      deliveryMethods: ['shipping']
+      minOrderValue: 50,
+      maxOrderValue: 5000,
+      acceptedCurrencies: ['BRL'],
+      deliveryMethods: ['standard', 'pickup']
     },
     stats: {
-      totalListings: 8,
-      activeListings: 6,
-      soldListings: 34,
-      totalViews: 1240,
-      totalRevenue: {
-        BZR: 45000,
-        BRL: 67000
-      },
-      avgResponseTime: 180
+      totalListings: 22,
+      activeListings: 18,
+      soldListings: 4,
+      totalViews: 5670,
+      totalRevenue: { BZR: 0, BRL: 18900 },
+      avgResponseTime: 45
     },
     status: 'active',
-    createdAt: '2024-02-05T14:15:00Z',
-    updatedAt: '2025-01-18T10:20:00Z'
+    createdAt: '2023-11-10T00:00:00.000Z',
+    updatedAt: '2025-01-10T16:15:00.000Z'
   }
 ]
 
-// ✅ LISTINGS MOCK vinculados aos enterprises
+// ✅ LISTINGS MOCK com vinculação correta aos enterprises
 export const mockListingsExtended: Listing[] = [
   // Listings da Bazari Tech Solutions (enterprise_1)
   {
@@ -274,7 +208,7 @@ export const mockListingsExtended: Listing[] = [
     sellerId: 'user_1',
     sellerName: 'João Silva',
     sellerRating: 4.8,
-    enterpriseId: 'enterprise_1', // ✅ VINCULAÇÃO
+    enterpriseId: 'enterprise_1', // ✅ VINCULAÇÃO CORRETA
     enterpriseName: 'Bazari Tech Solutions',
     status: 'active',
     createdAt: '2025-01-10T09:00:00Z',
@@ -306,7 +240,7 @@ export const mockListingsExtended: Listing[] = [
     sellerId: 'user_1',
     sellerName: 'João Silva',
     sellerRating: 4.8,
-    enterpriseId: 'enterprise_1', // ✅ VINCULAÇÃO
+    enterpriseId: 'enterprise_1', // ✅ VINCULAÇÃO CORRETA
     enterpriseName: 'Bazari Tech Solutions',
     status: 'active',
     createdAt: '2025-01-08T11:20:00Z',
@@ -324,105 +258,112 @@ export const mockListingsExtended: Listing[] = [
     price: 25000,
     currency: 'BZR',
     category: 'technology',
-    subcategory: 'web-development',
+    subcategory: 'software',
     images: [
-      'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600'
+      'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600'
     ],
     sellerId: 'user_1',
     sellerName: 'João Silva',
     sellerRating: 4.8,
-    enterpriseId: 'enterprise_1', // ✅ VINCULAÇÃO
+    enterpriseId: 'enterprise_1', // ✅ VINCULAÇÃO CORRETA
     enterpriseName: 'Bazari Tech Solutions',
     status: 'active',
-    createdAt: '2025-01-05T15:30:00Z',
-    updatedAt: '2025-01-10T09:15:00Z',
-    views: 234
+    createdAt: '2025-01-05T08:30:00Z',
+    updatedAt: '2025-01-14T12:00:00Z',
+    views: 234,
+    digital: {
+      type: 'software',
+      deliveryInstructions: 'Entrega em até 60 dias. Inclui treinamento da equipe.'
+    }
   },
 
-  // Listings da Verde Sustentável (enterprise_2)
+  // Listings da EcoVerde Sustentável (enterprise_2)
   {
     id: 'listing_4',
-    title: 'Kit Solar Residencial 5kW',
-    description: 'Sistema completo de energia solar para residências. Inclui painéis, inversor, estrutura de fixação e instalação. Economia de até 90% na conta de luz.',
-    price: 18000,
+    title: 'Kit Limpeza Ecológica Completo',
+    description: 'Kit com 5 produtos de limpeza 100% naturais e biodegradáveis. Ideais para manter sua casa limpa respeitando o meio ambiente.',
+    price: 85,
     currency: 'BRL',
     category: 'sustainability',
-    subcategory: 'renewable-energy',
+    subcategory: 'cleaning',
     images: [
-      'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600'
+      'https://images.unsplash.com/photo-1563453392212-326ad7d8dd8e?w=600'
     ],
     sellerId: 'user_2',
     sellerName: 'Maria Santos',
-    sellerRating: 4.6,
-    enterpriseId: 'enterprise_2', // ✅ VINCULAÇÃO
-    enterpriseName: 'Verde Sustentável',
+    sellerRating: 4.5,
+    enterpriseId: 'enterprise_2', // ✅ VINCULAÇÃO CORRETA
+    enterpriseName: 'EcoVerde Sustentável',
     status: 'active',
-    createdAt: '2025-01-12T10:45:00Z',
-    updatedAt: '2025-01-15T13:20:00Z',
-    views: 178,
+    createdAt: '2025-01-12T10:00:00Z',
+    updatedAt: '2025-01-16T08:15:00Z',
+    views: 67,
     metadata: {
       condition: 'new',
-      warranty: '25 anos nos painéis, 10 anos no inversor',
       shipping: {
         free: true,
-        methods: ['Entrega e instalação incluída'],
-        estimatedDays: 30
+        methods: ['Correios', 'Entrega local'],
+        estimatedDays: 5
       }
     }
   },
   {
     id: 'listing_5',
-    title: 'Cesta Orgânica Semanal - Grande',
-    description: 'Cesta com variedade de frutas, verduras e legumes orgânicos certificados. Produtos frescos, direto do produtor para sua mesa.',
-    price: 120,
+    title: 'Sabonete Artesanal - Lavanda',
+    description: 'Sabonete artesanal com óleo essencial de lavanda. Hidratante natural, sem parabenos nem sulfatos. Embalagem compostável.',
+    price: 25,
     currency: 'BRL',
     category: 'sustainability',
-    subcategory: 'organic-products',
+    subcategory: 'personal_care',
     images: [
-      'https://images.unsplash.com/photo-1542838132-92c53300491e?w=600'
+      'https://images.unsplash.com/photo-1556909411-f73e4ea421a8?w=600'
     ],
     sellerId: 'user_2',
     sellerName: 'Maria Santos',
-    sellerRating: 4.6,
-    enterpriseId: 'enterprise_2', // ✅ VINCULAÇÃO
-    enterpriseName: 'Verde Sustentável',
+    sellerRating: 4.5,
+    enterpriseId: 'enterprise_2', // ✅ VINCULAÇÃO CORRETA
+    enterpriseName: 'EcoVerde Sustentável',
     status: 'active',
-    createdAt: '2025-01-14T08:00:00Z',
-    updatedAt: '2025-01-16T12:30:00Z',
-    views: 267,
+    createdAt: '2025-01-14T15:30:00Z',
+    updatedAt: '2025-01-16T10:45:00Z',
+    views: 43,
     metadata: {
       condition: 'new',
       shipping: {
         free: false,
-        methods: ['Entrega semanal'],
-        estimatedDays: 1,
-        cost: 15
+        methods: ['Correios'],
+        estimatedDays: 7,
+        cost: 12
       }
     }
   },
   {
     id: 'listing_6',
-    title: 'Consultoria em Sustentabilidade Empresarial',
-    description: 'Análise completa dos processos da sua empresa para implementação de práticas sustentáveis. Relatório detalhado e plano de ação.',
-    price: 3500,
-    currency: 'BZR',
+    title: 'Sacolas Reutilizáveis - Pack 3 unid.',
+    description: 'Sacolas ecológicas feitas de algodão orgânico. Resistentes e laváveis. Substitua as sacolas plásticas de forma sustentável.',
+    price: 45,
+    currency: 'BRL',
     category: 'sustainability',
-    subcategory: 'consulting',
+    subcategory: 'bags',
     images: [
-      'https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=600'
+      'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600'
     ],
     sellerId: 'user_2',
     sellerName: 'Maria Santos',
-    sellerRating: 4.6,
-    enterpriseId: 'enterprise_2', // ✅ VINCULAÇÃO
-    enterpriseName: 'Verde Sustentável',
+    sellerRating: 4.5,
+    enterpriseId: 'enterprise_2', // ✅ VINCULAÇÃO CORRETA
+    enterpriseName: 'EcoVerde Sustentável',
     status: 'active',
-    createdAt: '2025-01-09T14:20:00Z',
-    updatedAt: '2025-01-13T11:45:00Z',
-    views: 92,
-    digital: {
-      type: 'other',
-      deliveryInstructions: 'Relatório digital + apresentação presencial ou online.'
+    createdAt: '2025-01-09T12:45:00Z',
+    updatedAt: '2025-01-13T14:20:00Z',
+    views: 78,
+    metadata: {
+      condition: 'new',
+      shipping: {
+        free: true,
+        methods: ['Correios'],
+        estimatedDays: 5
+      }
     }
   },
 
@@ -441,7 +382,7 @@ export const mockListingsExtended: Listing[] = [
     sellerId: 'user_3',
     sellerName: 'Carlos Oliveira',
     sellerRating: 4.4,
-    enterpriseId: 'enterprise_3', // ✅ VINCULAÇÃO
+    enterpriseId: 'enterprise_3', // ✅ VINCULAÇÃO CORRETA
     enterpriseName: 'Artesãos Unidos',
     status: 'active',
     createdAt: '2025-01-11T16:00:00Z',
@@ -471,7 +412,7 @@ export const mockListingsExtended: Listing[] = [
     sellerId: 'user_3',
     sellerName: 'Carlos Oliveira',
     sellerRating: 4.4,
-    enterpriseId: 'enterprise_3', // ✅ VINCULAÇÃO
+    enterpriseId: 'enterprise_3', // ✅ VINCULAÇÃO CORRETA
     enterpriseName: 'Artesãos Unidos',
     status: 'active',
     createdAt: '2025-01-07T13:15:00Z',
@@ -483,6 +424,36 @@ export const mockListingsExtended: Listing[] = [
         free: true,
         methods: ['Entrega local'],
         estimatedDays: 21
+      }
+    }
+  },
+  {
+    id: 'listing_9',
+    title: 'Quadro Pintura Paisagem - Ouro Preto',
+    description: 'Pintura original retratando as belas paisagens de Ouro Preto. Técnica mista sobre tela, moldura em madeira. Arte autêntica mineira.',
+    price: 450,
+    currency: 'BRL',
+    category: 'handcraft',
+    subcategory: 'art',
+    images: [
+      'https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=600'
+    ],
+    sellerId: 'user_3',
+    sellerName: 'Carlos Oliveira',
+    sellerRating: 4.4,
+    enterpriseId: 'enterprise_3', // ✅ VINCULAÇÃO CORRETA
+    enterpriseName: 'Artesãos Unidos',
+    status: 'active',
+    createdAt: '2025-01-13T11:00:00Z',
+    updatedAt: '2025-01-15T13:45:00Z',
+    views: 92,
+    metadata: {
+      condition: 'new',
+      shipping: {
+        free: false,
+        methods: ['Correios'],
+        estimatedDays: 12,
+        cost: 28
       }
     }
   }
@@ -524,7 +495,7 @@ export const extendMockData = (existingEnterprises: Enterprise[], existingListin
   }
 }
 
-// ✅ DADOS de séries temporais para gráficos
+// ✅ DADOS de séries temporais para gráficos econômicos
 export const mockEconomicHistory = {
   'enterprise_1': [
     { month: '2024-02', revenue: 38000, profit: 4750, profitMarginPct: 12.5, holders: 245, tokenPrice: 45.20 },
@@ -537,21 +508,15 @@ export const mockEconomicHistory = {
     { month: '2024-09', revenue: 49100, profit: 6137, profitMarginPct: 12.5, holders: 331, tokenPrice: 52.20 },
     { month: '2024-10', revenue: 51000, profit: 6375, profitMarginPct: 12.5, holders: 336, tokenPrice: 53.10 },
     { month: '2024-11', revenue: 48700, profit: 6087, profitMarginPct: 12.5, holders: 339, tokenPrice: 52.40 },
-    { month: '2024-12', revenue: 52500, profit: 6562, profitMarginPct: 12.5, holders: 341, tokenPrice: 53.80 },
-    { month: '2025-01', revenue: 45000, profit: 5625, profitMarginPct: 12.5, holders: 342, tokenPrice: 52.75 }
-  ],
-  'enterprise_2': [
-    { month: '2024-02', revenue: 22000, profit: 2156, profitMarginPct: 9.8, holders: 145, tokenPrice: 75.30 },
-    { month: '2024-03', revenue: 24500, profit: 2401, profitMarginPct: 9.8, holders: 152, tokenPrice: 78.20 },
-    { month: '2024-04', revenue: 26000, profit: 2548, profitMarginPct: 9.8, holders: 158, tokenPrice: 80.40 },
-    { month: '2024-05', revenue: 28500, profit: 2793, profitMarginPct: 9.8, holders: 165, tokenPrice: 82.10 },
-    { month: '2024-06', revenue: 30000, profit: 2940, profitMarginPct: 9.8, holders: 171, tokenPrice: 84.50 },
-    { month: '2024-07', revenue: 31200, profit: 3057, profitMarginPct: 9.8, holders: 176, tokenPrice: 86.30 },
-    { month: '2024-08', revenue: 29800, profit: 2920, profitMarginPct: 9.8, holders: 179, tokenPrice: 85.90 },
-    { month: '2024-09', revenue: 32100, profit: 3145, profitMarginPct: 9.8, holders: 182, tokenPrice: 87.60 },
-    { month: '2024-10', revenue: 33000, profit: 3234, profitMarginPct: 9.8, holders: 184, tokenPrice: 88.40 },
-    { month: '2024-11', revenue: 31500, profit: 3087, profitMarginPct: 9.8, holders: 186, tokenPrice: 86.70 },
-    { month: '2024-12', revenue: 34200, profit: 3351, profitMarginPct: 9.8, holders: 187, tokenPrice: 89.10 },
-    { month: '2025-01', revenue: 28000, profit: 2744, profitMarginPct: 9.8, holders: 187, tokenPrice: 85.20 }
+    { month: '2024-12', revenue: 52000, profit: 6500, profitMarginPct: 12.5, holders: 342, tokenPrice: 52.30 }
   ]
 }
+
+// ✅ Logs para debug
+console.log('mockEnterprisesExtended carregado:', mockEnterprisesExtended.length, 'enterprises')
+console.log('mockListingsExtended carregado:', mockListingsExtended.length, 'listings')
+console.log('Vinculações enterprise -> listings:')
+mockEnterprisesExtended.forEach(enterprise => {
+  const enterpriseListings = mockListingsExtended.filter(l => l.enterpriseId === enterprise.id)
+  console.log(`- ${enterprise.name} (${enterprise.id}): ${enterpriseListings.length} listings`)
+})

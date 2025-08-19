@@ -1,4 +1,5 @@
 // src/features/marketplace/hooks/useEnterpriseListings.ts
+// ✅ CORRIGIDO: Hook para gerenciar listings de um empreendimento específico
 
 import React from 'react'
 import { useMarketplaceStore, Listing } from '../store/marketplaceStore'
@@ -68,7 +69,9 @@ export const useEnterpriseListings = ({
     listings, 
     getListingsByEnterprise, 
     isLoading: storeLoading,
-    fetchListings 
+    fetchListings,
+    initializeMockData,
+    isInitialized
   } = useMarketplaceStore()
 
   // States
@@ -81,6 +84,14 @@ export const useEnterpriseListings = ({
   const [currentPage, setCurrentPage] = React.useState(1)
   const [isLoading, setIsLoading] = React.useState(false)
 
+  // ✅ Garantir que dados estão inicializados
+  React.useEffect(() => {
+    if (!isInitialized || listings.length === 0) {
+      console.log('Inicializando dados no hook...')
+      initializeMockData()
+    }
+  }, [isInitialized, listings.length, initializeMockData])
+
   // Debounce search query
   React.useEffect(() => {
     const timer = setTimeout(() => {
@@ -92,21 +103,28 @@ export const useEnterpriseListings = ({
     }, debounceMs)
 
     return () => clearTimeout(timer)
-  }, [searchQuery, debounceMs, debouncedSearchQuery])
+  }, [searchQuery, debounceMs])
 
-  // Get all listings for this enterprise
+  // ✅ Get all listings for this enterprise
   const allListings = React.useMemo(() => {
-    return getListingsByEnterprise(enterpriseId)
-  }, [getListingsByEnterprise, enterpriseId, listings])
+    if (!enterpriseId || listings.length === 0) {
+      console.log('Sem enterprise ID ou listings vazios')
+      return []
+    }
+    
+    const result = getListingsByEnterprise(enterpriseId)
+    console.log(`Hook: ${result.length} listings para enterprise ${enterpriseId}`)
+    return result
+  }, [enterpriseId, listings, getListingsByEnterprise])
 
-  // Apply filters and search
+  // Apply search and filters
   const filteredListings = React.useMemo(() => {
-    let filtered = [...allListings]
+    let result = [...allListings]
 
     // Apply search
     if (debouncedSearchQuery.trim()) {
       const query = debouncedSearchQuery.toLowerCase()
-      filtered = filtered.filter(listing =>
+      result = result.filter(listing =>
         listing.title.toLowerCase().includes(query) ||
         listing.description.toLowerCase().includes(query) ||
         listing.category.toLowerCase().includes(query) ||
@@ -115,71 +133,68 @@ export const useEnterpriseListings = ({
       )
     }
 
-    // Apply category filter
+    // Apply filters
     if (filters.category) {
-      filtered = filtered.filter(listing => listing.category === filters.category)
+      result = result.filter(l => l.category === filters.category)
     }
 
-    // Apply subcategory filter
     if (filters.subcategory) {
-      filtered = filtered.filter(listing => listing.subcategory === filters.subcategory)
+      result = result.filter(l => l.subcategory === filters.subcategory)
     }
 
-    // Apply price filters
     if (filters.priceMin) {
       const minPrice = parseFloat(filters.priceMin)
       if (!isNaN(minPrice)) {
-        filtered = filtered.filter(listing => listing.price >= minPrice)
+        result = result.filter(l => l.price >= minPrice)
       }
     }
 
     if (filters.priceMax) {
       const maxPrice = parseFloat(filters.priceMax)
       if (!isNaN(maxPrice)) {
-        filtered = filtered.filter(listing => listing.price <= maxPrice)
+        result = result.filter(l => l.price <= maxPrice)
       }
     }
 
-    // Apply condition filter
     if (filters.condition) {
-      filtered = filtered.filter(listing => listing.metadata?.condition === filters.condition)
+      result = result.filter(l => l.metadata?.condition === filters.condition)
     }
 
     // Apply sorting
     switch (filters.sortBy) {
       case 'price_asc':
-        filtered.sort((a, b) => a.price - b.price)
+        result.sort((a, b) => a.price - b.price)
         break
       case 'price_desc':
-        filtered.sort((a, b) => b.price - a.price)
+        result.sort((a, b) => b.price - a.price)
         break
       case 'rating_desc':
-        filtered.sort((a, b) => b.sellerRating - a.sellerRating)
+        result.sort((a, b) => b.sellerRating - a.sellerRating)
         break
       case 'views_desc':
-        filtered.sort((a, b) => b.views - a.views)
+        result.sort((a, b) => b.views - a.views)
         break
       case 'newest':
       default:
-        filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
         break
     }
 
-    return filtered
+    console.log(`Filtered listings: ${result.length}`)
+    return result
   }, [allListings, debouncedSearchQuery, filters])
 
-  // Apply pagination
-  const paginatedListings = React.useMemo(() => {
-    const startIndex = 0
-    const endIndex = currentPage * itemsPerPage
-    return filteredListings.slice(startIndex, endIndex)
-  }, [filteredListings, currentPage, itemsPerPage])
-
-  // Pagination calculations
+  // Pagination
   const totalPages = Math.ceil(filteredListings.length / itemsPerPage)
   const hasMorePages = currentPage < totalPages
 
-  // Check if there are active filters
+  const paginatedListings = React.useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage
+    const endIndex = startIndex + itemsPerPage
+    return filteredListings.slice(0, endIndex) // Load more pattern
+  }, [filteredListings, currentPage, itemsPerPage])
+
+  // Check if filters are active
   const hasActiveFilters = React.useMemo(() => {
     return Object.entries(filters).some(([key, value]) => {
       if (key === 'sortBy') return value !== 'newest'
@@ -194,7 +209,7 @@ export const useEnterpriseListings = ({
     setCurrentPage(1)
   }, [])
 
-  // Load more items (for infinite scroll)
+  // Load more for infinite scroll
   const loadMore = React.useCallback(() => {
     if (hasMorePages && !isLoading) {
       setCurrentPage(prev => prev + 1)
@@ -206,6 +221,7 @@ export const useEnterpriseListings = ({
     setIsLoading(true)
     try {
       await fetchListings()
+      setCurrentPage(1)
     } catch (error) {
       console.error('Error refreshing listings:', error)
     } finally {
@@ -217,13 +233,6 @@ export const useEnterpriseListings = ({
   React.useEffect(() => {
     setCurrentPage(1)
   }, [filters])
-
-  // Auto-refresh when enterprise changes
-  React.useEffect(() => {
-    if (enterpriseId && allListings.length === 0) {
-      refresh()
-    }
-  }, [enterpriseId, allListings.length, refresh])
 
   return {
     // Data
@@ -253,43 +262,4 @@ export const useEnterpriseListings = ({
     loadMore,
     refresh
   }
-}
-
-// Hook adicional para estatísticas dos listings
-export const useEnterpriseListingsStats = (listings: Listing[]) => {
-  return React.useMemo(() => {
-    const totalListings = listings.length
-    const digitalListings = listings.filter(l => l.digital).length
-    const tokenizableListings = listings.filter(l => l.digital?.tokenizable).length
-    
-    const averagePrice = listings.length > 0 
-      ? listings.reduce((sum, l) => sum + l.price, 0) / listings.length 
-      : 0
-    
-    const categoriesCount = listings.reduce((acc, listing) => {
-      acc[listing.category] = (acc[listing.category] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
-    
-    const mostPopularCategory = Object.entries(categoriesCount)
-      .sort(([,a], [,b]) => b - a)[0]?.[0]
-    
-    const totalViews = listings.reduce((sum, l) => sum + l.views, 0)
-    
-    const priceRange = listings.length > 0 ? {
-      min: Math.min(...listings.map(l => l.price)),
-      max: Math.max(...listings.map(l => l.price))
-    } : { min: 0, max: 0 }
-
-    return {
-      totalListings,
-      digitalListings,
-      tokenizableListings,
-      averagePrice,
-      categoriesCount,
-      mostPopularCategory,
-      totalViews,
-      priceRange
-    }
-  }, [listings])
 }
