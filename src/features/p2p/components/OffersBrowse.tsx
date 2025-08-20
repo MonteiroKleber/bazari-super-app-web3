@@ -452,7 +452,7 @@ export const OffersBrowse: React.FC = () => {
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
               <h1 className="text-3xl font-bold text-matte-black-900">
-                Marketplace P2P
+                Cambio P2P
               </h1>
               <p className="text-matte-black-600 mt-1">
                 {stats.filtered} de {stats.total} ofertas disponíveis

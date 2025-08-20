@@ -114,38 +114,412 @@ export const P2PHome: React.FC = () => {
               </div>
             </div>
 
-            <div className="space-y-3">
-              <Button 
-                onClick={async () => {
-                  try {
-                    // Simular navegação direta para trade inexistente
-                    navigate('/p2p/trade/test_trade_123')
-                  } catch (error) {
-                    console.error('Navigation error:', error)
-                  }
-                }}
-                size="sm"
-                className="w-full"
-              >
-                Ir para TradeRoom (ID inexistente)
-              </Button>
+            <div className="space-y-4">
+              <div className="text-sm font-semibold text-yellow-800 mb-3">
+                🛒 CENÁRIOS COMO COMPRADOR
+              </div>
+              
+              <div className="grid grid-cols-2 gap-2">
+                <Button 
+                  onClick={async () => {
+                    try {
+                      const { createTrade } = useTradesStore.getState()
+                      const trade = await createTrade({
+                        offerId: 'buyer_new_' + Date.now(),
+                        buyerId: user?.id || 'buyer_123',
+                        sellerId: 'seller_456',
+                        amountBZR: '80.00',
+                        paymentMethod: 'PIX',
+                        priceBZR: 5.10
+                      })
+                      // Status: CREATED (aguardando vendedor)
+                      navigate(`/p2p/trade/${trade.id}`)
+                    } catch (error) { console.error('Error:', error) }
+                  }}
+                  size="sm"
+                  className="text-xs bg-gray-600 hover:bg-gray-700"
+                >
+                  🕐 Aguardar Vendedor
+                </Button>
 
-              <Button 
-                onClick={() => {
-                  // Navegar para ofertas
-                  navigate('/p2p/offers')
-                }}
-                variant="outline"
-                size="sm"
-                className="w-full"
-              >
-                Ver Ofertas (criar trade real)
-              </Button>
+                <Button 
+                  onClick={async () => {
+                    try {
+                      const { createTrade } = useTradesStore.getState()
+                      const trade = await createTrade({
+                        offerId: 'buyer_pay_' + Date.now(),
+                        buyerId: user?.id || 'buyer_123',
+                        sellerId: 'seller_456',
+                        amountBZR: '100.00',
+                        paymentMethod: 'PIX',
+                        priceBZR: 5.12
+                      })
+                      
+                      // Simular BZR já bloqueado - PRECISO FAZER PIX
+                      if (trade) {
+                        trade.status = 'ESCROW_LOCKED'
+                        trade.escrow = {
+                          escrowId: 'escrow_' + Date.now(),
+                          from: trade.sellerId,
+                          to: trade.buyerId,
+                          amountBZR: trade.amountBZR,
+                          createdAt: Date.now() - 300000,
+                          expiresAt: Date.now() + 86400000
+                        }
+                        trade.timeline.push({
+                          ts: Date.now() - 300000,
+                          type: 'ESCROW_LOCKED',
+                          payload: { escrowId: trade.escrow.escrowId }
+                        })
+                      }
+                      navigate(`/p2p/trade/${trade.id}`)
+                    } catch (error) { console.error('Error:', error) }
+                  }}
+                  size="sm"
+                  className="text-xs bg-blue-600 hover:bg-blue-700"
+                >
+                  💳 Fazer PIX Agora
+                </Button>
+
+                <Button 
+                  onClick={async () => {
+                    try {
+                      const { createTrade } = useTradesStore.getState()
+                      const trade = await createTrade({
+                        offerId: 'buyer_wait_' + Date.now(),
+                        buyerId: user?.id || 'buyer_123',
+                        sellerId: 'seller_456',
+                        amountBZR: '75.00',
+                        paymentMethod: 'TED',
+                        priceBZR: 5.08
+                      })
+                      
+                      // Simular que JÁ FIZ PIX - aguardando vendedor
+                      if (trade) {
+                        trade.status = 'PAYMENT_MARKED'
+                        trade.escrow = {
+                          escrowId: 'escrow_' + Date.now(),
+                          from: trade.sellerId,
+                          to: trade.buyerId,
+                          amountBZR: trade.amountBZR,
+                          createdAt: Date.now() - 600000,
+                          expiresAt: Date.now() + 86400000
+                        }
+                        trade.timeline.push(
+                          {
+                            ts: Date.now() - 600000,
+                            type: 'ESCROW_LOCKED',
+                            payload: { escrowId: trade.escrow.escrowId }
+                          },
+                          {
+                            ts: Date.now() - 120000,
+                            type: 'PAYMENT_MARKED',
+                            payload: { proof: 'TED enviada - Comprovante salvo' }
+                          }
+                        )
+                      }
+                      navigate(`/p2p/trade/${trade.id}`)
+                    } catch (error) { console.error('Error:', error) }
+                  }}
+                  size="sm"
+                  className="text-xs bg-purple-600 hover:bg-purple-700"
+                >
+                  ⏳ Já Paguei
+                </Button>
+
+                <Button 
+                  onClick={async () => {
+                    try {
+                      const { createTrade } = useTradesStore.getState()
+                      const trade = await createTrade({
+                        offerId: 'buyer_done_' + Date.now(),
+                        buyerId: user?.id || 'buyer_123',
+                        sellerId: 'seller_456',
+                        amountBZR: '120.00',
+                        paymentMethod: 'PIX',
+                        priceBZR: 5.00
+                      })
+                      
+                      // Trade CONCLUÍDO - recebi BZR
+                      if (trade) {
+                        trade.status = 'RELEASED'
+                        trade.timeline.push(
+                          {
+                            ts: Date.now() - 1800000,
+                            type: 'ESCROW_LOCKED',
+                            payload: {}
+                          },
+                          {
+                            ts: Date.now() - 900000,
+                            type: 'PAYMENT_MARKED',
+                            payload: { proof: 'PIX enviado' }
+                          },
+                          {
+                            ts: Date.now() - 300000,
+                            type: 'FUNDS_RELEASED',
+                            payload: {}
+                          }
+                        )
+                      }
+                      navigate(`/p2p/trade/${trade.id}`)
+                    } catch (error) { console.error('Error:', error) }
+                  }}
+                  size="sm"
+                  className="text-xs bg-green-600 hover:bg-green-700"
+                >
+                  ✅ Recebi BZR
+                </Button>
+              </div>
+
+              <div className="text-sm font-semibold text-yellow-800 mb-3 mt-4">
+                🏪 CENÁRIOS COMO VENDEDOR
+              </div>
+              
+              <div className="grid grid-cols-2 gap-2">
+                <Button 
+                  onClick={async () => {
+                    try {
+                      const { createTrade } = useTradesStore.getState()
+                      const trade = await createTrade({
+                        offerId: 'seller_new_' + Date.now(),
+                        buyerId: 'buyer_456',
+                        sellerId: user?.id || 'seller_123',
+                        amountBZR: '90.00',
+                        paymentMethod: 'PIX',
+                        priceBZR: 5.15
+                      })
+                      // Status: CREATED (preciso bloquear BZR)
+                      navigate(`/p2p/trade/${trade.id}`)
+                    } catch (error) { console.error('Error:', error) }
+                  }}
+                  size="sm"
+                  className="text-xs bg-orange-600 hover:bg-orange-700"
+                >
+                  🔒 Bloquear BZR
+                </Button>
+
+                <Button 
+                  onClick={async () => {
+                    try {
+                      const { createTrade } = useTradesStore.getState()
+                      const trade = await createTrade({
+                        offerId: 'seller_wait_' + Date.now(),
+                        buyerId: 'buyer_456',
+                        sellerId: user?.id || 'seller_123',
+                        amountBZR: '150.00',
+                        paymentMethod: 'PIX',
+                        priceBZR: 5.18
+                      })
+                      
+                      // BZR bloqueado - aguardando comprador pagar
+                      if (trade) {
+                        trade.status = 'ESCROW_LOCKED'
+                        trade.escrow = {
+                          escrowId: 'escrow_' + Date.now(),
+                          from: trade.sellerId,
+                          to: trade.buyerId,
+                          amountBZR: trade.amountBZR,
+                          createdAt: Date.now() - 300000,
+                          expiresAt: Date.now() + 86400000
+                        }
+                        trade.timeline.push({
+                          ts: Date.now() - 300000,
+                          type: 'ESCROW_LOCKED',
+                          payload: { escrowId: trade.escrow.escrowId }
+                        })
+                      }
+                      navigate(`/p2p/trade/${trade.id}`)
+                    } catch (error) { console.error('Error:', error) }
+                  }}
+                  size="sm"
+                  className="text-xs bg-yellow-600 hover:bg-yellow-700"
+                >
+                  ⏳ Aguardar PIX
+                </Button>
+
+                <Button 
+                  onClick={async () => {
+                    try {
+                      const { createTrade } = useTradesStore.getState()
+                      const trade = await createTrade({
+                        offerId: 'seller_release_' + Date.now(),
+                        buyerId: 'buyer_456',
+                        sellerId: user?.id || 'seller_123',
+                        amountBZR: '200.00',
+                        paymentMethod: 'PIX',
+                        priceBZR: 5.20
+                      })
+                      
+                      // PIX RECEBIDO - posso liberar BZR
+                      if (trade) {
+                        trade.status = 'PAYMENT_MARKED'
+                        trade.escrow = {
+                          escrowId: 'escrow_' + Date.now(),
+                          from: trade.sellerId,
+                          to: trade.buyerId,
+                          amountBZR: trade.amountBZR,
+                          createdAt: Date.now() - 600000,
+                          expiresAt: Date.now() + 86400000
+                        }
+                        trade.timeline.push(
+                          {
+                            ts: Date.now() - 600000,
+                            type: 'ESCROW_LOCKED',
+                            payload: { escrowId: trade.escrow.escrowId }
+                          },
+                          {
+                            ts: Date.now() - 120000,
+                            type: 'PAYMENT_MARKED',
+                            payload: { proof: 'PIX recebido - R$ 1040,00' }
+                          }
+                        )
+                      }
+                      navigate(`/p2p/trade/${trade.id}`)
+                    } catch (error) { console.error('Error:', error) }
+                  }}
+                  size="sm"
+                  className="text-xs bg-green-600 hover:bg-green-700"
+                >
+                  💰 Recebi PIX
+                </Button>
+
+                <Button 
+                  onClick={async () => {
+                    try {
+                      const { createTrade } = useTradesStore.getState()
+                      const trade = await createTrade({
+                        offerId: 'seller_done_' + Date.now(),
+                        buyerId: 'buyer_456',
+                        sellerId: user?.id || 'seller_123',
+                        amountBZR: '80.00',
+                        paymentMethod: 'TED',
+                        priceBZR: 5.25
+                      })
+                      
+                      // Trade CONCLUÍDO - BZR liberado
+                      if (trade) {
+                        trade.status = 'RELEASED'
+                        trade.timeline.push(
+                          {
+                            ts: Date.now() - 1800000,
+                            type: 'ESCROW_LOCKED',
+                            payload: {}
+                          },
+                          {
+                            ts: Date.now() - 900000,
+                            type: 'PAYMENT_MARKED',
+                            payload: { proof: 'TED recebida' }
+                          },
+                          {
+                            ts: Date.now() - 300000,
+                            type: 'FUNDS_RELEASED',
+                            payload: {}
+                          }
+                        )
+                      }
+                      navigate(`/p2p/trade/${trade.id}`)
+                    } catch (error) { console.error('Error:', error) }
+                  }}
+                  size="sm"
+                  className="text-xs bg-gray-600 hover:bg-gray-700"
+                >
+                  ✅ BZR Liberado
+                </Button>
+              </div>
+
+              <div className="text-sm font-semibold text-yellow-800 mb-3 mt-4">
+                ⚠️ CENÁRIOS PROBLEMÁTICOS
+              </div>
+              
+              <div className="grid grid-cols-2 gap-2">
+                <Button 
+                  onClick={async () => {
+                    try {
+                      const { createTrade } = useTradesStore.getState()
+                      const trade = await createTrade({
+                        offerId: 'dispute_' + Date.now(),
+                        buyerId: user?.id || 'buyer_123',
+                        sellerId: 'seller_456',
+                        amountBZR: '50.00',
+                        paymentMethod: 'PIX',
+                        priceBZR: 5.30
+                      })
+                      
+                      // Trade EM DISPUTA
+                      if (trade) {
+                        trade.status = 'DISPUTE'
+                        trade.timeline.push(
+                          {
+                            ts: Date.now() - 1800000,
+                            type: 'ESCROW_LOCKED',
+                            payload: {}
+                          },
+                          {
+                            ts: Date.now() - 900000,
+                            type: 'PAYMENT_MARKED',
+                            payload: { proof: 'PIX enviado mas vendedor não confirma' }
+                          },
+                          {
+                            ts: Date.now() - 300000,
+                            type: 'DISPUTE_OPENED',
+                            payload: { reason: 'Vendedor não está liberando após pagamento' }
+                          }
+                        )
+                      }
+                      navigate(`/p2p/trade/${trade.id}`)
+                    } catch (error) { console.error('Error:', error) }
+                  }}
+                  size="sm"
+                  className="text-xs bg-red-600 hover:bg-red-700"
+                >
+                  🚨 Em Disputa
+                </Button>
+
+                <Button 
+                  onClick={async () => {
+                    try {
+                      const { createTrade } = useTradesStore.getState()
+                      const trade = await createTrade({
+                        offerId: 'cancelled_' + Date.now(),
+                        buyerId: user?.id || 'buyer_123',
+                        sellerId: 'seller_456',
+                        amountBZR: '60.00',
+                        paymentMethod: 'TED',
+                        priceBZR: 5.00
+                      })
+                      
+                      // Trade CANCELADO
+                      if (trade) {
+                        trade.status = 'CANCELLED'
+                        trade.timeline.push(
+                          {
+                            ts: Date.now() - 600000,
+                            type: 'TRADE_CREATED',
+                            payload: {}
+                          },
+                          {
+                            ts: Date.now() - 300000,
+                            type: 'TRADE_CANCELLED',
+                            payload: { reason: 'Comprador desistiu da negociação' }
+                          }
+                        )
+                      }
+                      navigate(`/p2p/trade/${trade.id}`)
+                    } catch (error) { console.error('Error:', error) }
+                  }}
+                  size="sm"
+                  className="text-xs bg-gray-500 hover:bg-gray-600"
+                >
+                  ❌ Cancelado
+                </Button>
+              </div>
             </div>
 
             <div className="mt-4 p-3 bg-white rounded text-xs">
-              <strong>Debug:</strong> A TradeRoom agora tem melhor tratamento de estados vazios 
-              e criará automaticamente um trade mock se necessário.
+              <strong>🧪 Cenários de Teste:</strong><br/>
+              <strong>Azul:</strong> Você é comprador, vendedor já bloqueou BZR, você precisa fazer PIX<br/>
+              <strong>Verde:</strong> Você é vendedor, comprador já fez PIX, você pode liberar BZR<br/>
+              <strong>Cinza:</strong> Trade já finalizado (para ver como fica quando completo)
             </div>
           </Card>
         </motion.div>

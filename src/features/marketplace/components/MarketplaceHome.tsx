@@ -139,7 +139,7 @@ export const MarketplaceHome: React.FC = () => {
               <Button
                 variant="outline"
                 size="lg"
-                onClick={() => navigate('/marketplace/p2p')}
+                onClick={() => navigate('/p2p')}
                 className="border-white text-white hover:bg-white hover:text-matte-black-900"
               >
                 <ArrowUpDown className="w-5 h-5 mr-2" />
