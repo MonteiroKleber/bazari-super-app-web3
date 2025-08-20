@@ -1871,6 +1871,7 @@
       }
     }
   },
+  
 
 
 "enterpriseDetail": {
@@ -2094,6 +2095,1284 @@
       "es": "Empresa no encontrada."
     }
   },
+
+
+  
+
+  "p2p": {
+    "title": {
+      "pt": "P2P Trading",
+      "en": "P2P Trading",
+      "es": "Trading P2P"
+    },
+    "subtitle": {
+      "pt": "Negocie BZR diretamente com outros usuários de forma segura",
+      "en": "Trade BZR directly with other users securely",
+      "es": "Negocia BZR directamente con otros usuarios de forma segura"
+    },
+    "tabs": {
+      "buy": {
+        "pt": "Comprar BZR",
+        "en": "Buy BZR",
+        "es": "Comprar BZR"
+      },
+      "sell": {
+        "pt": "Vender BZR",
+        "en": "Sell BZR",
+        "es": "Vender BZR"
+      }
+    },
+    "actions": {
+      "buyWithPix": {
+        "pt": "Comprar com PIX",
+        "en": "Buy with PIX",
+        "es": "Comprar con PIX"
+      },
+      "buyWithPixDesc": {
+        "pt": "Compre BZR instantaneamente",
+        "en": "Buy BZR instantly",
+        "es": "Compra BZR al instante"
+      },
+      "sellNow": {
+        "pt": "Vender agora",
+        "en": "Sell now",
+        "es": "Vender ahora"
+      },
+      "sellNowDesc": {
+        "pt": "Crie sua oferta de venda",
+        "en": "Create your sell offer",
+        "es": "Crea tu oferta de venta"
+      },
+      "myTrades": {
+        "pt": "Minhas negociações",
+        "en": "My trades",
+        "es": "Mis negociaciones"
+      },
+      "activeTrades": {
+        "pt": "ativas",
+        "en": "active",
+        "es": "activas"
+      }
+    },
+    "side": {
+      "buy": {
+        "pt": "COMPRAR",
+        "en": "BUY",
+        "es": "COMPRAR"
+      },
+      "sell": {
+        "pt": "VENDER",
+        "en": "SELL",
+        "es": "VENDER"
+      }
+    },
+    "stats": {
+      "title": {
+        "pt": "Estatísticas do mercado",
+        "en": "Market statistics",
+        "es": "Estadísticas del mercado"
+      },
+      "totalVolume": {
+        "pt": "Volume total",
+        "en": "Total volume",
+        "es": "Volumen total"
+      },
+      "activeTraders": {
+        "pt": "Traders ativos",
+        "en": "Active traders",
+        "es": "Traders activos"
+      },
+      "avgPrice": {
+        "pt": "Preço médio",
+        "en": "Average price",
+        "es": "Precio promedio"
+      },
+      "dailyTrades": {
+        "pt": "Trades hoje",
+        "en": "Trades today",
+        "es": "Trades hoy"
+      },
+      "completed": {
+        "pt": "Concluídos",
+        "en": "Completed",
+        "es": "Completados"
+      },
+      "cancelRate": {
+        "pt": "Taxa de cancelamento",
+        "en": "Cancel rate",
+        "es": "Tasa de cancelación"
+      },
+      "avgReleaseTime": {
+        "pt": "Tempo médio de liberação",
+        "en": "Avg release time",
+        "es": "Tiempo promedio de liberación"
+      }
+    },
+    "featured": {
+      "title": {
+        "pt": "Ofertas em destaque",
+        "en": "Featured offers",
+        "es": "Ofertas destacadas"
+      },
+      "viewAll": {
+        "pt": "Ver todas",
+        "en": "View all",
+        "es": "Ver todas"
+      }
+    },
+    "security": {
+      "title": {
+        "pt": "Dicas de segurança",
+        "en": "Security tips",
+        "es": "Consejos de seguridad"
+      },
+      "tip1": {
+        "pt": "Só libere o BZR após confirmar o recebimento do pagamento",
+        "en": "Only release BZR after confirming payment receipt",
+        "es": "Solo libera BZR después de confirmar la recepción del pago"
+      },
+      "tip2": {
+        "pt": "Verifique sempre a autenticidade dos comprovantes",
+        "en": "Always verify the authenticity of receipts",
+        "es": "Siempre verifica la autenticidad de los comprobantes"
+      },
+      "tip3": {
+        "pt": "Use apenas métodos de pagamento rastreáveis",
+        "en": "Use only traceable payment methods",
+        "es": "Usa solo métodos de pago rastreables"
+      },
+      "tip4": {
+        "pt": "Mantenha comunicação clara com a contraparte",
+        "en": "Maintain clear communication with the counterpart",
+        "es": "Mantén comunicación clara con la contraparte"
+      }
+    },
+    "offers": {
+      "title": {
+        "pt": "Ofertas P2P",
+        "en": "P2P Offers",
+        "es": "Ofertas P2P"
+      },
+      "available": {
+        "pt": "ofertas disponíveis",
+        "en": "offers available",
+        "es": "ofertas disponibles"
+      },
+      "create": {
+        "pt": "Nova oferta",
+        "en": "New offer",
+        "es": "Nueva oferta"
+      },
+      "createFirst": {
+        "pt": "Criar primeira oferta",
+        "en": "Create first offer",
+        "es": "Crear primera oferta"
+      },
+      "retry": {
+        "pt": "Tentar novamente",
+        "en": "Try again",
+        "es": "Intentar de nuevo"
+      },
+      "loading": {
+        "pt": "Carregando...",
+        "en": "Loading...",
+        "es": "Cargando..."
+      },
+      "loadMore": {
+        "pt": "Carregar mais",
+        "en": "Load more",
+        "es": "Cargar más"
+      }
+    },
+    "offer": {
+      "card": {
+        "price": {
+          "pt": "Preço",
+          "en": "Price",
+          "es": "Precio"
+        },
+        "limits": {
+          "pt": "Limites",
+          "en": "Limits",
+          "es": "Límites"
+        },
+        "methods": {
+          "pt": "Métodos",
+          "en": "Methods",
+          "es": "Métodos"
+        },
+        "viewProfile": {
+          "pt": "Ver perfil",
+          "en": "View profile",
+          "es": "Ver perfil"
+        },
+        "viewProfileAria": {
+          "pt": "Ver perfil de {name}",
+          "en": "View {name}'s profile",
+          "es": "Ver perfil de {name}"
+        }
+      },
+      "limits": {
+        "pt": "Limites",
+        "en": "Limits",
+        "es": "Límites"
+      },
+      "available": {
+        "pt": "Disponível",
+        "en": "Available",
+        "es": "Disponible"
+      },
+      "startTrade": {
+        "pt": "Iniciar trade",
+        "en": "Start trade",
+        "es": "Iniciar trade"
+      },
+      "new": {
+        "title": {
+          "pt": "Nova oferta P2P",
+          "en": "New P2P offer",
+          "es": "Nueva oferta P2P"
+        },
+        "subtitle": {
+          "pt": "Configure sua oferta de compra ou venda",
+          "en": "Configure your buy or sell offer",
+          "es": "Configura tu oferta de compra o venta"
+        },
+        "side": {
+          "pt": "Tipo de oferta",
+          "en": "Offer type",
+          "es": "Tipo de oferta"
+        },
+        "buyDesc": {
+          "pt": "Quero comprar BZR",
+          "en": "I want to buy BZR",
+          "es": "Quiero comprar BZR"
+        },
+        "sellDesc": {
+          "pt": "Quero vender BZR",
+          "en": "I want to sell BZR",
+          "es": "Quiero vender BZR"
+        },
+        "pricing": {
+          "pt": "Preço e quantidades",
+          "en": "Price and quantities",
+          "es": "Precio y cantidades"
+        },
+        "priceBZR": {
+          "pt": "Preço por BZR",
+          "en": "Price per BZR",
+          "es": "Precio por BZR"
+        },
+        "minAmount": {
+          "pt": "Quantidade mínima",
+          "en": "Minimum amount",
+          "es": "Cantidad mínima"
+        },
+        "maxAmount": {
+          "pt": "Quantidade máxima",
+          "en": "Maximum amount",
+          "es": "Cantidad máxima"
+        },
+        "methods": {
+          "pt": "Métodos de pagamento",
+          "en": "Payment methods",
+          "es": "Métodos de pago"
+        },
+        "location": {
+          "pt": "Localização (opcional)",
+          "en": "Location (optional)",
+          "es": "Ubicación (opcional)"
+        },
+        "state": {
+          "pt": "Estado",
+          "en": "State",
+          "es": "Estado"
+        },
+        "city": {
+          "pt": "Cidade",
+          "en": "City",
+          "es": "Ciudad"
+        },
+        "terms": {
+          "pt": "Termos e condições (opcional)",
+          "en": "Terms and conditions (optional)",
+          "es": "Términos y condiciones (opcional)"
+        },
+        "termsPlaceholder": {
+          "pt": "Descreva suas condições especiais, tempo de resposta, etc.",
+          "en": "Describe your special conditions, response time, etc.",
+          "es": "Describe tus condiciones especiales, tiempo de respuesta, etc."
+        },
+        "submit": {
+          "pt": "Criar oferta",
+          "en": "Create offer",
+          "es": "Crear oferta"
+        },
+        "creating": {
+          "pt": "Criando...",
+          "en": "Creating...",
+          "es": "Creando..."
+        }
+      },
+      "detail": {
+        "title": {
+          "pt": "Detalhes da oferta",
+          "en": "Offer details",
+          "es": "Detalles de la oferta"
+        },
+        "createdAt": {
+          "pt": "Criada em",
+          "en": "Created on",
+          "es": "Creada el"
+        },
+        "pricing": {
+          "pt": "Preço e quantidade",
+          "en": "Price and quantity",
+          "es": "Precio y cantidad"
+        },
+        "minAmount": {
+          "pt": "Quantidade mínima",
+          "en": "Minimum amount",
+          "es": "Cantidad mínima"
+        },
+        "maxAmount": {
+          "pt": "Quantidade máxima",
+          "en": "Maximum amount",
+          "es": "Cantidad máxima"
+        },
+        "available": {
+          "pt": "Disponível",
+          "en": "Available",
+          "es": "Disponible"
+        },
+        "paymentMethods": {
+          "pt": "Métodos de pagamento",
+          "en": "Payment methods",
+          "es": "Métodos de pago"
+        },
+        "processingTime": {
+          "pt": "Tempo de processamento",
+          "en": "Processing time",
+          "es": "Tiempo de procesamiento"
+        },
+        "terms": {
+          "pt": "Termos e condições",
+          "en": "Terms and conditions",
+          "es": "Términos y condiciones"
+        },
+        "location": {
+          "pt": "Localização",
+          "en": "Location",
+          "es": "Ubicación"
+        },
+        "startTrade": {
+          "pt": "Iniciar negociação",
+          "en": "Start trade",
+          "es": "Iniciar negociación"
+        },
+        "viewProfile": {
+          "pt": "Ver perfil",
+          "en": "View profile",
+          "es": "Ver perfil"
+        },
+        "ownOffer": {
+          "pt": "Esta é sua própria oferta",
+          "en": "This is your own offer",
+          "es": "Esta es tu propia oferta"
+        }
+      }
+    },
+    "trade": {
+      "title": {
+        "pt": "Negociação",
+        "en": "Trade",
+        "es": "Negociación"
+      },
+      "amount": {
+        "pt": "Quantidade",
+        "en": "Amount",
+        "es": "Cantidad"
+      },
+      "method": {
+        "pt": "Método",
+        "en": "Method",
+        "es": "Método"
+      },
+      "price": {
+        "pt": "Preço",
+        "en": "Price",
+        "es": "Precio"
+      },
+      "total": {
+        "pt": "Total",
+        "en": "Total",
+        "es": "Total"
+      },
+      "selectMethod": {
+        "pt": "Selecione um método",
+        "en": "Select a method",
+        "es": "Selecciona un método"
+      },
+      "starting": {
+        "pt": "Iniciando...",
+        "en": "Starting...",
+        "es": "Iniciando..."
+      },
+      "summary": {
+        "pt": "Resumo da negociação",
+        "en": "Trade summary",
+        "es": "Resumen de la negociación"
+      },
+      "buyer": {
+        "pt": "Comprador",
+        "en": "Buyer",
+        "es": "Comprador"
+      },
+      "seller": {
+        "pt": "Vendedor",
+        "en": "Seller",
+        "es": "Vendedor"
+      },
+      "timeline": {
+        "pt": "Histórico",
+        "en": "Timeline",
+        "es": "Historial"
+      },
+      "actions": {
+        "pt": "Ações",
+        "en": "Actions",
+        "es": "Acciones"
+      },
+      "lockEscrow": {
+        "pt": "Bloquear BZR",
+        "en": "Lock BZR",
+        "es": "Bloquear BZR"
+      },
+      "markPaid": {
+        "pt": "Marcar como pago",
+        "en": "Mark as paid",
+        "es": "Marcar como pagado"
+      },
+      "release": {
+        "pt": "Liberar BZR",
+        "en": "Release BZR",
+        "es": "Liberar BZR"
+      },
+      "refund": {
+        "pt": "Reembolsar",
+        "en": "Refund",
+        "es": "Reembolsar"
+      },
+      "cancel": {
+        "pt": "Cancelar",
+        "en": "Cancel",
+        "es": "Cancelar"
+      },
+      "dispute": {
+        "pt": "Abrir disputa",
+        "en": "Open dispute",
+        "es": "Abrir disputa"
+      },
+      "attachProof": {
+        "pt": "Anexar comprovante",
+        "en": "Attach proof",
+        "es": "Adjuntar comprobante"
+      },
+      "proofPlaceholder": {
+        "pt": "Cole aqui o link do comprovante ou descreva o pagamento",
+        "en": "Paste proof link here or describe the payment",
+        "es": "Pega aquí el enlace del comprobante o describe el pago"
+      },
+      "rateExperience": {
+        "pt": "Avalie esta negociação",
+        "en": "Rate this trade",
+        "es": "Califica esta negociación"
+      },
+      "help": {
+        "pt": "Precisa de ajuda?",
+        "en": "Need help?",
+        "es": "¿Necesitas ayuda?"
+      },
+      "helpTip1": {
+        "pt": "Mantenha a comunicação sempre educada",
+        "en": "Keep communication always polite",
+        "es": "Mantén la comunicación siempre educada"
+      },
+      "helpTip2": {
+        "pt": "Confirme todos os dados antes de pagar",
+        "en": "Confirm all details before paying",
+        "es": "Confirma todos los datos antes de pagar"
+      },
+      "helpTip3": {
+        "pt": "Use apenas métodos de pagamento seguros",
+        "en": "Use only secure payment methods",
+        "es": "Usa solo métodos de pago seguros"
+      }
+    },
+    "status": {
+      "created": {
+        "pt": "Criado",
+        "en": "Created",
+        "es": "Creado"
+      },
+      "escrowLocked": {
+        "pt": "BZR bloqueado",
+        "en": "BZR locked",
+        "es": "BZR bloqueado"
+      },
+      "paymentMarked": {
+        "pt": "Pagamento marcado",
+        "en": "Payment marked",
+        "es": "Pago marcado"
+      },
+      "released": {
+        "pt": "Liberado",
+        "en": "Released",
+        "es": "Liberado"
+      },
+      "refunded": {
+        "pt": "Reembolsado",
+        "en": "Refunded",
+        "es": "Reembolsado"
+      },
+      "dispute": {
+        "pt": "Em disputa",
+        "en": "In dispute",
+        "es": "En disputa"
+      },
+      "cancelled": {
+        "pt": "Cancelado",
+        "en": "Cancelled",
+        "es": "Cancelado"
+      }
+    },
+    "timeline": {
+      "TRADE_CREATED": {
+        "pt": "Negociação criada",
+        "en": "Trade created",
+        "es": "Negociación creada"
+      },
+      "ESCROW_LOCKED": {
+        "pt": "BZR bloqueado em escrow",
+        "en": "BZR locked in escrow",
+        "es": "BZR bloqueado en escrow"
+      },
+      "PAYMENT_MARKED": {
+        "pt": "Pagamento marcado como realizado",
+        "en": "Payment marked as done",
+        "es": "Pago marcado como realizado"
+      },
+      "FUNDS_RELEASED": {
+        "pt": "BZR liberado para o comprador",
+        "en": "BZR released to buyer",
+        "es": "BZR liberado al comprador"
+      },
+      "FUNDS_REFUNDED": {
+        "pt": "BZR reembolsado ao vendedor",
+        "en": "BZR refunded to seller",
+        "es": "BZR reembolsado al vendedor"
+      },
+      "TRADE_CANCELLED": {
+        "pt": "Negociação cancelada",
+        "en": "Trade cancelled",
+        "es": "Negociación cancelada"
+      },
+      "DISPUTE_OPENED": {
+        "pt": "Disputa aberta",
+        "en": "Dispute opened",
+        "es": "Disputa abierta"
+      }
+    },
+    "filters": {
+      "title": {
+        "pt": "Filtros",
+        "en": "Filters",
+        "es": "Filtros"
+      },
+      "search": {
+        "pt": "Buscar",
+        "en": "Search",
+        "es": "Buscar"
+      },
+      "searchPlaceholder": {
+        "pt": "Buscar por trader, localização...",
+        "en": "Search by trader, location...",
+        "es": "Buscar por trader, ubicación..."
+      },
+      "payment": {
+        "pt": "Método de pagamento",
+        "en": "Payment method",
+        "es": "Método de pago"
+      },
+      "allMethods": {
+        "pt": "Todos os métodos",
+        "en": "All methods",
+        "es": "Todos los métodos"
+      },
+      "priceRange": {
+        "pt": "Faixa de preço",
+        "en": "Price range",
+        "es": "Rango de precio"
+      },
+      "priceMin": {
+        "pt": "Preço mín.",
+        "en": "Min price",
+        "es": "Precio mín."
+      },
+      "priceMax": {
+        "pt": "Preço máx.",
+        "en": "Max price",
+        "es": "Precio máx."
+      },
+      "reputation": {
+        "pt": "Reputação mínima",
+        "en": "Minimum reputation",
+        "es": "Reputación mínima"
+      },
+      "anyReputation": {
+        "pt": "Qualquer reputação",
+        "en": "Any reputation",
+        "es": "Cualquier reputación"
+      },
+      "location": {
+        "pt": "Localização",
+        "en": "Location",
+        "es": "Ubicación"
+      },
+      "state": {
+        "pt": "Estado",
+        "en": "State",
+        "es": "Estado"
+      },
+      "city": {
+        "pt": "Cidade",
+        "en": "City",
+        "es": "Ciudad"
+      },
+      "clear": {
+        "pt": "Limpar",
+        "en": "Clear",
+        "es": "Limpiar"
+      }
+    },
+    "payment": {
+      "cash": {
+        "pt": "Dinheiro",
+        "en": "Cash",
+        "es": "Efectivo"
+      },
+      "other": {
+        "pt": "Outro",
+        "en": "Other",
+        "es": "Otro"
+      }
+    },
+    "disputes": {
+      "title": {
+        "pt": "Central de disputas",
+        "en": "Disputes center",
+        "es": "Centro de disputas"
+      },
+      "subtitle": {
+        "pt": "Gerencie suas disputas abertas e resolvidas",
+        "en": "Manage your open and resolved disputes",
+        "es": "Gestiona tus disputas abiertas y resueltas"
+      },
+      "total": {
+        "pt": "disputas",
+        "en": "disputes",
+        "es": "disputas"
+      },
+      "search": {
+        "pt": "Buscar disputas...",
+        "en": "Search disputes...",
+        "es": "Buscar disputas..."
+      },
+      "dispute": {
+        "pt": "Disputa",
+        "en": "Dispute",
+        "es": "Disputa"
+      },
+      "trade": {
+        "pt": "Trade",
+        "en": "Trade",
+        "es": "Trade"
+      },
+      "reason": {
+        "pt": "Motivo",
+        "en": "Reason",
+        "es": "Motivo"
+      },
+      "openedAt": {
+        "pt": "Aberta em",
+        "en": "Opened on",
+        "es": "Abierta el"
+      },
+      "resolvedAt": {
+        "pt": "Resolvida em",
+        "en": "Resolved on",
+        "es": "Resuelta el"
+      },
+      "attachments": {
+        "pt": "Anexos",
+        "en": "Attachments",
+        "es": "Adjuntos"
+      },
+      "resolution": {
+        "pt": "Resolução",
+        "en": "Resolution",
+        "es": "Resolución"
+      },
+      "openedBy": {
+        "pt": "Aberta por",
+        "en": "Opened by",
+        "es": "Abierta por"
+      },
+      "viewTrade": {
+        "pt": "Ver trade",
+        "en": "View trade",
+        "es": "Ver trade"
+      },
+      "respond": {
+        "pt": "Responder",
+        "en": "Respond",
+        "es": "Responder"
+      },
+      "stats": {
+        "total": {
+          "pt": "Total",
+          "en": "Total",
+          "es": "Total"
+        },
+        "open": {
+          "pt": "Abertas",
+          "en": "Open",
+          "es": "Abiertas"
+        },
+        "underReview": {
+          "pt": "Em análise",
+          "en": "Under review",
+          "es": "En revisión"
+        },
+        "resolved": {
+          "pt": "Resolvidas",
+          "en": "Resolved",
+          "es": "Resueltas"
+        },
+        "closed": {
+          "pt": "Fechadas",
+          "en": "Closed",
+          "es": "Cerradas"
+        }
+      },
+      "filter": {
+        "all": {
+          "pt": "Todas as disputas",
+          "en": "All disputes",
+          "es": "Todas las disputas"
+        }
+      },
+      "empty": {
+        "title": {
+          "pt": "Nenhuma disputa encontrada",
+          "en": "No disputes found",
+          "es": "No se encontraron disputas"
+        },
+        "description": {
+          "pt": "Você não possui disputas abertas no momento",
+          "en": "You don't have any open disputes at the moment",
+          "es": "No tienes disputas abiertas en este momento"
+        }
+      },
+      "help": {
+        "title": {
+          "pt": "Como funcionam as disputas",
+          "en": "How disputes work",
+          "es": "Cómo funcionan las disputas"
+        },
+        "tip1": {
+          "pt": "Disputas devem ser abertas apenas em casos legítimos",
+          "en": "Disputes should only be opened in legitimate cases",
+          "es": "Las disputas deben abrirse solo en casos legítimos"
+        },
+        "tip2": {
+          "pt": "Forneça evidências claras para acelerar a resolução",
+          "en": "Provide clear evidence to speed up resolution",
+          "es": "Proporciona evidencia clara para acelerar la resolución"
+        },
+        "tip3": {
+          "pt": "Mantenha comunicação respeitosa durante o processo",
+          "en": "Maintain respectful communication during the process",
+          "es": "Mantén comunicación respetuosa durante el proceso"
+        },
+        "tip4": {
+          "pt": "Nossa equipe analisa casos em até 48 horas",
+          "en": "Our team reviews cases within 48 hours",
+          "es": "Nuestro equipo revisa casos en hasta 48 horas"
+        }
+      }
+    },
+    "dispute": {
+      "title": {
+        "pt": "Abrir disputa",
+        "en": "Open dispute",
+        "es": "Abrir disputa"
+      },
+      "reason": {
+        "pt": "Motivo da disputa",
+        "en": "Dispute reason",
+        "es": "Motivo de la disputa"
+      },
+      "selectReason": {
+        "pt": "Selecione um motivo",
+        "en": "Select a reason",
+        "es": "Selecciona un motivo"
+      },
+      "paymentNotReceived": {
+        "pt": "Pagamento não recebido",
+        "en": "Payment not received",
+        "es": "Pago no recibido"
+      },
+      "wrongAmount": {
+        "pt": "Valor incorreto",
+        "en": "Wrong amount",
+        "es": "Cantidad incorrecta"
+      },
+      "fakeProof": {
+        "pt": "Comprovante falso",
+        "en": "Fake proof",
+        "es": "Comprobante falso"
+      },
+      "noResponse": {
+        "pt": "Sem resposta",
+        "en": "No response",
+        "es": "Sin respuesta"
+      },
+      "other": {
+        "pt": "Outro motivo",
+        "en": "Other reason",
+        "es": "Otro motivo"
+      },
+      "description": {
+        "pt": "Descrição detalhada",
+        "en": "Detailed description",
+        "es": "Descripción detallada"
+      },
+      "descriptionPlaceholder": {
+        "pt": "Descreva detalhadamente o problema...",
+        "en": "Describe the problem in detail...",
+        "es": "Describe el problema en detalle..."
+      },
+      "submit": {
+        "pt": "Abrir disputa",
+        "en": "Open dispute",
+        "es": "Abrir disputa"
+      },
+      "status": {
+        "open": {
+          "pt": "Aberta",
+          "en": "Open",
+          "es": "Abierta"
+        },
+        "underReview": {
+          "pt": "Em análise",
+          "en": "Under review",
+          "es": "En revisión"
+        },
+        "resolved": {
+          "pt": "Resolvida",
+          "en": "Resolved",
+          "es": "Resuelta"
+        },
+        "closed": {
+          "pt": "Fechada",
+          "en": "Closed",
+          "es": "Cerrada"
+        }
+      }
+    },
+    "settings": {
+      "title": {
+        "pt": "Configurações P2P",
+        "en": "P2P Settings",
+        "es": "Configuraciones P2P"
+      },
+      "subtitle": {
+        "pt": "Configure suas preferências para negociações P2P",
+        "en": "Configure your P2P trading preferences",
+        "es": "Configura tus preferencias para negociaciones P2P"
+      },
+      "unsavedChanges": {
+        "pt": "Alterações não salvas",
+        "en": "Unsaved changes",
+        "es": "Cambios no guardados"
+      },
+      "defaultLocation": {
+        "pt": "Localização padrão",
+        "en": "Default location",
+        "es": "Ubicación predeterminada"
+      },
+      "country": {
+        "pt": "País",
+        "en": "Country",
+        "es": "País"
+      },
+      "state": {
+        "pt": "Estado",
+        "en": "State",
+        "es": "Estado"
+      },
+      "city": {
+        "pt": "Cidade",
+        "en": "City",
+        "es": "Ciudad"
+      },
+      "locationNote": {
+        "pt": "Esta localização será preenchida automaticamente em novas ofertas",
+        "en": "This location will be automatically filled in new offers",
+        "es": "Esta ubicación se completará automáticamente en nuevas ofertas"
+      },
+      "defaultPayment": {
+        "pt": "Métodos de pagamento padrão",
+        "en": "Default payment methods",
+        "es": "Métodos de pago predeterminados"
+      },
+      "paymentNote": {
+        "pt": "Estes métodos serão selecionados automaticamente em novas ofertas",
+        "en": "These methods will be automatically selected in new offers",
+        "es": "Estos métodos se seleccionarán automáticamente en nuevas ofertas"
+      },
+      "defaultLimits": {
+        "pt": "Limites padrão",
+        "en": "Default limits",
+        "es": "Límites predeterminados"
+      },
+      "minAmount": {
+        "pt": "Quantidade mínima",
+        "en": "Minimum amount",
+        "es": "Cantidad mínima"
+      },
+      "maxAmount": {
+        "pt": "Quantidade máxima",
+        "en": "Maximum amount",
+        "es": "Cantidad máxima"
+      },
+      "limitsNote": {
+        "pt": "Estes valores serão preenchidos automaticamente em novas ofertas",
+        "en": "These values will be automatically filled in new offers",
+        "es": "Estos valores se completarán automáticamente en nuevas ofertas"
+      },
+      "autoCancel": {
+        "pt": "Cancelamento automático",
+        "en": "Auto cancel",
+        "es": "Cancelación automática"
+      },
+      "autoCancelEnabled": {
+        "pt": "Ativar cancelamento automático",
+        "en": "Enable auto cancel",
+        "es": "Habilitar cancelación automática"
+      },
+      "autoCancelEnabledDesc": {
+        "pt": "Cancela automaticamente trades sem resposta",
+        "en": "Automatically cancel trades without response",
+        "es": "Cancela automáticamente trades sin respuesta"
+      },
+      "timeoutMinutes": {
+        "pt": "Tempo limite (minutos)",
+        "en": "Timeout (minutes)",
+        "es": "Tiempo límite (minutos)"
+      },
+      "autoCancelNote": {
+        "pt": "Trades sem atividade serão cancelados automaticamente após este tempo",
+        "en": "Trades without activity will be cancelled automatically after this time",
+        "es": "Los trades sin actividad se cancelarán automáticamente después de este tiempo"
+      },
+      "notifications": {
+        "pt": "Notificações",
+        "en": "Notifications",
+        "es": "Notificaciones"
+      },
+      "notificationsComingSoon": {
+        "pt": "Configurações de notificação em breve",
+        "en": "Notification settings coming soon",
+        "es": "Configuraciones de notificación próximamente"
+      },
+      "comingSoon": {
+        "pt": "Em breve",
+        "en": "Coming soon",
+        "es": "Próximamente"
+      },
+      "securityTips": {
+        "pt": "Dicas de segurança",
+        "en": "Security tips",
+        "es": "Consejos de seguridad"
+      },
+      "tip1": {
+        "pt": "Nunca compartilhe suas chaves privadas",
+        "en": "Never share your private keys",
+        "es": "Nunca compartas tus claves privadas"
+      },
+      "tip2": {
+        "pt": "Sempre verifique endereços antes de enviar",
+        "en": "Always verify addresses before sending",
+        "es": "Siempre verifica direcciones antes de enviar"
+      },
+      "tip3": {
+        "pt": "Use métodos de pagamento rastreáveis",
+        "en": "Use traceable payment methods",
+        "es": "Usa métodos de pago rastreables"
+      },
+      "tip4": {
+        "pt": "Mantenha evidências de todas as transações",
+        "en": "Keep evidence of all transactions",
+        "es": "Mantén evidencia de todas las transacciones"
+      },
+      "reset": {
+        "pt": "Restaurar padrão",
+        "en": "Reset to default",
+        "es": "Restaurar predeterminado"
+      },
+      "save": {
+        "pt": "Salvar configurações",
+        "en": "Save settings",
+        "es": "Guardar configuraciones"
+      },
+      "saving": {
+        "pt": "Salvando...",
+        "en": "Saving...",
+        "es": "Guardando..."
+      }
+    },
+    "myTrades": {
+      "title": {
+        "pt": "Minhas Negociações",
+        "en": "My Trades",
+        "es": "Mis Negociaciones"
+      },
+      "total": {
+        "pt": "negociações no total",
+        "en": "trades in total",
+        "es": "negociaciones en total"
+      },
+      "findOffers": {
+        "pt": "Encontrar Ofertas",
+        "en": "Find Offers",
+        "es": "Encontrar Ofertas"
+      },
+      "search": {
+        "pt": "Buscar negociações...",
+        "en": "Search trades...",
+        "es": "Buscar negociaciones..."
+      },
+      "role": {
+        "pt": "Função",
+        "en": "Role",
+        "es": "Función"
+      },
+      "buyer": {
+        "pt": "Comprador",
+        "en": "Buyer",
+        "es": "Comprador"
+      },
+      "seller": {
+        "pt": "Vendedor",
+        "en": "Seller",
+        "es": "Vendedor"
+      },
+      "counterpart": {
+        "pt": "Contraparte",
+        "en": "Counterpart",
+        "es": "Contraparte"
+      },
+      "viewTrade": {
+        "pt": "Ver Negociação",
+        "en": "View Trade",
+        "es": "Ver Negociación"
+      },
+      "stats": {
+        "total": {
+          "pt": "Total",
+          "en": "Total",
+          "es": "Total"
+        },
+        "active": {
+          "pt": "Ativas",
+          "en": "Active",
+          "es": "Activas"
+        },
+        "completed": {
+          "pt": "Concluídas",
+          "en": "Completed",
+          "es": "Completadas"
+        },
+        "disputed": {
+          "pt": "Em Disputa",
+          "en": "Disputed",
+          "es": "En Disputa"
+        }
+      },
+      "filter": {
+        "all": {
+          "pt": "Todas as negociações",
+          "en": "All trades",
+          "es": "Todas las negociaciones"
+        }
+      },
+      "empty": {
+        "description": {
+          "pt": "Você ainda não iniciou nenhuma negociação. Encontre ofertas interessantes e comece a negociar!",
+          "en": "You haven't started any trades yet. Find interesting offers and start trading!",
+          "es": "Aún no has iniciado ninguna negociación. ¡Encuentra ofertas interesantes y comienza a negociar!"
+        },
+        "noResults": {
+          "pt": "Nenhuma negociação encontrada",
+          "en": "No trades found",
+          "es": "No se encontraron negociaciones"
+        },
+        "tryDifferentFilter": {
+          "pt": "Tente usar filtros diferentes",
+          "en": "Try using different filters",
+          "es": "Intenta usar filtros diferentes"
+        }
+      }
+    },
+    "empty": {
+      "noOffers": {
+        "pt": "Nenhuma oferta encontrada",
+        "en": "No offers found",
+        "es": "No se encontraron ofertas"
+      },
+      "noOffersDesc": {
+        "pt": "Ajuste os filtros ou crie a primeira oferta",
+        "en": "Adjust filters or create the first offer",
+        "es": "Ajusta los filtros o crea la primera oferta"
+      },
+      "noTrades": {
+        "pt": "Nenhuma negociação ativa",
+        "en": "No active trades",
+        "es": "No hay negociaciones activas"
+      }
+    },
+    "validation": {
+      "priceRequired": {
+        "pt": "Preço é obrigatório",
+        "en": "Price is required",
+        "es": "El precio es obligatorio"
+      },
+      "priceRange": {
+        "pt": "Preço deve estar entre R$ 0,01 e R$ 1.000",
+        "en": "Price must be between R$ 0.01 and R$ 1,000",
+        "es": "El precio debe estar entre R$ 0,01 y R$ 1.000"
+      },
+      "minAmountRequired": {
+        "pt": "Quantidade mínima é obrigatória",
+        "en": "Minimum amount is required",
+        "es": "La cantidad mínima es obligatoria"
+      },
+      "maxAmountRequired": {
+        "pt": "Quantidade máxima é obrigatória",
+        "en": "Maximum amount is required",
+        "es": "La cantidad máxima es obligatoria"
+      },
+      "maxAmountGreater": {
+        "pt": "Quantidade máxima deve ser maior que a mínima",
+        "en": "Maximum amount must be greater than minimum",
+        "es": "La cantidad máxima debe ser mayor que la mínima"
+      },
+      "paymentMethodRequired": {
+        "pt": "Selecione pelo menos um método de pagamento",
+        "en": "Select at least one payment method",
+        "es": "Selecciona al menos un método de pago"
+      },
+      "amountRequired": {
+        "pt": "Quantidade é obrigatória",
+        "en": "Amount is required",
+        "es": "La cantidad es obligatoria"
+      },
+      "amountTooLow": {
+        "pt": "Quantidade deve ser pelo menos {min} BZR",
+        "en": "Amount must be at least {min} BZR",
+        "es": "La cantidad debe ser al menos {min} BZR"
+      },
+      "amountTooHigh": {
+        "pt": "Quantidade não pode exceder {max} BZR",
+        "en": "Amount cannot exceed {max} BZR",
+        "es": "La cantidad no puede exceder {max} BZR"
+      },
+      "insufficientAmount": {
+        "pt": "Quantidade excede o disponível",
+        "en": "Amount exceeds available",
+        "es": "La cantidad excede lo disponible"
+      },
+      "paymentMethodNotSupported": {
+        "pt": "Método de pagamento não suportado",
+        "en": "Payment method not supported",
+        "es": "Método de pago no soportado"
+      }
+    },
+    "errors": {
+      "createFailed": {
+        "pt": "Falha ao criar oferta",
+        "en": "Failed to create offer",
+        "es": "Error al crear oferta"
+      },
+      "tradeCreationFailed": {
+        "pt": "Falha ao iniciar negociação",
+        "en": "Failed to start trade",
+        "es": "Error al iniciar negociación"
+      }
+    },
+    "toasts": {
+      "copied": {
+        "pt": "Copiado para a área de transferência",
+        "en": "Copied to clipboard",
+        "es": "Copiado al portapapeles"
+      },
+      "offerCreated": {
+        "pt": "Oferta criada com sucesso!",
+        "en": "Offer created successfully!",
+        "es": "¡Oferta creada exitosamente!"
+      },
+      "tradeCreated": {
+        "pt": "Negociação iniciada com sucesso!",
+        "en": "Trade started successfully!",
+        "es": "¡Negociación iniciada exitosamente!"
+      },
+      "escrowLocked": {
+        "pt": "BZR bloqueado em escrow com sucesso!",
+        "en": "BZR locked in escrow successfully!",
+        "es": "¡BZR bloqueado en escrow exitosamente!"
+      },
+      "paymentMarked": {
+        "pt": "Pagamento marcado como realizado!",
+        "en": "Payment marked as completed!",
+        "es": "¡Pago marcado como realizado!"
+      },
+      "released": {
+        "pt": "BZR liberado com sucesso!",
+        "en": "BZR released successfully!",
+        "es": "¡BZR liberado exitosamente!"
+      },
+      "refunded": {
+        "pt": "BZR reembolsado com sucesso!",
+        "en": "BZR refunded successfully!",
+        "es": "¡BZR reembolsado exitosamente!"
+      },
+      "cancelled": {
+        "pt": "Negociação cancelada!",
+        "en": "Trade cancelled!",
+        "es": "¡Negociación cancelada!"
+      },
+      "disputeOpened": {
+        "pt": "Disputa aberta com sucesso!",
+        "en": "Dispute opened successfully!",
+        "es": "¡Disputa abierta exitosamente!"
+      }
+    }
+  },
+
+
+
 
 
   "marketplace": {

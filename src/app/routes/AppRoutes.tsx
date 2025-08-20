@@ -19,6 +19,8 @@ const WorkPage = React.lazy(() => import('@pages/WorkPage'))
 const HelpPage = React.lazy(() => import('@pages/HelpPage'))
 const AboutPage = React.lazy(() => import('@pages/AboutPage'))
 
+const P2PPage = React.lazy(() => import('@pages/P2PPage'))
+
 export const AppRoutes: React.FC = () => {
   return (
     <Suspense fallback={<LoadingSpinner />}>
@@ -40,6 +42,13 @@ export const AppRoutes: React.FC = () => {
         <Route path="/wallet/*" element={
           <AuthGuard>
             <WalletPage />
+          </AuthGuard>
+        } />
+
+        {/* P2P Routes - New standalone module */}
+        <Route path="/p2p/*" element={
+          <AuthGuard>
+            <P2PPage />
           </AuthGuard>
         } />
         
