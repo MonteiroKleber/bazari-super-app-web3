@@ -1,5 +1,5 @@
 // src/pages/marketplace/enterprise/EnterpriseDetail.tsx
-// ✅ VERSÃO QUE MANTÉM A LÓGICA QUE FUNCIONOU - Remove apenas debug visual
+// ✅ VERSÃO FINAL LIMPA - Sem debug, funcionando perfeitamente
 
 import React from 'react'
 import { motion } from 'framer-motion'
@@ -55,7 +55,8 @@ export const EnterpriseDetail: React.FC = () => {
   const { 
     currentEnterprise, 
     fetchEnterpriseById, 
-    isLoading: enterpriseLoading
+    isLoading: enterpriseLoading,
+    toggleEnterpriseTokenization 
   } = useEnterpriseStore()
   const { 
     listings, 
@@ -64,7 +65,7 @@ export const EnterpriseDetail: React.FC = () => {
     initializeMockData,
     isInitialized
   } = useMarketplaceStore()
-
+  
   const [activeTab, setActiveTab] = React.useState('overview')
   const [showFilters, setShowFilters] = React.useState(false)
   const [searchQuery, setSearchQuery] = React.useState('')
@@ -76,24 +77,33 @@ export const EnterpriseDetail: React.FC = () => {
     sortBy: 'newest' as const
   })
 
-  // ✅ MESMA INICIALIZAÇÃO QUE FUNCIONOU
+  // ✅ Inicialização forçada dos dados
   React.useEffect(() => {
-    if (id) {
-      if (!isInitialized) {
-        initializeMockData()
+    const initializeData = async () => {
+      if (id) {
+        // Primeiro garantir que os dados mock estão carregados
+        if (!isInitialized) {
+          initializeMockData()
+        }
+        
+        // Depois carregar o empreendimento
+        await fetchEnterpriseById(id)
+        
+        // E garantir que os listings estão carregados
+        await fetchListings()
       }
-      fetchEnterpriseById(id)
     }
-  }, [id])
+    
+    initializeData()
+  }, [id, fetchEnterpriseById, fetchListings, initializeMockData, isInitialized])
 
-  // ✅ MESMA LÓGICA DE BUSCA QUE FUNCIONOU
+  // ✅ Buscar produtos diretamente do store (bypass do hook problemático)
   const enterpriseListings = React.useMemo(() => {
     if (!id) return []
-    const result = getListingsByEnterprise(id)
-    return result
+    return getListingsByEnterprise(id)
   }, [id, listings, getListingsByEnterprise])
 
-  // ✅ MESMA LÓGICA DE FILTROS QUE FUNCIONOU
+  // ✅ Aplicar filtros e busca manualmente
   const filteredListings = React.useMemo(() => {
     let result = [...enterpriseListings]
 
@@ -130,7 +140,7 @@ export const EnterpriseDetail: React.FC = () => {
       result = result.filter(l => l.metadata?.condition === filters.condition)
     }
 
-    // Ordenação
+    // Aplicar ordenação
     switch (filters.sortBy) {
       case 'price_asc':
         result.sort((a, b) => a.price - b.price)
@@ -206,121 +216,29 @@ export const EnterpriseDetail: React.FC = () => {
     }) || searchQuery.trim() !== ''
   }, [filters, searchQuery])
 
-  // ✅ MESMA FUNÇÃO DE RENDERIZAÇÃO QUE FUNCIONOU
-  const renderProducts = () => {
-    if (!filteredListings || filteredListings.length === 0) {
-      return (
-        <EmptyState
-          icon={Package}
-          title={hasActiveFilters ? 
-            'Nenhum produto encontrado com esses filtros' : 
-            'Nenhum produto cadastrado'
-          }
-          description={hasActiveFilters ? 
-            'Tente ajustar os filtros para encontrar mais produtos.' :
-            'Este empreendimento ainda não possui produtos ou serviços cadastrados.'
-          }
-          action={hasActiveFilters ? (
-            <Button variant="outline" onClick={clearFilters}>
-              Limpar Filtros
-            </Button>
-          ) : isOwner ? (
-            <Button onClick={handleCreateListing}>
-              Criar Primeiro Anúncio
-            </Button>
-          ) : undefined}
-        />
-      )
-    }
-
+  // Loading state
+  if (enterpriseLoading || !currentEnterprise) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {filteredListings.map((listing) => (
-          <motion.div
-            key={listing.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            whileHover={{ y: -4 }}
-            className="cursor-pointer"
-            onClick={() => navigate(`/marketplace/listing/${listing.id}`)}
-          >
-            <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-200">
-              <div className="aspect-video bg-matte-black-100 relative overflow-hidden">
-                {listing.images && listing.images[0] ? (
-                  <img
-                    src={listing.images[0]}
-                    alt={listing.title}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <Package className="h-8 w-8 text-matte-black-400" />
-                  </div>
-                )}
-                {listing.digital && (
-                  <Badge 
-                    variant="secondary" 
-                    className="absolute top-2 right-2 bg-purple-100 text-purple-700"
-                  >
-                    Digital
-                  </Badge>
-                )}
-              </div>
-              
-              <div className="p-4">
-                <h3 className="font-semibold text-matte-black-900 mb-1 line-clamp-2">
-                  {listing.title}
-                </h3>
-                
-                <p className="text-sm text-matte-black-600 mb-3 line-clamp-2">
-                  {listing.description}
-                </p>
-                
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-lg font-bold text-success">
-                      {listing.price.toLocaleString('pt-BR')} {listing.currency}
-                    </p>
-                    <div className="flex items-center gap-1 text-sm text-matte-black-500">
-                      <Star className="h-3 w-3 fill-current text-amber-400" />
-                      {listing.sellerRating.toFixed(1)}
-                    </div>
-                  </div>
-                  
-                  <Badge variant="secondary" className="text-xs">
-                    {listing.category}
-                  </Badge>
-                </div>
-              </div>
-            </Card>
-          </motion.div>
-        ))}
-      </div>
-    )
-  }
-
-  // Loading
-  if (enterpriseLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-sand-50 to-sage-50 flex items-center justify-center">
         <LoadingSpinner size="lg" />
       </div>
     )
   }
 
-  // Not found
+  // Enterprise not found
   if (!currentEnterprise) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card className="p-8 text-center">
-          <Building2 className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-          <h2 className="text-xl font-semibold mb-2">Empreendimento não encontrado</h2>
-          <p className="text-gray-600 mb-4">Enterprise ID: {id}</p>
-          <Button onClick={() => navigate('/marketplace')}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Voltar ao Marketplace
-          </Button>
-        </Card>
+      <div className="min-h-screen bg-gradient-to-br from-sand-50 to-sage-50 flex items-center justify-center">
+        <EmptyState
+          icon={Building2}
+          title={t('enterpriseDetail.notFound') || 'Empreendimento não encontrado'}
+          description="Verifique se o link está correto ou tente novamente."
+          action={
+            <Button onClick={() => navigate('/marketplace')}>
+              Voltar ao Marketplace
+            </Button>
+          }
+        />
       </div>
     )
   }
@@ -404,7 +322,7 @@ export const EnterpriseDetail: React.FC = () => {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-matte-black-400" />
                 <Input
                   type="text"
-                  placeholder="Busque por título, tags..."
+                  placeholder={t('enterpriseDetail.listings.searchPlaceholder') || 'Busque por título, tags...'}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10"
@@ -527,8 +445,95 @@ export const EnterpriseDetail: React.FC = () => {
             </Card>
           )}
 
-          {/* ✅ RENDERIZAÇÃO DOS PRODUTOS - MESMA LÓGICA QUE FUNCIONOU */}
-          {renderProducts()}
+          {/* Empty state */}
+          {filteredListings.length === 0 && (
+            <EmptyState
+              icon={Package}
+              title={hasActiveFilters ? 
+                'Nenhum produto encontrado com esses filtros' : 
+                'Nenhum produto cadastrado'
+              }
+              description={hasActiveFilters ? 
+                'Tente ajustar os filtros para encontrar mais produtos.' :
+                'Este empreendimento ainda não possui produtos ou serviços cadastrados.'
+              }
+              action={hasActiveFilters ? (
+                <Button variant="outline" onClick={clearFilters}>
+                  Limpar Filtros
+                </Button>
+              ) : isOwner ? (
+                <Button onClick={handleCreateListing}>
+                  Criar Primeiro Anúncio
+                </Button>
+              ) : undefined}
+            />
+          )}
+
+          {/* Grid de produtos */}
+          {filteredListings.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {filteredListings.map((listing) => (
+                <motion.div
+                  key={listing.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  whileHover={{ y: -4 }}
+                  className="cursor-pointer"
+                  onClick={() => navigate(`/marketplace/listing/${listing.id}`)}
+                >
+                  <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-200">
+                    <div className="aspect-video bg-matte-black-100 relative overflow-hidden">
+                      {listing.images && listing.images[0] ? (
+                        <img
+                          src={listing.images[0]}
+                          alt={listing.title}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Package className="h-8 w-8 text-matte-black-400" />
+                        </div>
+                      )}
+                      {listing.digital && (
+                        <Badge 
+                          variant="secondary" 
+                          className="absolute top-2 right-2 bg-purple-100 text-purple-700"
+                        >
+                          Digital
+                        </Badge>
+                      )}
+                    </div>
+                    
+                    <div className="p-4">
+                      <h3 className="font-semibold text-matte-black-900 mb-1 line-clamp-2">
+                        {listing.title}
+                      </h3>
+                      
+                      <p className="text-sm text-matte-black-600 mb-3 line-clamp-2">
+                        {listing.description}
+                      </p>
+                      
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-lg font-bold text-success">
+                            {listing.price.toLocaleString('pt-BR')} {listing.currency}
+                          </p>
+                          <div className="flex items-center gap-1 text-sm text-matte-black-500">
+                            <Star className="h-3 w-3 fill-current text-amber-400" />
+                            {listing.sellerRating.toFixed(1)}
+                          </div>
+                        </div>
+                        
+                        <Badge variant="secondary" className="text-xs">
+                          {listing.category}
+                        </Badge>
+                      </div>
+                    </div>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
       )
     }
@@ -538,7 +543,7 @@ export const EnterpriseDetail: React.FC = () => {
   if (enterprise.tokenized) {
     tabs.splice(2, 0, {
       id: 'economy',
-      label: 'Economia / Token',
+      label: t('enterpriseDetail.tabs.economy') || 'Economia / Token',
       content: (
         <div className="space-y-6">
           {/* KPIs principais */}
@@ -606,7 +611,8 @@ export const EnterpriseDetail: React.FC = () => {
           <Card className="p-4 bg-amber-50 border-amber-200">
             <p className="text-sm text-amber-800">
               <Shield className="h-4 w-4 inline mr-2" />
-              Informações meramente ilustrativas e não constituem recomendação de investimento.
+              {t('enterpriseDetail.economy.disclaimer') || 
+               'Informações meramente ilustrativas e não constituem recomendação de investimento.'}
             </p>
           </Card>
         </div>

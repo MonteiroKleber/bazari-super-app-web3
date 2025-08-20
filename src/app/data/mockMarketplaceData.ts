@@ -1005,7 +1005,7 @@ export const mockEnterprises = [
   },
 
   {
-    id: 'ent_1',
+    id: 'enterprise_1',
     ownerId: 'user_2',
     ownerName: 'João Silva',
     name: 'Tech Solutions Pro',
