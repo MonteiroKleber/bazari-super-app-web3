@@ -1,94 +1,68 @@
+// ==========================================
+// src/features/p2p/store/tradesStore.ts
+// ==========================================
 
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { P2PTrade, PaymentMethod } from '../types/p2p.types'
-import { p2pService } from '../services/p2pService'
-
-export interface CreateTradeParams {
-  offerId: string
-  buyerId: string
-  sellerId: string
-  amountBZR: string
-  paymentMethod: PaymentMethod
-  priceBZR: number
-}
+import { p2pService, type CreateTradeParams } from '../services/p2pService'
+import type { P2PTrade } from '../types/p2p.types'
 
 interface TradesState {
-  // State
   trades: P2PTrade[]
   loading: boolean
-  error?: string
-  
-  // Actions
-  fetchTrades: () => Promise<void>
+  error: string | null
+}
+
+interface TradesActions {
+  fetchTrades: (userId?: string) => Promise<void>
   createTrade: (params: CreateTradeParams) => Promise<P2PTrade>
   updateTrade: (id: string, patch: Partial<P2PTrade>) => Promise<void>
   appendTimeline: (id: string, evt: { ts: number; type: string; payload?: any }) => void
-  
-  // Trade flow actions
   lockEscrow: (tradeId: string, escrowData: any) => void
-  markPayment: (tradeId: string, proof?: string) => void
+  markPayment: (tradeId: string, proof: string) => void
   releaseFunds: (tradeId: string) => void
   refundFunds: (tradeId: string) => void
-  cancelTrade: (tradeId: string, reason?: string) => void
+  cancelTrade: (tradeId: string, reason: string) => void
   openDispute: (tradeId: string, reason: string, attachments?: string[]) => void
-  
-  // Getters
   getTradeById: (id: string) => P2PTrade | undefined
   getTradesByUser: (userId: string) => P2PTrade[]
   getActiveTradesCount: () => number
 }
 
-export const useTradesStore = create<TradesState>()(
+export const useTradesStore = create<TradesState & TradesActions>()(
   persist(
     (set, get) => ({
-      // Initial state
       trades: [],
       loading: false,
-      error: undefined,
+      error: null,
 
-      // Actions
-      fetchTrades: async () => {
-        set({ loading: true, error: undefined })
-        
+      fetchTrades: async (userId) => {
+        set({ loading: true, error: null })
         try {
-          // Mock - em produção, buscar trades do usuário via API
-          await new Promise(resolve => setTimeout(resolve, 400))
-          
-          const mockTrades: P2PTrade[] = [] // Por enquanto vazio
-          
+          const trades = userId ? 
+            await p2pService.fetchTrades(userId) : 
+            p2pService.getAllTrades()
+          set({ trades, loading: false })
+        } catch (error) {
           set({ 
-            trades: mockTrades,
+            error: error instanceof Error ? error.message : 'Erro ao buscar trades',
             loading: false 
           })
-        } catch (error) {
-          const message = error instanceof Error ? error.message : 'Erro ao buscar negociações'
-          set({ 
-            loading: false, 
-            error: message 
-          })
-          throw error
         }
       },
 
       createTrade: async (params) => {
-        set({ loading: true, error: undefined })
-        
+        set({ loading: true, error: null })
         try {
           const trade = await p2pService.createTrade(params)
-          
-          set(state => ({
+          set(state => ({ 
             trades: [trade, ...state.trades],
-            loading: false
+            loading: false 
           }))
-          
           return trade
         } catch (error) {
-          const message = error instanceof Error ? error.message : 'Erro ao criar negociação'
-          set({ 
-            loading: false, 
-            error: message 
-          })
+          const message = error instanceof Error ? error.message : 'Erro ao criar trade'
+          set({ error: message, loading: false })
           throw error
         }
       },
@@ -101,7 +75,6 @@ export const useTradesStore = create<TradesState>()(
             )
           }))
           
-          // Sync with backend
           if (patch.status) {
             await p2pService.updateTradeStatus(id, patch.status, patch)
           }
@@ -122,7 +95,6 @@ export const useTradesStore = create<TradesState>()(
         }))
       },
 
-      // Trade flow actions
       lockEscrow: (tradeId, escrowData) => {
         const now = Date.now()
         
@@ -208,7 +180,6 @@ export const useTradesStore = create<TradesState>()(
         })
       },
 
-      // Getters
       getTradeById: (id) => {
         return get().trades.find(trade => trade.id === id)
       },
@@ -226,11 +197,7 @@ export const useTradesStore = create<TradesState>()(
       }
     }),
     {
-      name: 'bazari-p2p-trades',
-      partialize: (state) => ({
-        // Persistir apenas os dados essenciais
-        trades: state.trades
-      })
+      name: 'bazari-p2p-trades'
     }
   )
 )

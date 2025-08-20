@@ -1,482 +1,278 @@
-// src/features/marketplace/services/p2pService.ts
+// ==========================================
+// src/features/p2p/services/p2pService.ts
+// ==========================================
 
-import { 
-  P2POrder, 
-  P2PTrade, 
-  P2PChatMessage, 
-  P2PFilters, 
-  P2PMetrics, 
-  P2PUserLimits,
-  P2PMarketData,
-  P2PTradeEvent
-} from '../types/p2p.types'
+import type { P2POffer, P2PTrade, PaymentMethod, P2PFilters } from '../types/p2p.types'
 
-// Escrow Adapter Interface - Future on-chain implementation
-interface EscrowAdapter {
-  lockEscrow(tradeId: string, amount: number, currency: 'BZR' | 'BRL'): Promise<string>
-  releaseEscrow(tradeId: string): Promise<string>
-  disputeEscrow(tradeId: string, reason: string): Promise<string>
-  getEscrowStatus(tradeId: string): Promise<'locked' | 'released' | 'disputed'>
+export interface CreateOfferParams {
+  side: 'BUY' | 'SELL'
+  priceBZR: number
+  minAmount: string
+  maxAmount: string
+  paymentMethods: PaymentMethod[]
+  terms?: string
+  location?: {
+    country?: string
+    state?: string
+    city?: string
+  }
 }
 
-// Mock Escrow Adapter - In-memory implementation
-class MockEscrowAdapter implements EscrowAdapter {
-  private escrows = new Map<string, { status: 'locked' | 'released' | 'disputed', amount: number }>()
-
-  async lockEscrow(tradeId: string, amount: number): Promise<string> {
-    await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate on-chain delay
-    this.escrows.set(tradeId, { status: 'locked', amount })
-    return `mock_tx_${crypto.randomUUID()}`
-  }
-
-  async releaseEscrow(tradeId: string): Promise<string> {
-    await new Promise(resolve => setTimeout(resolve, 800))
-    const escrow = this.escrows.get(tradeId)
-    if (escrow) {
-      escrow.status = 'released'
-    }
-    return `mock_release_tx_${crypto.randomUUID()}`
-  }
-
-  async disputeEscrow(tradeId: string, reason: string): Promise<string> {
-    await new Promise(resolve => setTimeout(resolve, 1200))
-    const escrow = this.escrows.get(tradeId)
-    if (escrow) {
-      escrow.status = 'disputed'
-    }
-    return `mock_dispute_tx_${crypto.randomUUID()}`
-  }
-
-  async getEscrowStatus(tradeId: string): Promise<'locked' | 'released' | 'disputed'> {
-    const escrow = this.escrows.get(tradeId)
-    return escrow?.status || 'released'
-  }
+export interface CreateTradeParams {
+  offerId: string
+  buyerId: string
+  sellerId: string
+  amountBZR: string
+  paymentMethod: PaymentMethod
+  priceBZR: number
 }
 
 class P2PService {
-  private escrowAdapter: EscrowAdapter
-  private orders: P2POrder[] = []
-  private trades: P2PTrade[] = []
-  private messages: P2PChatMessage[] = []
+  private mockOffers: P2POffer[] = []
+  private mockTrades: P2PTrade[] = []
+  private lastOfferId = 1000
+  private lastTradeId = 2000
 
   constructor() {
-    this.escrowAdapter = new MockEscrowAdapter()
-    this.initMockData()
+    this.initializeMockData()
   }
 
-  private initMockData() {
-    // Initialize with some mock data for demonstration
-    this.orders = [
+  private generateMockOffers(): P2POffer[] {
+    const users = [
+      { id: 'user_001', name: 'Ana Silva', rating: 4.8, trades: 45 },
+      { id: 'user_002', name: 'Carlos Mendes', rating: 4.6, trades: 23 },
+      { id: 'user_003', name: 'Lucia Santos', rating: 4.9, trades: 78 },
+      { id: 'user_004', name: 'Pedro Costa', rating: 4.3, trades: 12 },
+      { id: 'user_005', name: 'Maria Oliveira', rating: 4.7, trades: 34 }
+    ]
+
+    const cities = ['São Paulo', 'Rio de Janeiro', 'Belo Horizonte', 'Salvador', 'Brasília']
+    const states = ['SP', 'RJ', 'MG', 'BA', 'DF']
+
+    return users.flatMap(user => [
+      // Ofertas de VENDA
       {
-        id: 'p2p_order_1',
-        ownerId: 'user_2',
-        ownerName: 'Maria Santos',
-        ownerRating: 4.8,
-        orderType: 'sell',
-        asset: 'BZR',
-        unitPriceBRL: 0.85,
-        minAmount: 100,
-        maxAmount: 10000,
-        paymentMethods: ['PIX', 'TED'],
-        escrowEnabled: true,
-        escrowTimeLimitMinutes: 60,
-        status: 'active',
-        createdAt: '2024-08-15T10:00:00.000Z',
-        updatedAt: '2024-08-15T10:00:00.000Z',
-        reputationSnapshot: {
-          rating: 4.8,
-          reviewCount: 45,
-          completionRate: 98.5,
-          avgReleaseTime: 25
-        },
+        id: `offer_sell_${this.lastOfferId++}`,
+        side: 'SELL' as const,
+        priceBZR: 5.10 + Math.random() * 0.40,
+        minAmount: (50 + Math.random() * 50).toFixed(0),
+        maxAmount: (500 + Math.random() * 1500).toFixed(0),
+        availableAmount: (400 + Math.random() * 1100).toFixed(0),
+        fiatCurrency: 'BRL' as const,
+        paymentMethods: Math.random() > 0.5 ? ['PIX', 'TED'] : ['PIX'],
         location: {
-          city: 'São Paulo',
-          state: 'SP',
+          city: cities[Math.floor(Math.random() * cities.length)],
+          state: states[Math.floor(Math.random() * states.length)],
           country: 'Brasil'
         },
-        description: 'Vendo BZR com pagamento rápido via PIX. Escrow disponível.',
-        termsAndConditions: 'Pagamento deve ser feito em até 30 minutos após confirmação.'
+        ownerId: user.id,
+        ownerName: user.name,
+        terms: Math.random() > 0.6 ? 'Pagamento em até 30 minutos. Somente pessoas verificadas.' : undefined,
+        createdAt: Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000,
+        stats: {
+          completed: user.trades,
+          cancelRatePct: Math.random() * 5,
+          avgReleaseTimeSec: 300 + Math.random() * 900
+        },
+        reputation: {
+          score: user.rating,
+          level: user.rating > 4.7 ? 'trusted' : user.rating > 4.4 ? 'pro' : 'new'
+        }
       },
+      // Ofertas de COMPRA
       {
-        id: 'p2p_order_2',
-        ownerId: 'user_3',
-        ownerName: 'João Silva',
-        ownerRating: 4.6,
-        orderType: 'buy',
-        asset: 'BZR',
-        unitPriceBRL: 0.82,
-        minAmount: 500,
-        maxAmount: 50000,
-        paymentMethods: ['PIX', 'TED', 'DOC'],
-        escrowEnabled: true,
-        escrowTimeLimitMinutes: 90,
-        status: 'active',
-        createdAt: '2024-08-15T09:30:00.000Z',
-        updatedAt: '2024-08-15T09:30:00.000Z',
-        reputationSnapshot: {
-          rating: 4.6,
-          reviewCount: 23,
-          completionRate: 96.0,
-          avgReleaseTime: 35
+        id: `offer_buy_${this.lastOfferId++}`,
+        side: 'BUY' as const,
+        priceBZR: 5.00 + Math.random() * 0.30,
+        minAmount: (100 + Math.random() * 100).toFixed(0),
+        maxAmount: (800 + Math.random() * 1200).toFixed(0),
+        availableAmount: '0',
+        fiatCurrency: 'BRL' as const,
+        paymentMethods: ['PIX', 'TED'].slice(0, Math.floor(Math.random() * 2) + 1) as PaymentMethod[],
+        location: {
+          city: cities[Math.floor(Math.random() * cities.length)],
+          state: states[Math.floor(Math.random() * states.length)],
+          country: 'Brasil'
+        },
+        ownerId: user.id,
+        ownerName: user.name,
+        terms: Math.random() > 0.7 ? 'Compro BZR em grandes quantidades. Preferência para vendedores com boa reputação.' : undefined,
+        createdAt: Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000,
+        stats: {
+          completed: user.trades,
+          cancelRatePct: Math.random() * 5,
+          avgReleaseTimeSec: 300 + Math.random() * 900
+        },
+        reputation: {
+          score: user.rating,
+          level: user.rating > 4.7 ? 'trusted' : user.rating > 4.4 ? 'pro' : 'new'
         }
       }
-    ]
+    ])
   }
 
-  // Core P2P Operations
-  async listP2POrders(filters: P2PFilters = {}): Promise<P2POrder[]> {
-    await new Promise(resolve => setTimeout(resolve, 300)) // Simulate API delay
+  private initializeMockData(): void {
+    this.mockOffers = this.generateMockOffers()
+  }
 
-    let filteredOrders = [...this.orders]
-
-    // Apply filters
-    if (filters.direction && filters.direction !== 'all') {
-      filteredOrders = filteredOrders.filter(order => order.orderType === filters.direction)
+  async createOffer(params: CreateOfferParams): Promise<P2POffer> {
+    await new Promise(resolve => setTimeout(resolve, 800))
+    
+    if (parseFloat(params.minAmount) > parseFloat(params.maxAmount)) {
+      throw new Error('Valor mínimo não pode ser maior que o máximo')
+    }
+    if (params.priceBZR <= 0) {
+      throw new Error('Preço deve ser maior que zero')
+    }
+    if (params.paymentMethods.length === 0) {
+      throw new Error('Selecione pelo menos um método de pagamento')
     }
 
-    if (filters.priceRange) {
-      filteredOrders = filteredOrders.filter(order => 
-        order.unitPriceBRL >= filters.priceRange!.min && 
-        order.unitPriceBRL <= filters.priceRange!.max
-      )
-    }
-
-    if (filters.amountRange) {
-      filteredOrders = filteredOrders.filter(order => 
-        order.maxAmount >= filters.amountRange!.min && 
-        order.minAmount <= filters.amountRange!.max
-      )
-    }
-
-    if (filters.paymentMethod) {
-      filteredOrders = filteredOrders.filter(order => 
-        order.paymentMethods.includes(filters.paymentMethod!)
-      )
-    }
-
-    if (filters.minReputationRating) {
-      filteredOrders = filteredOrders.filter(order => 
-        order.ownerRating >= filters.minReputationRating!
-      )
-    }
-
-    if (filters.escrowOnly) {
-      filteredOrders = filteredOrders.filter(order => order.escrowEnabled)
-    }
-
-    if (filters.search) {
-      const query = filters.search.toLowerCase()
-      filteredOrders = filteredOrders.filter(order =>
-        order.ownerName.toLowerCase().includes(query) ||
-        order.description?.toLowerCase().includes(query)
-      )
-    }
-
-    // Apply sorting
-    if (filters.sortBy) {
-      switch (filters.sortBy) {
-        case 'price_asc':
-          filteredOrders.sort((a, b) => a.unitPriceBRL - b.unitPriceBRL)
-          break
-        case 'price_desc':
-          filteredOrders.sort((a, b) => b.unitPriceBRL - a.unitPriceBRL)
-          break
-        case 'amount_asc':
-          filteredOrders.sort((a, b) => a.maxAmount - b.maxAmount)
-          break
-        case 'amount_desc':
-          filteredOrders.sort((a, b) => b.maxAmount - a.maxAmount)
-          break
-        case 'rating_desc':
-          filteredOrders.sort((a, b) => b.ownerRating - a.ownerRating)
-          break
-        case 'newest':
-        default:
-          filteredOrders.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-          break
+    const offer: P2POffer = {
+      id: `offer_${Date.now()}_${crypto.randomUUID().slice(0, 8)}`,
+      side: params.side,
+      priceBZR: params.priceBZR,
+      minAmount: params.minAmount,
+      maxAmount: params.maxAmount,
+      availableAmount: params.side === 'SELL' ? params.maxAmount : '0',
+      fiatCurrency: 'BRL',
+      paymentMethods: params.paymentMethods,
+      location: params.location,
+      ownerId: 'current_user',
+      ownerName: 'Você',
+      terms: params.terms,
+      createdAt: Date.now(),
+      stats: {
+        completed: 0,
+        cancelRatePct: 0,
+        avgReleaseTimeSec: 0
+      },
+      reputation: {
+        score: 4.5,
+        level: 'new'
       }
     }
 
-    return filteredOrders.filter(order => order.status === 'active')
+    this.mockOffers.unshift(offer)
+    return offer
   }
 
-  async createP2POrder(payload: Partial<P2POrder>): Promise<string> {
-    await new Promise(resolve => setTimeout(resolve, 500))
+  async fetchOffers(filters?: Partial<P2PFilters>): Promise<P2POffer[]> {
+    await new Promise(resolve => setTimeout(resolve, 300 + Math.random() * 700))
+    
+    let filtered = [...this.mockOffers]
 
-    const newOrder: P2POrder = {
-      id: crypto.randomUUID(),
-      ownerId: payload.ownerId!,
-      ownerName: payload.ownerName!,
-      ownerRating: payload.ownerRating || 0,
-      orderType: payload.orderType!,
-      asset: 'BZR',
-      unitPriceBRL: payload.unitPriceBRL!,
-      minAmount: payload.minAmount!,
-      maxAmount: payload.maxAmount!,
-      paymentMethods: payload.paymentMethods!,
-      escrowEnabled: payload.escrowEnabled || false,
-      escrowTimeLimitMinutes: payload.escrowTimeLimitMinutes || 60,
-      status: 'active',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      reputationSnapshot: payload.reputationSnapshot,
-      location: payload.location,
-      description: payload.description,
-      termsAndConditions: payload.termsAndConditions
+    if (filters) {
+      if (filters.side) {
+        filtered = filtered.filter(offer => offer.side === filters.side)
+      }
+      if (filters.payment) {
+        filtered = filtered.filter(offer => 
+          offer.paymentMethods.includes(filters.payment!)
+        )
+      }
+      if (filters.priceMin) {
+        filtered = filtered.filter(offer => offer.priceBZR >= filters.priceMin!)
+      }
+      if (filters.priceMax) {
+        filtered = filtered.filter(offer => offer.priceBZR <= filters.priceMax!)
+      }
+      if (filters.reputationMin) {
+        filtered = filtered.filter(offer => 
+          offer.reputation?.score && offer.reputation.score >= filters.reputationMin!
+        )
+      }
+      if (filters.city) {
+        filtered = filtered.filter(offer =>
+          offer.location?.city?.toLowerCase().includes(filters.city!.toLowerCase())
+        )
+      }
+      if (filters.q) {
+        const query = filters.q.toLowerCase()
+        filtered = filtered.filter(offer =>
+          offer.ownerName?.toLowerCase().includes(query) ||
+          offer.terms?.toLowerCase().includes(query)
+        )
+      }
     }
 
-    this.orders.push(newOrder)
-    return newOrder.id
+    return filtered
   }
 
-  async getP2POrderById(id: string): Promise<P2POrder | null> {
-    await new Promise(resolve => setTimeout(resolve, 200))
-    return this.orders.find(order => order.id === id) || null
-  }
-
-  async initiateTrade(orderId: string, amount: number, buyerId: string, buyerName: string): Promise<string> {
-    await new Promise(resolve => setTimeout(resolve, 400))
-
-    const order = this.orders.find(o => o.id === orderId)
-    if (!order) throw new Error('Order not found')
-
-    if (amount < order.minAmount || amount > order.maxAmount) {
-      throw new Error('Amount outside order limits')
-    }
-
-    const tradeId = crypto.randomUUID()
-    const totalBRL = amount * order.unitPriceBRL
-
-    const newTrade: P2PTrade = {
-      id: tradeId,
-      orderId,
-      buyerId: order.orderType === 'sell' ? buyerId : order.ownerId,
-      sellerId: order.orderType === 'buy' ? buyerId : order.ownerId,
-      buyerName: order.orderType === 'sell' ? buyerName : order.ownerName,
-      sellerName: order.orderType === 'buy' ? buyerName : order.ownerName,
-      amount,
-      unitPriceBRL: order.unitPriceBRL,
-      totalBRL,
-      escrowStatus: 'none',
-      status: 'initiated',
-      paymentMethod: order.paymentMethods[0], // Default to first method
-      deadlines: {
-        paymentDeadline: new Date(Date.now() + 30 * 60 * 1000).toISOString(), // 30 min
-        escrowReleaseDeadline: order.escrowEnabled 
-          ? new Date(Date.now() + order.escrowTimeLimitMinutes * 60 * 1000).toISOString()
-          : undefined
-      },
+  async createTrade(params: CreateTradeParams): Promise<P2PTrade> {
+    await new Promise(resolve => setTimeout(resolve, 600))
+    
+    const trade: P2PTrade = {
+      id: `trade_${Date.now()}_${crypto.randomUUID().slice(0, 8)}`,
+      offerId: params.offerId,
+      buyerId: params.buyerId,
+      sellerId: params.sellerId,
+      amountBZR: params.amountBZR,
+      priceBZR: params.priceBZR,
+      paymentMethod: params.paymentMethod,
+      status: 'CREATED',
       timeline: [{
-        id: crypto.randomUUID(),
-        type: 'initiated',
-        description: 'Trade initiated',
-        actor: 'buyer',
-        actorId: buyerId,
-        actorName: buyerName,
-        timestamp: new Date().toISOString(),
-        metadata: { amount, txHash: undefined }
-      }],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+        ts: Date.now(),
+        type: 'CREATED',
+        payload: { 
+          amount: params.amountBZR, 
+          price: params.priceBZR,
+          total: (parseFloat(params.amountBZR) * params.priceBZR).toFixed(2)
+        }
+      }]
     }
 
-    this.trades.push(newTrade)
-
-    // Lock order temporarily
-    const orderIndex = this.orders.findIndex(o => o.id === orderId)
-    if (orderIndex !== -1) {
-      this.orders[orderIndex].status = 'locked'
-    }
-
-    return tradeId
+    this.mockTrades.unshift(trade)
+    return trade
   }
 
-  // Chat Operations
-  async postChatMessage(tradeId: string, senderId: string, senderName: string, text: string): Promise<string> {
-    await new Promise(resolve => setTimeout(resolve, 200))
-
-    const message: P2PChatMessage = {
-      id: crypto.randomUUID(),
-      tradeId,
-      senderId,
-      senderName,
-      text,
-      type: 'text',
-      createdAt: new Date().toISOString()
-    }
-
-    this.messages.push(message)
-    return message.id
-  }
-
-  async listChatMessages(tradeId: string): Promise<P2PChatMessage[]> {
-    await new Promise(resolve => setTimeout(resolve, 150))
-    return this.messages
-      .filter(msg => msg.tradeId === tradeId)
-      .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
-  }
-
-  // Escrow Operations
-  async lockEscrow(tradeId: string): Promise<string> {
-    const trade = this.trades.find(t => t.id === tradeId)
-    if (!trade) throw new Error('Trade not found')
-
-    const txHash = await this.escrowAdapter.lockEscrow(tradeId, trade.totalBRL, 'BRL')
+  async fetchTrades(userId: string): Promise<P2PTrade[]> {
+    await new Promise(resolve => setTimeout(resolve, 400))
     
-    // Update trade
-    const tradeIndex = this.trades.findIndex(t => t.id === tradeId)
-    if (tradeIndex !== -1) {
-      this.trades[tradeIndex].escrowStatus = 'locked'
-      this.trades[tradeIndex].metadata = { 
-        ...this.trades[tradeIndex].metadata, 
-        escrowTxHash: txHash 
-      }
-      this.trades[tradeIndex].timeline.push({
-        id: crypto.randomUUID(),
-        type: 'escrow_locked',
-        description: 'Escrow locked successfully',
-        actor: 'system',
-        actorId: 'system',
-        actorName: 'System',
-        timestamp: new Date().toISOString(),
-        metadata: { txHash }
-      })
-    }
-
-    return txHash
-  }
-
-  async releaseEscrow(tradeId: string): Promise<string> {
-    const trade = this.trades.find(t => t.id === tradeId)
-    if (!trade) throw new Error('Trade not found')
-
-    const txHash = await this.escrowAdapter.releaseEscrow(tradeId)
-    
-    // Update trade
-    const tradeIndex = this.trades.findIndex(t => t.id === tradeId)
-    if (tradeIndex !== -1) {
-      this.trades[tradeIndex].escrowStatus = 'released'
-      this.trades[tradeIndex].status = 'completed'
-      this.trades[tradeIndex].timeline.push({
-        id: crypto.randomUUID(),
-        type: 'escrow_released',
-        description: 'Escrow released and trade completed',
-        actor: 'system',
-        actorId: 'system',
-        actorName: 'System',
-        timestamp: new Date().toISOString(),
-        metadata: { txHash }
-      })
-    }
-
-    return txHash
-  }
-
-  async cancelTrade(tradeId: string, reason?: string): Promise<void> {
-    await new Promise(resolve => setTimeout(resolve, 300))
-
-    const tradeIndex = this.trades.findIndex(t => t.id === tradeId)
-    if (tradeIndex !== -1) {
-      this.trades[tradeIndex].status = 'cancelled'
-      this.trades[tradeIndex].metadata = {
-        ...this.trades[tradeIndex].metadata,
-        cancelReason: reason
-      }
-      this.trades[tradeIndex].timeline.push({
-        id: crypto.randomUUID(),
-        type: 'cancelled',
-        description: `Trade cancelled${reason ? `: ${reason}` : ''}`,
-        actor: 'system',
-        actorId: 'system',
-        actorName: 'System',
-        timestamp: new Date().toISOString(),
-        metadata: { reason }
-      })
-
-      // Unlock the order
-      const trade = this.trades[tradeIndex]
-      const orderIndex = this.orders.findIndex(o => o.id === trade.orderId)
-      if (orderIndex !== -1) {
-        this.orders[orderIndex].status = 'active'
-      }
-    }
-  }
-
-  // User Limits and Metrics
-  async getDailyUserLimits(userId: string): Promise<P2PUserLimits> {
-    await new Promise(resolve => setTimeout(resolve, 200))
-
-    // Mock calculation based on user reputation and history
-    return {
-      dailyOrdersLimit: 10,
-      dailyVolumeLimit: { BZR: 100000, BRL: 50000 },
-      maxActiveOrders: 5,
-      maxTradesPerDay: 20,
-      currentUsage: {
-        ordersToday: 2,
-        volumeToday: { BZR: 5000, BRL: 4250 },
-        activeOrders: 1,
-        tradesToday: 3
-      },
-      reputationRequirements: {
-        minRatingForLargeOrders: 4.5,
-        minTradesForEscrow: 5,
-        minRatingForNoEscrow: 4.8
-      }
-    }
-  }
-
-  async checkPostLimit(userId: string): Promise<boolean> {
-    const limits = await this.getDailyUserLimits(userId)
-    return limits.currentUsage.ordersToday < limits.dailyOrdersLimit
-  }
-
-  async getUserP2PMetrics(userId: string): Promise<P2PMetrics> {
-    await new Promise(resolve => setTimeout(resolve, 250))
-
-    const userTrades = this.trades.filter(t => 
-      t.buyerId === userId || t.sellerId === userId
+    return this.mockTrades.filter(trade => 
+      trade.buyerId === userId || trade.sellerId === userId
     )
+  }
 
-    const completedTrades = userTrades.filter(t => t.status === 'completed')
-    const disputedTrades = userTrades.filter(t => t.status === 'disputed')
+  async getTradeById(id: string): Promise<P2PTrade | undefined> {
+    await new Promise(resolve => setTimeout(resolve, 200))
+    return this.mockTrades.find(trade => trade.id === id)
+  }
 
-    return {
-      userTradesCount: userTrades.length,
-      completionRate: userTrades.length > 0 ? (completedTrades.length / userTrades.length) * 100 : 0,
-      avgReleaseTime: 28, // Mock average
-      disputesCount: disputedTrades.length,
-      totalVolume: { BZR: 25000, BRL: 21250 },
-      avgRating: 4.7,
-      responseTime: 15,
-      trustScore: 85
+  async updateTradeStatus(
+    tradeId: string, 
+    status: P2PTrade['status'], 
+    data?: Record<string, any>
+  ): Promise<void> {
+    await new Promise(resolve => setTimeout(resolve, 300))
+    
+    const trade = this.mockTrades.find(t => t.id === tradeId)
+    if (trade) {
+      trade.status = status
+      trade.timeline.push({
+        ts: Date.now(),
+        type: status,
+        payload: data
+      })
     }
   }
 
-  async getMarketData(): Promise<P2PMarketData> {
-    await new Promise(resolve => setTimeout(resolve, 300))
+  getAllOffers(): P2POffer[] {
+    return [...this.mockOffers]
+  }
+  
+  getAllTrades(): P2PTrade[] {
+    return [...this.mockTrades]
+  }
+  
+  clearMockData(): void {
+    this.mockOffers = []
+    this.mockTrades = []
+  }
 
-    const activeOrders = this.orders.filter(o => o.status === 'active')
-    const buyOrders = activeOrders.filter(o => o.orderType === 'buy')
-    const sellOrders = activeOrders.filter(o => o.orderType === 'sell')
-
-    return {
-      averagePrice: 0.835,
-      priceRange: { min: 0.80, max: 0.87 },
-      volume24h: { BZR: 125000, BRL: 104375, trades: 47 },
-      activeOrders: {
-        buy: buyOrders.length,
-        sell: sellOrders.length,
-        total: activeOrders.length
-      },
-      priceHistory: [
-        { timestamp: '2024-08-15T08:00:00.000Z', price: 0.82, volume: 15000 },
-        { timestamp: '2024-08-15T12:00:00.000Z', price: 0.835, volume: 22000 },
-        { timestamp: '2024-08-15T16:00:00.000Z', price: 0.84, volume: 18000 }
-      ]
-    }
+  regenerateMockOffers(): void {
+    this.mockOffers = this.generateMockOffers()
   }
 }
 
-// Export singleton instance
 export const p2pService = new P2PService()

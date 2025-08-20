@@ -1,5 +1,9 @@
+// ==========================================
+// src/features/p2p/hooks/useP2PFilters.ts
+// Correção do hook de filtros
+// ==========================================
 
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import type { P2PFilters, PaymentMethod } from '../types/p2p.types'
 import { useOffersStore } from '../store/offersStore'
@@ -24,9 +28,6 @@ export interface UseP2PFiltersReturn {
   urlFilters: Partial<P2PFilters>
 }
 
-/**
- * Hook para gerenciar filtros do P2P com debounce e sync com URL
- */
 export const useP2PFilters = (options?: {
   syncWithUrl?: boolean
   debounceMs?: number
@@ -34,7 +35,7 @@ export const useP2PFilters = (options?: {
 }): UseP2PFiltersReturn => {
   const {
     syncWithUrl = false,
-    debounceMs = 250,
+    debounceMs = 300,
     onFiltersChange
   } = options || {}
 
@@ -95,6 +96,13 @@ export const useP2PFilters = (options?: {
     return { ...filters, ...urlFilters }
   }, [filters, urlFilters])
 
+  // Sync URL filters on mount
+  useEffect(() => {
+    if (syncWithUrl && Object.keys(urlFilters).length > 0) {
+      setStoreFilters(urlFilters)
+    }
+  }, []) // Only on mount
+
   // Update filters with debounce
   const debouncedSetFilters = useCallback((patch: Partial<P2PFilters>) => {
     // Clear previous timer
@@ -102,12 +110,12 @@ export const useP2PFilters = (options?: {
       clearTimeout(debounceTimer)
     }
     
-    // Set new timer
+    // Update store immediately for UI responsiveness
+    setStoreFilters(patch)
+    
+    // Set debounced timer for URL sync and callback
     const timer = setTimeout(() => {
       const newFilters = { ...mergedFilters, ...patch }
-      
-      // Update store
-      setStoreFilters(patch)
       
       // Update URL if sync enabled
       if (syncWithUrl) {
@@ -164,6 +172,7 @@ export const useP2PFilters = (options?: {
 
   // Helper methods
   const setSide = useCallback((side: 'BUY' | 'SELL') => {
+    console.log('🎯 setSide called with:', side) // Debug log
     debouncedSetFilters({ side })
   }, [debouncedSetFilters])
 
@@ -194,7 +203,7 @@ export const useP2PFilters = (options?: {
 
   // Reset to default filters
   const resetFilters = useCallback(() => {
-    const defaultFilters: P2PFilters = { side: 'BUY' }
+    const defaultFilters: P2PFilters = { side: 'SELL' }
     debouncedSetFilters(defaultFilters)
   }, [debouncedSetFilters])
 

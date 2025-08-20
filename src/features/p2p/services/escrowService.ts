@@ -1,4 +1,8 @@
 
+// ==========================================
+// src/features/p2p/services/escrowService.ts
+// ==========================================
+
 export interface EscrowLockParams {
   from: string
   to: string
@@ -25,136 +29,91 @@ export interface EscrowStatusResponse {
   state: 'LOCKED' | 'RELEASED' | 'REFUNDED'
 }
 
-/**
- * Escrow Service - Adapter para lock/release/refund/status
- * Mock para desenvolvimento, com interface preparada para integração
- * com substrateService ou pallet específico
- */
+interface EscrowRecord {
+  id: string
+  from: string
+  to: string
+  amount: string
+  state: 'LOCKED' | 'RELEASED' | 'REFUNDED'
+  createdAt: number
+  updatedAt: number
+  expiresAt?: number
+  metadata?: Record<string, any>
+}
+
 class EscrowService {
-  private mockEscrows: Map<string, {
-    id: string
-    from: string
-    to: string
-    amount: string
-    state: 'LOCKED' | 'RELEASED' | 'REFUNDED'
-    createdAt: number
-    updatedAt: number
-  }> = new Map()
+  private escrows = new Map<string, EscrowRecord>()
+  
+  private mockDelay = (min: number, max: number) => 
+    new Promise(resolve => setTimeout(resolve, min + Math.random() * (max - min)))
 
-  /**
-   * Bloqueia BZR em escrow
-   */
   async lock(params: EscrowLockParams): Promise<EscrowLockResponse> {
-    try {
-      const escrowId = `escrow_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-      
-      // Simular delay de blockchain
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      
-      // Mock - em produção, usar substrateService.extrinsic ou similar
-      this.mockEscrows.set(escrowId, {
-        id: escrowId,
-        from: params.from,
-        to: params.to,
-        amount: params.amount,
-        state: 'LOCKED',
-        createdAt: Date.now(),
-        updatedAt: Date.now()
-      })
-      
-      console.log('🔒 Mock Escrow Lock:', { escrowId, ...params })
-      return { escrowId }
-    } catch (error) {
-      console.error('❌ Escrow lock failed:', error)
-      throw new Error('Falha ao bloquear BZR em escrow')
+    await this.mockDelay(800, 2000)
+    
+    const escrowId = `escrow_${Date.now()}_${crypto.randomUUID().slice(0, 8)}`
+    const now = Date.now()
+    
+    // Simular falhas ocasionais (5%)
+    if (Math.random() < 0.05) {
+      throw new Error('Saldo insuficiente para escrow')
     }
+    
+    this.escrows.set(escrowId, {
+      id: escrowId,
+      from: params.from,
+      to: params.to,
+      amount: params.amount,
+      state: 'LOCKED',
+      createdAt: now,
+      updatedAt: now,
+      expiresAt: now + (24 * 60 * 60 * 1000)
+    })
+    
+    console.log('🔒 Escrow Locked:', { escrowId, amount: params.amount })
+    return { escrowId }
   }
 
-  /**
-   * Libera BZR do escrow para o destinatário
-   */
   async release(params: EscrowReleaseParams): Promise<void> {
-    try {
-      const escrow = this.mockEscrows.get(params.escrowId)
-      if (!escrow) {
-        throw new Error('Escrow não encontrado')
-      }
-      
-      if (escrow.state !== 'LOCKED') {
-        throw new Error('Escrow não está no estado LOCKED')
-      }
-      
-      // Simular delay de blockchain
-      await new Promise(resolve => setTimeout(resolve, 1200))
-      
-      // Mock - em produção, usar substrateService.extrinsic
-      escrow.state = 'RELEASED'
-      escrow.updatedAt = Date.now()
-      
-      console.log('✅ Mock Escrow Release:', params.escrowId)
-    } catch (error) {
-      console.error('❌ Escrow release failed:', error)
-      throw new Error('Falha ao liberar BZR do escrow')
-    }
+    await this.mockDelay(600, 1500)
+    
+    const escrow = this.escrows.get(params.escrowId)
+    if (!escrow) throw new Error('Escrow não encontrado')
+    if (escrow.state !== 'LOCKED') throw new Error('Escrow não pode ser liberado')
+    
+    escrow.state = 'RELEASED'
+    escrow.updatedAt = Date.now()
+    
+    console.log('✅ Escrow Released:', params.escrowId)
   }
 
-  /**
-   * Reembolsa BZR do escrow para o remetente
-   */
   async refund(params: EscrowRefundParams): Promise<void> {
-    try {
-      const escrow = this.mockEscrows.get(params.escrowId)
-      if (!escrow) {
-        throw new Error('Escrow não encontrado')
-      }
-      
-      if (escrow.state !== 'LOCKED') {
-        throw new Error('Escrow não está no estado LOCKED')
-      }
-      
-      // Simular delay de blockchain
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // Mock - em produção, usar substrateService.extrinsic
-      escrow.state = 'REFUNDED'
-      escrow.updatedAt = Date.now()
-      
-      console.log('🔄 Mock Escrow Refund:', params.escrowId)
-    } catch (error) {
-      console.error('❌ Escrow refund failed:', error)
-      throw new Error('Falha ao reembolsar BZR do escrow')
-    }
+    await this.mockDelay(700, 1800)
+    
+    const escrow = this.escrows.get(params.escrowId)
+    if (!escrow) throw new Error('Escrow não encontrado')
+    if (escrow.state !== 'LOCKED') throw new Error('Escrow não pode ser reembolsado')
+    
+    escrow.state = 'REFUNDED'
+    escrow.updatedAt = Date.now()
+    
+    console.log('↩️ Escrow Refunded:', params.escrowId)
   }
 
-  /**
-   * Verifica status do escrow
-   */
-  async status(params: EscrowStatusParams): Promise<EscrowStatusResponse> {
-    try {
-      const escrow = this.mockEscrows.get(params.escrowId)
-      if (!escrow) {
-        throw new Error('Escrow não encontrado')
-      }
-      
-      return { state: escrow.state }
-    } catch (error) {
-      console.error('❌ Escrow status check failed:', error)
-      throw new Error('Falha ao verificar status do escrow')
-    }
+  async getStatus(params: EscrowStatusParams): Promise<EscrowStatusResponse> {
+    await this.mockDelay(200, 500)
+    
+    const escrow = this.escrows.get(params.escrowId)
+    if (!escrow) throw new Error('Escrow não encontrado')
+    
+    return { state: escrow.state }
   }
 
-  /**
-   * Método helper para debugging (mock only)
-   */
-  getMockEscrows() {
-    return Array.from(this.mockEscrows.values())
+  getAllEscrows(): EscrowRecord[] {
+    return Array.from(this.escrows.values())
   }
-
-  /**
-   * Limpa escrows mock (útil para testes)
-   */
-  clearMockEscrows() {
-    this.mockEscrows.clear()
+  
+  clearMockData(): void {
+    this.escrows.clear()
   }
 }
 

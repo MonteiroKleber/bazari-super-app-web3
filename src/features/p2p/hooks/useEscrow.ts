@@ -1,36 +1,27 @@
+// ==========================================
+// src/features/p2p/hooks/useEscrow.ts
+// ==========================================
 
 import { useState, useCallback } from 'react'
 import { escrowService, type EscrowLockParams, type EscrowStatusResponse } from '../services/escrowService'
 import { useTradesStore } from '../store/tradesStore'
 
 export interface UseEscrowReturn {
-  // Estado
   loading: boolean
   error: string | null
-  
-  // Ações
   lockEscrow: (params: EscrowLockParams, tradeId: string) => Promise<string>
   releaseEscrow: (escrowId: string, tradeId: string) => Promise<void>
   refundEscrow: (escrowId: string, tradeId: string) => Promise<void>
   checkEscrowStatus: (escrowId: string) => Promise<EscrowStatusResponse>
-  
-  // Helpers
   clearError: () => void
 }
 
-/**
- * Hook para gerenciar operações de escrow
- * Integra com escrowService e atualiza o store de trades
- */
 export const useEscrow = (): UseEscrowReturn => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   
   const { lockEscrow: lockEscrowInStore, releaseFunds, refundFunds, appendTimeline } = useTradesStore()
 
-  /**
-   * Bloqueia BZR em escrow para um trade
-   */
   const lockEscrow = useCallback(async (
     params: EscrowLockParams, 
     tradeId: string
@@ -41,14 +32,13 @@ export const useEscrow = (): UseEscrowReturn => {
     try {
       const { escrowId } = await escrowService.lock(params)
       
-      // Atualizar trade no store
       const escrowData = {
         escrowId,
         from: params.from,
         to: params.to,
         amountBZR: params.amount,
         createdAt: Date.now(),
-        expiresAt: Date.now() + (24 * 60 * 60 * 1000) // 24h timeout
+        expiresAt: Date.now() + (24 * 60 * 60 * 1000)
       }
       
       lockEscrowInStore(tradeId, escrowData)
@@ -60,7 +50,6 @@ export const useEscrow = (): UseEscrowReturn => {
       setError(errorMessage)
       setLoading(false)
       
-      // Adicionar timeline de erro
       appendTimeline(tradeId, {
         ts: Date.now(),
         type: 'ESCROW_LOCK_FAILED',
@@ -71,9 +60,6 @@ export const useEscrow = (): UseEscrowReturn => {
     }
   }, [lockEscrowInStore, appendTimeline])
 
-  /**
-   * Libera BZR do escrow para o comprador
-   */
   const releaseEscrow = useCallback(async (
     escrowId: string, 
     tradeId: string
@@ -83,30 +69,16 @@ export const useEscrow = (): UseEscrowReturn => {
     
     try {
       await escrowService.release({ escrowId })
-      
-      // Atualizar trade no store
       releaseFunds(tradeId)
-      
       setLoading(false)
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao liberar escrow'
       setError(errorMessage)
       setLoading(false)
-      
-      // Adicionar timeline de erro
-      appendTimeline(tradeId, {
-        ts: Date.now(),
-        type: 'ESCROW_RELEASE_FAILED',
-        payload: { error: errorMessage }
-      })
-      
       throw err
     }
-  }, [releaseFunds, appendTimeline])
+  }, [releaseFunds])
 
-  /**
-   * Reembolsa BZR do escrow para o vendedor
-   */
   const refundEscrow = useCallback(async (
     escrowId: string, 
     tradeId: string
@@ -116,30 +88,16 @@ export const useEscrow = (): UseEscrowReturn => {
     
     try {
       await escrowService.refund({ escrowId })
-      
-      // Atualizar trade no store
       refundFunds(tradeId)
-      
       setLoading(false)
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao reembolsar escrow'
       setError(errorMessage)
       setLoading(false)
-      
-      // Adicionar timeline de erro
-      appendTimeline(tradeId, {
-        ts: Date.now(),
-        type: 'ESCROW_REFUND_FAILED',
-        payload: { error: errorMessage }
-      })
-      
       throw err
     }
-  }, [refundFunds, appendTimeline])
+  }, [refundFunds])
 
-  /**
-   * Verifica status do escrow
-   */
   const checkEscrowStatus = useCallback(async (
     escrowId: string
   ): Promise<EscrowStatusResponse> => {
@@ -147,7 +105,7 @@ export const useEscrow = (): UseEscrowReturn => {
     setError(null)
     
     try {
-      const status = await escrowService.status({ escrowId })
+      const status = await escrowService.getStatus({ escrowId })
       setLoading(false)
       return status
     } catch (err) {
@@ -158,9 +116,6 @@ export const useEscrow = (): UseEscrowReturn => {
     }
   }, [])
 
-  /**
-   * Limpa erros
-   */
   const clearError = useCallback(() => {
     setError(null)
   }, [])
