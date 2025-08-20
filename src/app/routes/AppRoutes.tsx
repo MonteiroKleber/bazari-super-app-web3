@@ -5,6 +5,8 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { LoadingSpinner } from '@shared/ui/LoadingSpinner'
 import { AuthGuard } from '@shared/guards/AuthGuard'
 
+import { P2PTestPage } from '../../components/P2PTestPage'
+
 // Lazy load pages
 const LandingPage = React.lazy(() => import('@pages/LandingPage'))
 const LoginPage = React.lazy(() => import('@pages/LoginPage'))
@@ -30,6 +32,9 @@ export const AppRoutes: React.FC = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/help" element={<HelpPage />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/test-p2p" element={<P2PTestPage />} />
+
+
 
         {/* Private Routes */}
         <Route path="/dashboard" element={

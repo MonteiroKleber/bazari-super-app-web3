@@ -1,3 +1,6 @@
+// ==========================================
+// src/features/p2p/components/OfferDetail.tsx - COMPLETO
+// ==========================================
 
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
@@ -14,7 +17,9 @@ import {
   User,
   Calendar,
   Award,
-  CreditCard
+  CreditCard,
+  CheckCircle,
+  Info
 } from 'lucide-react'
 import { Card } from '@shared/ui/Card'
 import { Button } from '@shared/ui/Button'
@@ -31,7 +36,7 @@ import { useReputationStore } from '../store/reputationStore'
 import { buildProfileRoute } from '../utils/profileRoute'
 import { getPaymentMethodInfo } from '../services/payments'
 import { toast } from '@features/notifications/components/NotificationToastHost'
-import type { PaymentMethod } from '../types/p2p.types'
+import type { PaymentMethod, P2POffer } from '../types/p2p.types'
 
 interface TradeFormData {
   amountBZR: string
@@ -43,425 +48,644 @@ export const OfferDetail: React.FC = () => {
   const navigate = useNavigate()
   const { t } = useI18n()
   const { user } = useAuthStore()
-  const { offers, fetchOffers } = useOffersStore()
+  const { offers, fetchOffers, fetchOfferById, loading } = useOffersStore()
   const { createTrade, loading: tradeLoading } = useTradesStore()
   const { fetchUserReputation, getUserReputation } = useReputationStore()
 
+  // ✅ CORREÇÃO: Estado local para oferta específica
+  const [offer, setOffer] = useState<P2POffer | null>(null)
+  const [isLoadingOffer, setIsLoadingOffer] = useState(true)
   const [tradeForm, setTradeForm] = useState<TradeFormData>({
     amountBZR: '',
     paymentMethod: ''
   })
   const [formErrors, setFormErrors] = useState<Record<string, string>>({})
 
-  const offer = offers.find(o => o.id === id)
-  const ownerReputation = offer ? getUserReputation(offer.ownerId) : undefined
-  const isOwnOffer = offer?.ownerId === user?.id
-
+  // ✅ CORREÇÃO: Effect para buscar oferta específica
   useEffect(() => {
-    if (!offer) {
-      fetchOffers().catch(console.error)
+    const loadOffer = async () => {
+      if (!id) {
+        setIsLoadingOffer(false)
+        return
+      }
+
+      console.log(`🔍 OfferDetail: Carregando oferta ${id}`)
+      setIsLoadingOffer(true)
+
+      try {
+        // Primeiro verificar estado local
+        const localOffer = offers.find(o => o.id === id)
+        if (localOffer) {
+          console.log(`📋 OfferDetail: Oferta encontrada no estado local`)
+          setOffer(localOffer)
+          setIsLoadingOffer(false)
+          return
+        }
+
+        // Se não encontrou, buscar via store
+        console.log(`🔄 OfferDetail: Buscando via fetchOfferById`)
+        const fetchedOffer = await fetchOfferById(id)
+        
+        if (fetchedOffer) {
+          console.log(`✅ OfferDetail: Oferta carregada com sucesso`)
+          setOffer(fetchedOffer)
+        } else {
+          console.log(`❌ OfferDetail: Oferta não encontrada`)
+          setOffer(null)
+        }
+      } catch (error) {
+        console.error('❌ OfferDetail: Erro ao carregar oferta:', error)
+        setOffer(null)
+      } finally {
+        setIsLoadingOffer(false)
+      }
     }
-  }, [offer, fetchOffers])
 
+    loadOffer()
+  }, [id, offers, fetchOfferById])
+
+  // Effect para buscar reputação do proprietário
   useEffect(() => {
-    if (offer && !ownerReputation) {
+    if (offer?.ownerId) {
       fetchUserReputation(offer.ownerId).catch(console.error)
     }
-  }, [offer, ownerReputation, fetchUserReputation])
+  }, [offer?.ownerId, fetchUserReputation])
 
-  const handleTradeFormChange = (field: keyof TradeFormData, value: string) => {
-    setTradeForm(prev => ({ ...prev, [field]: value }))
-    
-    if (formErrors[field]) {
-      setFormErrors(prev => ({ ...prev, [field]: '' }))
-    }
+  const ownerReputation = offer ? getUserReputation(offer.ownerId) : null
+
+  // ✅ CORREÇÃO: Loading e error states melhorados
+  if (isLoadingOffer || loading) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="mb-6">
+          <Button
+            variant="outline"
+            onClick={() => navigate('/p2p/offers')}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Voltar para ofertas
+          </Button>
+        </div>
+        
+        <div className="flex items-center justify-center min-h-96">
+          <div className="text-center">
+            <LoadingSpinner size="lg" />
+            <p className="mt-4 text-matte-black-600">
+              Carregando detalhes da oferta...
+            </p>
+          </div>
+        </div>
+      </div>
+    )
   }
 
-  const validateTradeForm = (): boolean => {
-    const errors: Record<string, string> = {}
-    
-    const amount = parseFloat(tradeForm.amountBZR)
-    const minAmount = parseFloat(offer?.minAmount || '0')
-    const maxAmount = parseFloat(offer?.maxAmount || '0')
+  if (!offer) {
+    return (
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="mb-6">
+          <Button
+            variant="outline"
+            onClick={() => navigate('/p2p/offers')}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Voltar para ofertas
+          </Button>
+        </div>
+        
+        <EmptyState
+          icon={AlertTriangle}
+          title="Oferta não encontrada"
+          description={`A oferta com ID "${id}" não existe ou foi removida.`}
+          action={
+            <Button onClick={() => navigate('/p2p/offers')}>
+              Ver todas as ofertas
+            </Button>
+          }
+        />
+      </div>
+    )
+  }
 
-    if (!tradeForm.amountBZR || isNaN(amount) || amount <= 0) {
-      errors.amountBZR = t('p2p.validation.amountRequired')
-    } else if (amount < minAmount) {
-      errors.amountBZR = t('p2p.validation.amountTooLow', { min: minAmount })
-    } else if (amount > maxAmount) {
-      errors.amountBZR = t('p2p.validation.amountTooHigh', { max: maxAmount })
-    } else if (offer?.side === 'SELL' && amount > parseFloat(offer.availableAmount)) {
-      errors.amountBZR = t('p2p.validation.insufficientAmount')
+  const isOwnOffer = offer.ownerId === user?.id
+  const totalMin = (parseFloat(offer.minAmount) * offer.priceBZR).toFixed(0)
+  const totalMax = (parseFloat(offer.maxAmount) * offer.priceBZR).toFixed(0)
+
+  // Validação do formulário
+  const validateForm = (): boolean => {
+    const errors: Record<string, string> = {}
+
+    if (!tradeForm.amountBZR || parseFloat(tradeForm.amountBZR) <= 0) {
+      errors.amountBZR = 'Quantidade deve ser maior que zero'
+    } else {
+      const amount = parseFloat(tradeForm.amountBZR)
+      const min = parseFloat(offer.minAmount)
+      const max = parseFloat(offer.maxAmount)
+      
+      if (amount < min) {
+        errors.amountBZR = `Quantidade mínima: ${min} BZR`
+      } else if (amount > max) {
+        errors.amountBZR = `Quantidade máxima: ${max} BZR`
+      }
+      
+      // Verificar disponibilidade para ofertas SELL
+      if (offer.side === 'SELL') {
+        const available = parseFloat(offer.availableAmount)
+        if (amount > available) {
+          errors.amountBZR = `Quantidade disponível: ${available} BZR`
+        }
+      }
     }
 
     if (!tradeForm.paymentMethod) {
-      errors.paymentMethod = t('p2p.validation.paymentMethodRequired')
-    } else if (offer && !offer.paymentMethods.includes(tradeForm.paymentMethod as PaymentMethod)) {
-      errors.paymentMethod = t('p2p.validation.paymentMethodNotSupported')
+      errors.paymentMethod = 'Selecione um método de pagamento'
     }
 
     setFormErrors(errors)
     return Object.keys(errors).length === 0
   }
 
+  // Iniciar negociação
   const handleStartTrade = async () => {
-    if (!offer || !user || !validateTradeForm()) {
-      return
-    }
+    if (!validateForm() || !user) return
 
     try {
       const trade = await createTrade({
         offerId: offer.id,
-        buyerId: offer.side === 'BUY' ? offer.ownerId : user.id,
+        buyerId: offer.side === 'SELL' ? user.id : offer.ownerId,
         sellerId: offer.side === 'SELL' ? offer.ownerId : user.id,
         amountBZR: tradeForm.amountBZR,
         paymentMethod: tradeForm.paymentMethod as PaymentMethod,
         priceBZR: offer.priceBZR
       })
 
-      toast.success(t('p2p.toasts.tradeCreated'))
+      toast({
+        title: 'Negociação iniciada!',
+        description: 'Você foi redirecionado para a sala de negociação.',
+        type: 'success'
+      })
+
       navigate(`/p2p/trade/${trade.id}`)
     } catch (error) {
-      const message = error instanceof Error ? error.message : t('p2p.errors.tradeCreationFailed')
-      toast.error(message)
+      toast({
+        title: 'Erro ao iniciar negociação',
+        description: error instanceof Error ? error.message : 'Tente novamente.',
+        type: 'error'
+      })
     }
   }
 
-  const formatDate = (timestamp: number) => {
-    return new Intl.DateTimeFormat('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    }).format(new Date(timestamp))
+  // Utilitários de formatação
+  const formatTimeAgo = (timestamp: number) => {
+    const diff = Date.now() - timestamp
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+    const hours = Math.floor(diff / (1000 * 60 * 60))
+    
+    if (days > 0) return `${days} dias atrás`
+    if (hours > 0) return `${hours} horas atrás`
+    return 'Há pouco tempo'
   }
 
-  const formatTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60)
-    if (minutes < 60) return `${minutes}min`
-    const hours = Math.floor(minutes / 60)
-    return `${hours}h${minutes % 60}min`
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(amount)
   }
 
-  if (!offer) {
-    return (
-      <div className="flex justify-center py-12">
-        <LoadingSpinner />
-      </div>
-    )
+  const formatMinutes = (seconds: number) => {
+    return Math.round(seconds / 60)
+  }
+
+  const getReputationColor = (level?: string) => {
+    switch (level) {
+      case 'trusted': return 'text-green-600 bg-green-50 border-green-200'
+      case 'pro': return 'text-blue-600 bg-blue-50 border-blue-200'
+      case 'new': return 'text-gray-600 bg-gray-50 border-gray-200'
+      default: return 'text-gray-600 bg-gray-50 border-gray-200'
+    }
+  }
+
+  const getReputationLabel = (level?: string) => {
+    switch (level) {
+      case 'trusted': return 'Confiável'
+      case 'pro': return 'Profissional'
+      case 'new': return 'Novo'
+      default: return 'Regular'
+    }
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="max-w-4xl mx-auto space-y-6"
-    >
-      {/* Header */}
-      <div className="flex items-center">
+    <div className="max-w-4xl mx-auto px-4 py-8">
+      {/* Header com Navegação */}
+      <div className="mb-6">
         <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => navigate(-1)}
-          className="mr-4"
+          variant="outline"
+          onClick={() => navigate('/p2p/offers')}
+          className="flex items-center gap-2"
         >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          {t('app.actions.back')}
+          <ArrowLeft className="h-4 w-4" />
+          Voltar para ofertas
         </Button>
-        
-        <div>
-          <h1 className="text-2xl font-bold text-matte-black-900">
-            {t('p2p.offer.detail.title')}
-          </h1>
-          <div className="flex items-center mt-1">
-            <Badge variant={offer.side === 'BUY' ? 'success' : 'secondary'} className="mr-2">
-              {t(`p2p.side.${offer.side.toLowerCase()}`)}
-            </Badge>
-            <span className="text-matte-black-600 text-sm">
-              {t('p2p.offer.detail.createdAt')} {formatDate(offer.createdAt)}
-            </span>
-          </div>
-        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Offer Info */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Coluna Principal - Detalhes da Oferta */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Price & Amounts */}
-          <Card className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-matte-black-900">
-                {t('p2p.offer.detail.pricing')}
-              </h2>
-              <div className="text-3xl font-bold text-bazari-red">
-                R$ {offer.priceBZR.toFixed(2)} / BZR
-              </div>
-            </div>
+          {/* Card Principal */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <Card className="p-6">
+              {/* Header da Oferta */}
+              <div className="flex items-start justify-between mb-6">
+                <div>
+                  <div className="flex items-center gap-3 mb-2">
+                    <Badge 
+                      variant={offer.side === 'BUY' ? 'destructive' : 'default'}
+                      className="text-sm font-medium"
+                    >
+                      {offer.side === 'BUY' ? 'COMPRA' : 'VENDA'}
+                    </Badge>
+                    
+                    {offer.reputation?.level && (
+                      <Badge 
+                        variant="outline" 
+                        className={`flex items-center gap-1 ${getReputationColor(offer.reputation.level)}`}
+                      >
+                        {offer.reputation.level === 'trusted' && <Shield className="h-3 w-3" />}
+                        {offer.reputation.level === 'pro' && <Award className="h-3 w-3" />}
+                        {offer.reputation.level === 'new' && <User className="h-3 w-3" />}
+                        {getReputationLabel(offer.reputation.level)}
+                      </Badge>
+                    )}
+                    
+                    {isOwnOffer && (
+                      <Badge variant="outline" className="text-bazari-red border-bazari-red">
+                        <CheckCircle className="h-3 w-3 mr-1" />
+                        Sua Oferta
+                      </Badge>
+                    )}
+                  </div>
+                  
+                  <h1 className="text-2xl font-bold text-matte-black-900">
+                    {offer.side === 'BUY' ? 'Comprar' : 'Vender'} BZR por BRL
+                  </h1>
+                  
+                  <div className="flex items-center gap-4 mt-2 text-sm text-matte-black-600">
+                    <div className="flex items-center gap-1">
+                      <Calendar className="h-4 w-4" />
+                      Publicado {formatTimeAgo(offer.createdAt)}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <MapPin className="h-4 w-4" />
+                      {offer.location?.city}, {offer.location?.state}
+                    </div>
+                  </div>
+                </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <div className="text-sm text-matte-black-600">
-                  {t('p2p.offer.detail.minAmount')}
-                </div>
-                <div className="text-lg font-semibold">
-                  {offer.minAmount} BZR
-                </div>
-              </div>
-              
-              <div>
-                <div className="text-sm text-matte-black-600">
-                  {t('p2p.offer.detail.maxAmount')}
-                </div>
-                <div className="text-lg font-semibold">
-                  {offer.maxAmount} BZR
-                </div>
-              </div>
-
-              {offer.side === 'SELL' && (
-                <div className="col-span-2">
+                <div className="text-right">
+                  <div className="text-3xl font-bold text-bazari-red">
+                    {formatCurrency(offer.priceBZR)}
+                  </div>
                   <div className="text-sm text-matte-black-600">
-                    {t('p2p.offer.detail.available')}
-                  </div>
-                  <div className="text-lg font-semibold text-success">
-                    {offer.availableAmount} BZR
+                    por BZR
                   </div>
                 </div>
-              )}
-            </div>
-          </Card>
+              </div>
 
-          {/* Payment Methods */}
-          <Card className="p-6">
-            <h2 className="text-lg font-semibold text-matte-black-900 mb-4">
-              {t('p2p.offer.detail.paymentMethods')}
-            </h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {offer.paymentMethods.map((method) => {
-                const methodInfo = getPaymentMethodInfo(method)
-                return (
-                  <div key={method} className="flex items-center p-3 border border-sand-300 rounded-lg">
-                    <div className="text-2xl mr-3">{methodInfo.icon}</div>
+              {/* Informações da Oferta */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-sm font-medium text-matte-black-700 mb-1">
+                      Quantidade
+                    </h3>
+                    <p className="text-lg font-semibold">
+                      {offer.minAmount} - {offer.maxAmount} BZR
+                    </p>
+                    <p className="text-sm text-matte-black-600">
+                      {formatCurrency(parseFloat(totalMin))} - {formatCurrency(parseFloat(totalMax))}
+                    </p>
+                  </div>
+
+                  {offer.side === 'SELL' && (
                     <div>
-                      <div className="font-medium">{methodInfo.name}</div>
-                      <div className="text-sm text-matte-black-600">
-                        {methodInfo.description}
+                      <h3 className="text-sm font-medium text-matte-black-700 mb-1">
+                        Disponível
+                      </h3>
+                      <p className="text-lg font-medium text-green-600">
+                        {offer.availableAmount} BZR
+                      </p>
+                      <p className="text-sm text-matte-black-600">
+                        {formatCurrency(parseFloat(offer.availableAmount) * offer.priceBZR)}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-sm font-medium text-matte-black-700 mb-1">
+                      Métodos de Pagamento
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {offer.paymentMethods.map(method => {
+                        const info = getPaymentMethodInfo(method)
+                        return (
+                          <Badge key={method} variant="outline" className="flex items-center gap-1">
+                            <CreditCard className="h-3 w-3" />
+                            {info.label}
+                          </Badge>
+                        )
+                      })}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="text-sm font-medium text-matte-black-700 mb-1">
+                      Estatísticas
+                    </h3>
+                    <div className="space-y-1 text-sm text-matte-black-600">
+                      <div className="flex items-center justify-between">
+                        <span>Tempo médio:</span>
+                        <span>{formatMinutes(offer.stats.avgReleaseTimeSec)} min</span>
                       </div>
-                      <div className="text-xs text-matte-black-500">
-                        {t('p2p.offer.detail.processingTime')}: {methodInfo.processingTime}
+                      <div className="flex items-center justify-between">
+                        <span>Taxa cancelamento:</span>
+                        <span>{offer.stats.cancelRatePct.toFixed(1)}%</span>
                       </div>
                     </div>
                   </div>
-                )
-              })}
-            </div>
-          </Card>
+                </div>
+              </div>
 
-          {/* Terms */}
-          {offer.terms && (
-            <Card className="p-6">
-              <h2 className="text-lg font-semibold text-matte-black-900 mb-4">
-                {t('p2p.offer.detail.terms')}
-              </h2>
-              <p className="text-matte-black-700 whitespace-pre-wrap">
-                {offer.terms}
-              </p>
-            </Card>
-          )}
-
-          {/* Location */}
-          {offer.location && (
-            <Card className="p-6">
-              <h2 className="text-lg font-semibold text-matte-black-900 mb-4 flex items-center">
-                <MapPin className="h-5 w-5 mr-2" />
-                {t('p2p.offer.detail.location')}
-              </h2>
-              <p className="text-matte-black-700">
-                {offer.location.city}, {offer.location.state}
-                {offer.location.country && `, ${offer.location.country}`}
-              </p>
-            </Card>
-          )}
-        </div>
-
-        {/* Sidebar */}
-        <div className="space-y-6">
-          {/* Owner Profile */}
-          <Card className="p-6">
-            <div className="text-center mb-4">
-              <Link
-                to={buildProfileRoute(offer.ownerId)}
-                className="inline-block hover:opacity-80 transition-opacity"
-              >
-                <Avatar 
-                  src={offer.ownerAvatarUrl} 
-                  fallback={offer.ownerName}
-                  size="lg"
-                  className="mx-auto mb-3"
-                />
-                <h3 className="font-semibold text-matte-black-900 hover:text-bazari-red">
-                  {offer.ownerName}
-                </h3>
-              </Link>
-              
-              {ownerReputation && (
-                <div className="flex items-center justify-center mt-2">
-                  <div className="flex items-center mr-3">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`h-4 w-4 ${
-                          i < Math.floor(ownerReputation.score)
-                            ? 'text-bazari-gold-600 fill-current'
-                            : 'text-gray-300'
-                        }`}
-                      />
-                    ))}
+              {/* Termos */}
+              {offer.terms && (
+                <div className="border-t pt-4">
+                  <h3 className="text-sm font-medium text-matte-black-700 mb-2">
+                    Termos da Oferta
+                  </h3>
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <p className="text-matte-black-600 leading-relaxed">
+                      {offer.terms}
+                    </p>
                   </div>
-                  <span className="font-semibold">
-                    {ownerReputation.score.toFixed(1)}
-                  </span>
-                  <span className="text-sm text-matte-black-600 ml-1">
-                    ({ownerReputation.completed})
-                  </span>
                 </div>
               )}
-            </div>
+            </Card>
+          </motion.div>
 
-            {/* Stats */}
-            {offer.stats && (
-              <div className="space-y-3 border-t pt-4">
-                <div className="flex justify-between text-sm">
-                  <span className="text-matte-black-600">{t('p2p.stats.completed')}</span>
-                  <span className="font-medium">{offer.stats.completed}</span>
-                </div>
-                
-                <div className="flex justify-between text-sm">
-                  <span className="text-matte-black-600">{t('p2p.stats.cancelRate')}</span>
-                  <span className="font-medium">{offer.stats.cancelRatePct.toFixed(1)}%</span>
-                </div>
-                
-                {offer.stats.avgReleaseTimeSec && (
-                  <div className="flex justify-between text-sm">
-                    <span className="text-matte-black-600">{t('p2p.stats.avgReleaseTime')}</span>
-                    <span className="font-medium">{formatTime(offer.stats.avgReleaseTimeSec)}</span>
-                  </div>
-                )}
-              </div>
-            )}
-
-            <div className="mt-4">
-              <Link to={buildProfileRoute(offer.ownerId)}>
-                <Button variant="outline" className="w-full">
-                  <User className="h-4 w-4 mr-2" />
-                  {t('p2p.offer.detail.viewProfile')}
-                </Button>
-              </Link>
-            </div>
-          </Card>
-
-          {/* Trade Form */}
-          {!isOwnOffer && user && (
+          {/* Card do Proprietário */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
             <Card className="p-6">
               <h3 className="text-lg font-semibold text-matte-black-900 mb-4">
-                {t('p2p.offer.detail.startTrade')}
+                Informações do {offer.side === 'SELL' ? 'Vendedor' : 'Comprador'}
               </h3>
+              
+              <div className="flex items-start justify-between">
+                <div className="flex items-start gap-4">
+                  <Avatar 
+                    size="lg" 
+                    fallback={offer.ownerName} 
+                    src={offer.ownerAvatarUrl}
+                  />
+                  
+                  <div>
+                    <h4 className="text-lg font-semibold text-matte-black-900">
+                      {offer.ownerName}
+                    </h4>
+                    
+                    {offer.reputation && (
+                      <div className="flex items-center gap-2 mt-1">
+                        <div className="flex items-center gap-1">
+                          <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                          <span className="font-medium">
+                            {offer.reputation.score.toFixed(1)}
+                          </span>
+                        </div>
+                        <span className="text-matte-black-600">
+                          ({offer.stats.completed} negociações)
+                        </span>
+                      </div>
+                    )}
 
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-matte-black-700 mb-2">
-                    {t('p2p.trade.amount')} *
-                  </label>
-                  <div className="relative">
+                    <div className="flex items-center gap-4 mt-3 text-sm text-matte-black-600">
+                      <div className="flex items-center gap-1">
+                        <Clock className="h-4 w-4" />
+                        Média {formatMinutes(offer.stats.avgReleaseTimeSec)} min
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <TrendingUp className="h-4 w-4" />
+                        {offer.stats.cancelRatePct.toFixed(1)}% cancelamento
+                      </div>
+                    </div>
+
+                    {ownerReputation && (
+                      <div className="mt-3">
+                        <Badge 
+                          variant="outline" 
+                          className={getReputationColor(ownerReputation.level)}
+                        >
+                          {getReputationLabel(ownerReputation.level)}
+                        </Badge>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <Link to={buildProfileRoute(offer.ownerId)}>
+                    <Button variant="outline" size="sm">
+                      <User className="h-4 w-4 mr-1" />
+                      Perfil
+                    </Button>
+                  </Link>
+                  
+                  <Button variant="outline" size="sm">
+                    <MessageCircle className="h-4 w-4 mr-1" />
+                    Chat
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          </motion.div>
+        </div>
+
+        {/* Sidebar - Formulário de Negociação */}
+        <div className="lg:col-span-1">
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="sticky top-8"
+          >
+            <Card className="p-6">
+              {isOwnOffer ? (
+                <div className="text-center py-8">
+                  <Award className="h-12 w-12 text-bazari-red mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-matte-black-900 mb-2">
+                    Sua Oferta
+                  </h3>
+                  <p className="text-matte-black-600 mb-4">
+                    Esta é sua oferta P2P. Aguarde contatos de interessados.
+                  </p>
+                  <div className="space-y-2">
+                    <Button 
+                      variant="outline" 
+                      className="w-full"
+                      onClick={() => navigate('/p2p/my-trades')}
+                    >
+                      Ver Minhas Negociações
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="w-full"
+                      onClick={() => navigate(`/p2p/offers/edit/${offer.id}`)}
+                    >
+                      Editar Oferta
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-matte-black-900">
+                    {offer.side === 'SELL' ? 'Comprar BZR' : 'Vender BZR'}
+                  </h3>
+
+                  {/* Campo Quantidade */}
+                  <div>
+                    <label className="block text-sm font-medium text-matte-black-700 mb-1">
+                      Quantidade (BZR) *
+                    </label>
                     <Input
                       type="number"
-                      step="0.01"
-                      min={offer.minAmount}
-                      max={offer.maxAmount}
-                      value={tradeForm.amountBZR}
-                      onChange={(e) => handleTradeFormChange('amountBZR', e.target.value)}
-                      className={formErrors.amountBZR ? 'border-danger' : ''}
                       placeholder={`${offer.minAmount} - ${offer.maxAmount}`}
+                      value={tradeForm.amountBZR}
+                      onChange={(e) => setTradeForm(prev => ({ 
+                        ...prev, 
+                        amountBZR: e.target.value 
+                      }))}
+                      error={formErrors.amountBZR}
                     />
-                    <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-matte-black-500">
-                      BZR
-                    </span>
+                    {tradeForm.amountBZR && (
+                      <p className="text-sm text-matte-black-600 mt-1">
+                        Total: {formatCurrency(parseFloat(tradeForm.amountBZR) * offer.priceBZR)}
+                      </p>
+                    )}
                   </div>
-                  {formErrors.amountBZR && (
-                    <p className="text-danger text-sm mt-1">{formErrors.amountBZR}</p>
-                  )}
-                </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-matte-black-700 mb-2">
-                    {t('p2p.trade.method')} *
-                  </label>
-                  <select
-                    value={tradeForm.paymentMethod}
-                    onChange={(e) => handleTradeFormChange('paymentMethod', e.target.value)}
-                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-bazari-red focus:border-transparent ${
-                      formErrors.paymentMethod ? 'border-danger' : 'border-sand-300'
-                    }`}
+                  {/* Seleção de Método de Pagamento */}
+                  <div>
+                    <label className="block text-sm font-medium text-matte-black-700 mb-1">
+                      Método de Pagamento *
+                    </label>
+                    <select
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-bazari-red"
+                      value={tradeForm.paymentMethod}
+                      onChange={(e) => setTradeForm(prev => ({ 
+                        ...prev, 
+                        paymentMethod: e.target.value as PaymentMethod 
+                      }))}
+                    >
+                      <option value="">Selecione...</option>
+                      {offer.paymentMethods.map(method => {
+                        const info = getPaymentMethodInfo(method)
+                        return (
+                          <option key={method} value={method}>
+                            {info.label}
+                          </option>
+                        )
+                      })}
+                    </select>
+                    {formErrors.paymentMethod && (
+                      <p className="text-sm text-red-600 mt-1">
+                        {formErrors.paymentMethod}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Resumo da Transação */}
+                  {tradeForm.amountBZR && tradeForm.paymentMethod && (
+                    <div className="bg-gray-50 p-4 rounded-lg space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span>Quantidade:</span>
+                        <span className="font-medium">{tradeForm.amountBZR} BZR</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Preço unitário:</span>
+                        <span className="font-medium">{formatCurrency(offer.priceBZR)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Método:</span>
+                        <span className="font-medium">
+                          {getPaymentMethodInfo(tradeForm.paymentMethod).label}
+                        </span>
+                      </div>
+                      <hr className="my-2" />
+                      <div className="flex justify-between text-base font-semibold">
+                        <span>Total:</span>
+                        <span className="text-bazari-red">
+                          {formatCurrency(parseFloat(tradeForm.amountBZR) * offer.priceBZR)}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Botão de Ação */}
+                  <Button 
+                    className="w-full"
+                    onClick={handleStartTrade}
+                    disabled={tradeLoading || !tradeForm.amountBZR || !tradeForm.paymentMethod}
                   >
-                    <option value="">{t('p2p.trade.selectMethod')}</option>
-                    {offer.paymentMethods.map((method) => (
-                      <option key={method} value={method}>
-                        {getPaymentMethodInfo(method).name}
-                      </option>
-                    ))}
-                  </select>
-                  {formErrors.paymentMethod && (
-                    <p className="text-danger text-sm mt-1">{formErrors.paymentMethod}</p>
-                  )}
-                </div>
+                    {tradeLoading ? (
+                      <LoadingSpinner size="sm" />
+                    ) : (
+                      `${offer.side === 'SELL' ? 'Comprar' : 'Vender'} BZR`
+                    )}
+                  </Button>
 
-                {/* Total Calculation */}
-                {tradeForm.amountBZR && !isNaN(parseFloat(tradeForm.amountBZR)) && (
-                  <div className="p-3 bg-sand-50 rounded-lg">
-                    <div className="flex justify-between text-sm">
-                      <span>{t('p2p.trade.amount')}</span>
-                      <span>{tradeForm.amountBZR} BZR</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>{t('p2p.trade.price')}</span>
-                      <span>R$ {offer.priceBZR.toFixed(2)} / BZR</span>
-                    </div>
-                    <div className="flex justify-between font-semibold border-t pt-2 mt-2">
-                      <span>{t('p2p.trade.total')}</span>
-                      <span>R$ {(parseFloat(tradeForm.amountBZR) * offer.priceBZR).toFixed(2)}</span>
+                  {/* Aviso de Segurança */}
+                  <div className="flex items-start gap-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <Shield className="h-5 w-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+                    <div className="text-sm">
+                      <p className="font-medium text-yellow-800 mb-1">
+                        Transação Protegida
+                      </p>
+                      <p className="text-yellow-700">
+                        Seus fundos ficam em escrow até a confirmação da transferência.
+                      </p>
                     </div>
                   </div>
-                )}
 
-                <Button
-                  onClick={handleStartTrade}
-                  disabled={tradeLoading}
-                  className="w-full"
-                >
-                  {tradeLoading ? (
-                    <>
-                      <LoadingSpinner className="h-4 w-4 mr-2" />
-                      {t('p2p.trade.starting')}
-                    </>
-                  ) : (
-                    t('p2p.offer.detail.startTrade')
-                  )}
-                </Button>
-              </div>
+                  {/* Informações Adicionais */}
+                  <div className="flex items-start gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <Info className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                    <div className="text-sm">
+                      <p className="font-medium text-blue-800 mb-1">
+                        Como funciona?
+                      </p>
+                      <ul className="text-blue-700 space-y-1">
+                        <li>• Inicie a negociação</li>
+                        <li>• Converse no chat privado</li>
+                        <li>• Fundos ficam em escrow</li>
+                        <li>• Confirme o pagamento</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              )}
             </Card>
-          )}
-
-          {isOwnOffer && (
-            <Card className="p-6 bg-info-50 border-info-200">
-              <div className="flex items-center">
-                <AlertTriangle className="h-5 w-5 text-info mr-3" />
-                <span className="text-info text-sm">
-                  {t('p2p.offer.detail.ownOffer')}
-                </span>
-              </div>
-            </Card>
-          )}
+          </motion.div>
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }

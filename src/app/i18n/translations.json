@@ -343,6 +343,14 @@
     }
   },
   "dashboard": {
+
+    "p2p_trades": {
+      "count": {
+        "pt": "trades",
+        "en": "trades",
+        "es": "trades"
+      }
+    },
     "welcome": {
       "pt": "Bem-vindo ao Bazari",
       "en": "Welcome to Bazari",
@@ -3371,9 +3379,120 @@
     }
   },
 
-
-
-
+ "hub": {
+    "title": {
+      "pt": "Escolha um módulo",
+      "en": "Choose a module",
+      "es": "Elige un módulo"
+    },
+    "subtitle": {
+      "pt": "Acesse rapidamente as áreas do super app Bazari",
+      "en": "Quickly access Bazari's super app areas",
+      "es": "Accede rápidamente a las áreas del super app de Bazari"
+    },
+    "module": {
+      "marketplace": {
+        "title": {
+          "pt": "Marketplace",
+          "en": "Marketplace",
+          "es": "Marketplace"
+        },
+        "desc": {
+          "pt": "Compre e venda produtos e serviços.",
+          "en": "Buy and sell products and services.",
+          "es": "Compra y vende productos y servicios."
+        }
+      },
+      "wallet": {
+        "title": {
+          "pt": "Wallet",
+          "en": "Wallet",
+          "es": "Wallet"
+        },
+        "desc": {
+          "pt": "Envie e receba BZR; veja seu saldo.",
+          "en": "Send and receive BZR; view your balance.",
+          "es": "Envía y recibe BZR; consulta tu saldo."
+        }
+      },
+      "p2p": {
+        "title": {
+          "pt": "P2P",
+          "en": "P2P",
+          "es": "P2P"
+        },
+        "desc": {
+          "pt": "Negocie BZR direto com pessoas.",
+          "en": "Trade BZR directly with people.",
+          "es": "Intercambia BZR directamente con personas."
+        }
+      },
+      "work": {
+        "title": {
+          "pt": "Work",
+          "en": "Work",
+          "es": "Work"
+        },
+        "desc": {
+          "pt": "Encontre trabalho e oportunidades.",
+          "en": "Find jobs and opportunities.",
+          "es": "Encuentra trabajos y oportunidades."
+        }
+      },
+      "dao": {
+        "title": {
+          "pt": "DAO",
+          "en": "DAO",
+          "es": "DAO"
+        },
+        "desc": {
+          "pt": "Participe da governança da Bazari.",
+          "en": "Join Bazari governance.",
+          "es": "Participa en la gobernanza de Bazari."
+        }
+      },
+      "social": {
+        "title": {
+          "pt": "Social",
+          "en": "Social",
+          "es": "Social"
+        },
+        "desc": {
+          "pt": "Conecte-se com a comunidade.",
+          "en": "Connect with the community.",
+          "es": "Conéctate con la comunidad."
+        }
+      }
+    },
+    "cta": {
+      "enter": {
+        "pt": "Entrar",
+        "en": "Enter",
+        "es": "Entrar"
+      },
+      "createListing": {
+        "pt": "Criar anúncio",
+        "en": "Create listing",
+        "es": "Crear anuncio"
+      },
+      "browseOffers": {
+        "pt": "Ver ofertas",
+        "en": "Browse offers",
+        "es": "Ver ofertas"
+      },
+      "send": {
+        "pt": "Enviar",
+        "en": "Send",
+        "es": "Enviar"
+      },
+      "receive": {
+        "pt": "Receber",
+        "en": "Receive",
+        "es": "Recibir"
+      }
+    }
+  },
+  
 
   "marketplace": {
     "title": {
@@ -3823,3 +3942,4 @@
     }
   }
 }
+
