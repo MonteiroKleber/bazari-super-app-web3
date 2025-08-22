@@ -237,8 +237,20 @@
       }
     }
   },
+  
+  
+  
   "auth": {
+
+
+    "login_existing": {
+      "pt": "Acessar sua conta existente",
+      "en": "Access your existing account",
+      "es": "Acceder a tu cuenta existente"
+    },
     "login": {
+
+
       "title": {
         "pt": "Entrar no Bazari",
         "en": "Login to Bazari",
@@ -268,8 +280,125 @@
         "pt": "Continuar como visitante",
         "en": "Continue as guest",
         "es": "Continuar como invitado"
+      },
+
+
+      "account_label": {
+        "pt": "Conta",
+        "en": "Account",
+        "es": "Cuenta"
+      },
+      "select": {
+        "pt": "Selecionar…",
+        "en": "Select…",
+        "es": "Seleccionar…"
+      },
+      "no_local_accounts": {
+        "pt": "Nenhuma conta local encontrada. Importe ou crie uma conta.",
+        "en": "No local account found. Import or create an account.",
+        "es": "No se encontró una cuenta local. Importa o crea una cuenta."
+      },
+      "password_required": {
+        "pt": "Informe a senha.",
+        "en": "Enter your password.",
+        "es": "Ingresa tu contraseña."
+      },
+
+      "failed": {
+        "pt": "Falha ao entrar",
+        "en": "Failed to login",
+        "es": "Error al iniciar sesión"
+      },
+      "no_local_accounts_hint": {
+        "pt": "Nenhuma conta local encontrada.",
+        "en": "No local account found.",
+        "es": "No se encontró una cuenta local."
+      },
+      "import": {
+        "pt": "Importe",
+        "en": "Import",
+        "es": "Importar"
+      },
+      "create": {
+        "pt": "crie",
+        "en": "create",
+        "es": "crear"
+      },
+      "one": {
+        "pt": "uma conta.",
+        "en": "an account.",
+        "es": "una cuenta."
+      },
+      "password": {
+        "pt": "Senha",
+        "en": "Password",
+        "es": "Contraseña"
+      },
+      "password_placeholder": {
+        "pt": "Digite sua senha",
+        "en": "Enter your password",
+        "es": "Ingresa tu contraseña"
+      },
+      "entering": {
+        "pt": "Entrando…",
+        "en": "Entering…",
+        "es": "Ingresando…"
+      },
+      "enter": {
+        "pt": "Entrar",
+        "en": "Enter",
+        "es": "Entrar"
+      }
+    
+    },
+
+
+    "create": {
+      "step": {
+        "terms": {
+          "pt": "Aceitar Termos",
+          "en": "Accept Terms",
+          "es": "Aceptar Términos"
+        },
+        "reveal": {
+          "pt": "Frase de Recuperação",
+          "en": "Recovery Phrase",
+          "es": "Frase de Recuperación"
+        },
+        "confirm": {
+          "pt": "Confirmação",
+          "en": "Confirmation",
+          "es": "Confirmación"
+        }
+      },
+      "password_label": {
+        "pt": "Defina uma senha (min. 8 caracteres)",
+        "en": "Set a password (min. 8 characters)",
+        "es": "Define una contraseña (mín. 8 caracteres)"
+      },
+      "password": {
+        "pt": "Senha",
+        "en": "Password",
+        "es": "Contraseña"
+      },
+      "password_confirm": {
+        "pt": "Confirmar senha",
+        "en": "Confirm password",
+        "es": "Confirmar contraseña"
+      },
+      "finalizing": {
+        "pt": "Finalizando…",
+        "en": "Finalizing…",
+        "es": "Finalizando…"
+      },
+      "finish_and_enter": {
+        "pt": "Finalizar e entrar",
+        "en": "Finish and enter",
+        "es": "Finalizar e ingresar"
       }
     },
+
+
     "seed": {
       "title": {
         "pt": "Sua Frase de Recuperação",
@@ -464,7 +593,16 @@
       }
     }
   },
+
   "wallet": {
+  
+    "wallet_address": { "pt": "Endereço da carteira", "en": "Wallet address", "es": "Dirección de la cartera" },
+    "payment_request": { "pt": "Solicitação de pagamento", "en": "Payment request", "es": "Solicitud de pago" },
+    
+    "add_nft.name_required": { "pt": "Nome é obrigatório", "en": "Name is required", "es": "El nombre es obligatorio" },
+    "history.from": { "pt": "De", "en": "From", "es": "De" },
+    "history.to": { "pt": "Para", "en": "To", "es": "Para" },
+
     "title": {
       "pt": "Carteira",
       "en": "Wallet",

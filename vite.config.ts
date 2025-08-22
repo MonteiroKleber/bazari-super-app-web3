@@ -68,9 +68,13 @@ export default defineConfig({
       '@features': path.resolve(__dirname, './src/features'),
       '@pages': path.resolve(__dirname, './src/pages'),
       '@entities': path.resolve(__dirname, './src/entities'),
-      '@services': path.resolve(__dirname, './src/services')
+      '@services': path.resolve(__dirname, './src/services'),
+      buffer: 'buffer'
     }
   },
+  define: { global: 'globalThis' },
+  optimizeDeps: { include: ['buffer'] },
+  
   server: {
     port: 3000,
     host: true

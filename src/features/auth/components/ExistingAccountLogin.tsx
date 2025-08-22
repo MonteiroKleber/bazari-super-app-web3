@@ -1,104 +1,115 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { LogIn } from 'lucide-react'
 import { Card } from '@shared/ui/Card'
 import { Button } from '@shared/ui/Button'
 import { Input } from '@shared/ui/Input'
 import { useI18n } from '@app/providers/I18nProvider'
 import { useAuthStore } from '../store/authStore'
-import { toast } from '@features/notifications/components/NotificationToastHost'
 
 export const ExistingAccountLogin: React.FC = () => {
   const navigate = useNavigate()
   const { t } = useI18n()
-  const { login } = useAuthStore()
-  const [identifier, setIdentifier] = React.useState('')
+
+  const { listLocal, localAccounts, loginLocal } = useAuthStore()
+  const [address, setAddress] = React.useState('')
   const [password, setPassword] = React.useState('')
-  const [isLoading, setIsLoading] = React.useState(false)
+  const [loading, setLoading] = React.useState(false)
+  const [error, setError] = React.useState<string | null>(null)
 
-  const handleLogin = async () => {
-    if (!identifier || !password) {
-      toast.error('Preencha todos os campos')
-      return
-    }
+  React.useEffect(() => {
+    listLocal().catch(() => null)
+  }, [listLocal])
 
-    setIsLoading(true)
-    
+  const onLogin = async () => {
+    setError(null)
+    setLoading(true)
     try {
-      // Mock authentication
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      
-      // Create logged user
-      const loggedUser = {
-        id: 'existing-user-id',
-        name: 'João Silva',
-        email: identifier.includes('@') ? identifier : undefined,
-        walletAddress: '0x742d35Cc6634C0532925a3b8D404d6B2E4a5bC4e',
-        reputation: {
-          rating: 4.8,
-          reviewCount: 42
-        },
-        createdAt: '2023-08-15T00:00:00.000Z',
-        lastLoginAt: new Date().toISOString()
+      const addr = address || localAccounts[0]?.address
+      if (!addr) {
+        setError(t('auth.login.no_local_accounts', 'Nenhuma conta local encontrada. Importe ou crie uma conta.'))
+        return
       }
-
-      login(loggedUser)
-      toast.success('Login realizado com sucesso!')
+      if (!password) {
+        setError(t('auth.login.password_required', 'Informe a senha.'))
+        return
+      }
+      await loginLocal(addr, password)
       navigate('/dashboard')
-    } catch (error) {
-      toast.error('Credenciais inválidas')
+    } catch (e: any) {
+      setError(String(e?.message || t('auth.login.failed', 'Falha ao entrar')))
     } finally {
-      setIsLoading(false)
+      setLoading(false)
     }
   }
 
   return (
-    <Card className="p-8 max-w-md mx-auto">
-      <div className="text-center mb-8">
-        <div className="w-16 h-16 bg-bazari-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <LogIn size={32} className="text-bazari-red" />
-        </div>
-        <h2 className="text-2xl font-bold text-matte-black-900 mb-2">
-          {t('auth.login.existing_account')}
-        </h2>
-        <p className="text-matte-black-600">
-          Entre com suas credenciais
-        </p>
+    <Card className="p-5 space-y-4">
+      <div className="flex items-center gap-2">
+        <LogIn className="h-5 w-5" />
+        <h3 className="text-lg font-semibold">
+          {t('auth.login_existing', 'Acessar sua conta existente')}
+        </h3>
       </div>
 
-      <div className="space-y-4 mb-6">
-        <Input
-          type="text"
-          label="Email ou Username"
-          value={identifier}
-          onChange={(e) => setIdentifier(e.target.value)}
-          placeholder="seu@email.com"
-        />
+      {/* Seleção de conta local */}
+      <div>
+        <label className="text-sm font-medium">
+          {t('auth.login.account_label', 'Conta')}
+        </label>
+        {localAccounts.length > 0 ? (
+          <select
+            className="w-full border rounded-lg p-2 mt-1 text-sm"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+          >
+            <option value="">{t('auth.login.select', 'Selecionar…')}</option>
+            {localAccounts.map((a) => (
+              <option key={a.address} value={a.address}>
+                {(a.name || t('auth.login.account', 'Conta'))} — {a.address.slice(0, 6)}…{a.address.slice(-6)}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <div className="text-sm text-matte-black-600 mt-1">
+            {t('auth.login.no_local_accounts_hint', 'Nenhuma conta local encontrada.')}
+            {' '}
+            <Link to="/auth/import" className="text-bazari-red underline">
+              {t('auth.login.import', 'Importe')}
+            </Link>
+            {' '}
+            {t('common.or', 'ou')}
+            {' '}
+            <Link to="/auth/create" className="text-bazari-red underline">
+              {t('auth.login.create', 'crie')}
+            </Link>
+            {' '}
+            {t('auth.login.one', 'uma conta.')}
+          </div>
+        )}
+      </div>
 
+      {/* Senha para desbloquear */}
+      <div>
+        <label className="text-sm font-medium">
+          {t('auth.login.password', 'Senha')}
+        </label>
         <Input
           type="password"
-          label="Senha"
+          className="mt-1"
+          placeholder={t('auth.login.password_placeholder', 'Digite sua senha')}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Sua senha"
         />
       </div>
 
-      <Button
-        onClick={handleLogin}
-        disabled={!identifier || !password || isLoading}
-        loading={isLoading}
-        className="w-full mb-4"
-        size="lg"
-      >
-        Entrar
+      {error && <div className="text-sm text-red-600">{error}</div>}
+
+      <Button onClick={onLogin} disabled={loading || !password} className="w-full">
+        {loading ? t('auth.login.entering', 'Entrando…') : t('auth.login.enter', 'Entrar')}
       </Button>
 
-      <div className="text-center">
-        <Button variant="ghost" size="sm">
-          Esqueci minha senha
-        </Button>
-      </div>
+      {/* (Opcional) Se você mantiver um bloco de "Entrar com extensão", ele pode continuar logo abaixo sem alterações visuais */}
     </Card>
   )
 }

@@ -1,20 +1,27 @@
-
-import React from 'react'
-import { Routes, Route } from 'react-router-dom'
-import { AppShell } from '@shared/layout/AppShell'
-import { 
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import { AppShell } from '@shared/layout/AppShell';
+import {
   WalletHome,
   SendFlow,
   Receive,
   History,
   AccountsManager,
   AddToken,
-  AddNft
-} from '@features/wallet'
+  AddNft,
+} from '@features/wallet';
+
+// Adaptadores (não têm UI; apenas integração por eventos)
+import { AuthEventEmitter } from '@features/wallet/components/AuthEventEmitter';
+import { WalletAuthAdapter } from '@features/wallet/components/WalletAuthAdapter';
 
 const WalletPage: React.FC = () => {
   return (
     <AppShell>
+      {/* Integração solta Auth ↔ Wallet via Event Bus (Opção A) */}
+      <AuthEventEmitter />
+      <WalletAuthAdapter />
+
       <React.Suspense fallback={<div>Loading...</div>}>
         <Routes>
           <Route path="/" element={<WalletHome />} />
@@ -27,7 +34,7 @@ const WalletPage: React.FC = () => {
         </Routes>
       </React.Suspense>
     </AppShell>
-  )
-}
+  );
+};
 
-export default WalletPage
+export default WalletPage;

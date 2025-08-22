@@ -1,93 +1,98 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft } from 'lucide-react'
 import { Card } from '@shared/ui/Card'
+import { Input } from '@shared/ui/Input'
 import { Button } from '@shared/ui/Button'
-import { Textarea } from '@shared/ui/Textarea'
 import { useI18n } from '@app/providers/I18nProvider'
-import { useAuthStore } from '../store/authStore'
-import { toast } from '@features/notifications/components/NotificationToastHost'
+import { useAuthStore } from '@features/auth/store/authStore'
 
-interface ImportSeedProps {
-  onBack: () => void
-}
+const SEED_WORDS_HINT = 'ex: one two three four five six seven eight nine ten eleven twelve'
 
-export const ImportSeed: React.FC<ImportSeedProps> = ({ onBack }) => {
-  const navigate = useNavigate()
+export const ImportSeed: React.FC = () => {
+  const nav = useNavigate()
   const { t } = useI18n()
-  const { login } = useAuthStore()
-  const [seedPhrase, setSeedPhrase] = React.useState('')
-  const [isLoading, setIsLoading] = React.useState(false)
 
-  const handleImport = async () => {
-    const words = seedPhrase.trim().split(/\s+/)
-    
-    if (words.length !== 12 && words.length !== 24) {
-      toast.error('Seed phrase deve conter 12 ou 24 palavras')
-      return
-    }
+  const { importLocalFromSeed, loginLocal } = useAuthStore()
 
-    setIsLoading(true)
-    
+  const [mnemonic, setMnemonic] = React.useState('')
+  const [name, setName] = React.useState('')
+  const [password, setPassword] = React.useState('')
+  const [password2, setPassword2] = React.useState('')
+  const [loading, setLoading] = React.useState(false)
+  const [error, setError] = React.useState<string | null>(null)
+
+  const pwdOk = password.length >= 8 && password === password2
+  const canImport = mnemonic.trim().split(/\s+/).length >= 12 && pwdOk && !loading
+
+  const onImport = async () => {
+    setError(null)
+    if (!canImport) return
+    setLoading(true)
     try {
-      // Mock validation and account restoration
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      
-      // Create restored user
-      const restoredUser = {
-        id: crypto.randomUUID(),
-        name: 'Usuário Restaurado',
-        walletAddress: `0x${Array.from(crypto.getRandomValues(new Uint8Array(20)), b => b.toString(16).padStart(2, '0')).join('')}`,
-        reputation: {
-          rating: 4.5,
-          reviewCount: 15
-        },
-        createdAt: '2024-01-01T00:00:00.000Z',
-        lastLoginAt: new Date().toISOString()
-      }
-
-      login(restoredUser)
-      toast.success('Conta restaurada com sucesso!')
-      navigate('/dashboard')
-    } catch (error) {
-      toast.error('Erro ao restaurar conta. Verifique sua seed phrase.')
+      const address = await importLocalFromSeed(mnemonic.trim(), name || 'Conta', password)
+      await loginLocal(address, password)
+      nav('/dashboard')
+    } catch (e: any) {
+      setError(String(e?.message || 'Falha ao importar seed'))
     } finally {
-      setIsLoading(false)
+      setLoading(false)
     }
   }
 
   return (
-    <Card className="p-8 max-w-2xl mx-auto">
-      <div className="flex items-center mb-6">
-        <Button variant="ghost" size="sm" onClick={onBack} className="mr-4">
-          <ArrowLeft size={16} />
-        </Button>
-        <h2 className="text-2xl font-bold text-matte-black-900">
-          {t('auth.import.seed_title')}
-        </h2>
-      </div>
+    <Card className="p-5 space-y-4">
+      <h3 className="text-lg font-semibold">{t('wallet.import.seed.title', 'Importar com Seed')}</h3>
 
-      <div className="mb-6">
-        <Textarea
-          label="Seed Phrase"
-          placeholder={t('auth.import.seed_placeholder')}
-          value={seedPhrase}
-          onChange={(e) => setSeedPhrase(e.target.value)}
-          rows={4}
-          className="font-mono"
-          helperText="Digite suas 12 ou 24 palavras separadas por espaços"
+      <div>
+        <label className="text-sm font-medium">{t('wallet.import.seed.label', 'Sua seed phrase')}</label>
+        <textarea
+          className="mt-1 w-full border rounded-lg p-2 text-sm min-h-[96px]"
+          placeholder={SEED_WORDS_HINT}
+          value={mnemonic}
+          onChange={(e) => setMnemonic(e.target.value)}
         />
       </div>
 
-      <Button
-        onClick={handleImport}
-        disabled={!seedPhrase.trim() || isLoading}
-        loading={isLoading}
-        className="w-full"
-        size="lg"
-      >
-        Restaurar Conta
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label className="text-sm font-medium">{t('wallet.import.name', 'Nome (opcional)')}</label>
+          <Input
+            className="mt-1"
+            placeholder={t('wallet.import.name_ph', 'Minha conta')}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+
+        <div>
+          <label className="text-sm font-medium">{t('auth.create.password', 'Senha')}</label>
+          <Input
+            type="password"
+            className="mt-1"
+            placeholder={t('auth.create.password', 'Senha')}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <Input
+            type="password"
+            className="mt-2"
+            placeholder={t('auth.create.password_confirm', 'Confirmar senha')}
+            value={password2}
+            onChange={(e) => setPassword2(e.target.value)}
+          />
+          <div className="text-xs text-matte-black-600 mt-1">
+            {t('wallet.import.password_hint', 'Mínimo 8 caracteres. Use esta senha para desbloquear sua conta.')}
+          </div>
+        </div>
+      </div>
+
+      {error && <div className="text-sm text-red-600">{error}</div>}
+
+      <Button className="w-full" disabled={!canImport} onClick={onImport}>
+        {loading ? t('common.loading', 'Carregando…') : t('wallet.import.cta', 'Importar e entrar')}
       </Button>
     </Card>
   )
 }
+
+export default ImportSeed

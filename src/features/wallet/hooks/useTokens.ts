@@ -1,98 +1,121 @@
 // src/features/wallet/hooks/useTokens.ts
+import React from 'react'
+import type { ApiPromise } from '@polkadot/api'
+import { BN } from '@polkadot/util'
+import { useActiveAccount } from '../hooks/useActiveAccount'
+// ajuste este import para o hook real do seu provider:
+import { useChain } from '@app/providers/ChainProvider'
 
-import { useMemo } from 'react'
-import { useWalletStore } from '../store/walletStore'
-import { useActiveAccount } from './useActiveAccount'
-import { Token } from '../types/wallet.types'
-
-export interface TokenWithBalance extends Token {
-  balance: string
+export type TokenWithBalance = {
+  key: string
+  type: 'native' | 'asset'
+  symbol: string
+  name?: string
+  decimals: number
+  rawBalance: string
   formattedBalance: string
   balanceInFiat?: number
   priceUSD?: number
 }
 
-export const useTokens = () => {
-  const { 
-    tokens, 
-    customTokens, 
-    balances, 
-    getTokenBalance, 
-    getAllTokens,
-    getTotalBalanceInBZR,
-    loadBalances,
-    isLoadingBalances
-  } = useWalletStore()
-  
+type UseTokens = {
+  tokens: TokenWithBalance[]
+  nativeToken?: TokenWithBalance
+  assetTokens: TokenWithBalance[]
+  totalBalance: number
+  isLoading: boolean
+  error?: unknown
+  refreshBalances: () => Promise<void>
+}
+
+function formatUnits(raw: BN | string, decimals: number): string {
+  const s = BN.isBN(raw) ? raw.toString() : String(raw)
+  const neg = s.startsWith('-')
+  const digits = neg ? s.slice(1) : s
+  const pad = digits.padStart(decimals + 1, '0')
+  const int = pad.slice(0, pad.length - decimals)
+  const frac = pad.slice(pad.length - decimals).replace(/0+$/, '')
+  return (neg ? '-' : '') + (frac ? `${int}.${frac}` : int)
+}
+
+export function useTokens(): UseTokens {
   const { activeAccount } = useActiveAccount()
-  
-  const allTokens = getAllTokens()
-  
-  const tokensWithBalances: TokenWithBalance[] = useMemo(() => {
-    if (!activeAccount) return []
-    
-    return allTokens.map(token => {
-      const balance = getTokenBalance(activeAccount.id, token.key)
-      const balanceNum = parseFloat(balance) / Math.pow(10, token.decimals)
-      
-      return {
-        ...token,
-        balance,
-        formattedBalance: balanceNum.toFixed(6),
-        balanceInFiat: balanceNum * (token.key === 'BZR' ? 1 : Math.random() * 2), // Mock price
-        priceUSD: token.key === 'BZR' ? 1 : Math.random() * 2
+  const { api, isReady } = useChain() as { api?: ApiPromise; isReady: boolean }
+
+  const [isLoading, setLoading] = React.useState(false)
+  const [error, setError] = React.useState<unknown>()
+  const [nativeToken, setNativeToken] = React.useState<TokenWithBalance>()
+  const [assetTokens, setAssetTokens] = React.useState<TokenWithBalance[]>([])
+
+  const address = activeAccount?.address
+
+  const load = React.useCallback(async () => {
+    try {
+      setLoading(true)
+      setError(undefined)
+      if (!api || !isReady || !address) {
+        setNativeToken(undefined)
+        setAssetTokens([])
+        return
       }
-    })
-  }, [allTokens, activeAccount, balances])
-  
-  const nativeToken = useMemo(() => {
-    return tokensWithBalances.find(token => token.type === 'native')
-  }, [tokensWithBalances])
-  
-  const assetTokens = useMemo(() => {
-    return tokensWithBalances.filter(token => token.type === 'asset')
-  }, [tokensWithBalances])
-  
-  const totalBalance = useMemo(() => {
-    return activeAccount ? getTotalBalanceInBZR(activeAccount.id) : 0
-  }, [activeAccount, balances, getTotalBalanceInBZR])
-  
-  const refreshBalances = async () => {
-    if (activeAccount) {
-      await loadBalances(activeAccount.id)
+
+      // Lê metadados da chain
+      const decimals = api.registry.chainDecimals?.[0] ?? 12
+      const symbol = api.registry.chainTokens?.[0] ?? 'BZR'
+
+      // Saldo nativo
+      const { data } = await api.query.system.account(address)
+      const free = (data as any).free as BN
+      const formatted = formatUnits(free, decimals)
+
+      const native: TokenWithBalance = {
+        key: `native:${symbol}`,
+        type: 'native',
+        symbol,
+        name: symbol,
+        decimals,
+        rawBalance: free.toString(),
+        formattedBalance: formatted,
+      }
+      setNativeToken(native)
+
+      // TODO: se você tiver assets (pallet-assets / PSP22), carregue aqui
+      // const assets: TokenWithBalance[] = await loadAssets(api, address)
+      setAssetTokens([])
+
+    } catch (e) {
+      setError(e)
+      setNativeToken(undefined)
+      setAssetTokens([])
+    } finally {
+      setLoading(false)
     }
-  }
-  
-  const getTokenByKey = (key: string): TokenWithBalance | undefined => {
-    return tokensWithBalances.find(token => token.key === key)
-  }
-  
-  const getTokenByAssetId = (assetId: string | number): TokenWithBalance | undefined => {
-    return tokensWithBalances.find(token => token.assetId === assetId)
-  }
-  
-  const formatTokenAmount = (amount: string, token: Token): string => {
-    const amountNum = parseFloat(amount) / Math.pow(10, token.decimals)
-    return `${amountNum.toFixed(6)} ${token.symbol}`
-  }
-  
-  const parseTokenAmount = (amount: string, token: Token): string => {
-    const amountNum = parseFloat(amount)
-    return Math.floor(amountNum * Math.pow(10, token.decimals)).toString()
-  }
-  
+  }, [api, isReady, address])
+
+  React.useEffect(() => {
+    void load()
+  }, [load])
+
+  const tokens = React.useMemo(() => {
+    const list = []
+    if (nativeToken) list.push(nativeToken)
+    return list.concat(assetTokens)
+  }, [nativeToken, assetTokens])
+
+  const totalBalance = React.useMemo(() => {
+    // Por enquanto, some só o nativo (em “unidade do token”, não fiat)
+    const n = nativeToken ? parseFloat(nativeToken.formattedBalance || '0') : 0
+    const a = assetTokens.reduce((acc, t) => acc + (parseFloat(t.formattedBalance || '0') || 0), 0)
+    return n + a
+  }, [nativeToken, assetTokens])
+
   return {
-    tokens: tokensWithBalances,
+    tokens,
     nativeToken,
     assetTokens,
-    customTokens,
     totalBalance,
-    isLoading: isLoadingBalances,
-    getAllTokens, 
-    refreshBalances,
-    getTokenByKey,
-    getTokenByAssetId,
-    formatTokenAmount,
-    parseTokenAmount
+    isLoading,
+    error,
+    refreshBalances: load,
   }
 }

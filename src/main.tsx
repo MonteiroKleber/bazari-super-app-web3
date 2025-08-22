@@ -1,4 +1,4 @@
-// src/main.tsx
+import '@app/polyfills'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { AppProviders } from '@app/providers/AppProviders'
