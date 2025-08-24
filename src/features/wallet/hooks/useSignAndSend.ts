@@ -3,7 +3,8 @@ import { useChain } from '@app/providers/ChainProvider'
 import { useAuthStore } from '@features/auth/store/authStore'
 import { usePasswordPrompt } from '@app/providers/PasswordPromptProvider'
 import { signAndSend } from '../services/extrinsicSigner'
-import type { ApiPromise, SubmittableExtrinsic } from '@polkadot/api'
+import type { ApiPromise } from '@polkadot/api'
+import type { SubmittableExtrinsic } from '@polkadot/api/types'
 
 type SendOptions = { onStatus?: (s: string) => void; meta?: any }
 

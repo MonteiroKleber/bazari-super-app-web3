@@ -7,6 +7,11 @@ import { AuthGuard } from '@shared/guards/AuthGuard'
 
 import { P2PTestPage } from '../../components/P2PTestPage'
 
+
+import ListEnterprises from '@features/enterprises/ListEnterprises'
+import CreateEnterprise from '@features/enterprises/CreateEnterprise'
+import EditEnterprise from '@features/enterprises/EditEnterprise'
+
 // Lazy load pages
 const LandingPage = React.lazy(() => import('@pages/LandingPage'))
 const LoginPage = React.lazy(() => import('@pages/LoginPage'))
@@ -23,6 +28,10 @@ const AboutPage = React.lazy(() => import('@pages/AboutPage'))
 
 const P2PPage = React.lazy(() => import('@pages/P2PPage'))
 
+
+
+
+
 export const AppRoutes: React.FC = () => {
   return (
     <Suspense fallback={<LoadingSpinner />}>
@@ -33,6 +42,11 @@ export const AppRoutes: React.FC = () => {
         <Route path="/help" element={<HelpPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/test-p2p" element={<P2PTestPage />} />
+
+
+        <Route path="/enterprises" element={<ListEnterprises />} />
+        <Route path="/enterprises/create" element={<CreateEnterprise />} />
+        <Route path="/enterprises/edit/:id" element={<EditEnterprise />} />
 
 
 

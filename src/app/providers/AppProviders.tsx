@@ -1,5 +1,4 @@
 import React from 'react'
-import { BrowserRouter } from 'react-router-dom'
 import { I18nProvider } from './I18nProvider'
 import { NotificationProvider } from './NotificationProvider'
 import { useMarketplaceStore } from '@features/marketplace/store/marketplaceStore'
@@ -28,7 +27,7 @@ const MockDataInitializer: React.FC = () => {
 
 export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
   return (
-    <BrowserRouter>
+    
     <I18nProvider>
       <NotificationProvider>
         <MockDataInitializer />
@@ -39,6 +38,6 @@ export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => {
         </ChainProvider>
       </NotificationProvider>
     </I18nProvider>
-  </BrowserRouter>
+  
   )
 }
